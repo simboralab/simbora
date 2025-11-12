@@ -19,4 +19,3 @@ def cadastro_login(request):
         form = UsuarioCreationForm()
         
     return render(request, 'cadastro_login/cadastro.html', {'form': form})
-
