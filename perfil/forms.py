@@ -1,51 +1,61 @@
-from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from django.core.exceptions import ValidationError
+# forms.py
+
 from datetime import date
-from .models import Usuario 
+
+from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
+
+from .models import Usuario
 
 
-IDADE_MINIMA_ANOS = 18
+class CadastroUsuarioBaseForm(UserCreationForm):
 
-class UsuarioCreationForm(UserCreationForm):
-    data_nascimento = forms.DateField(
-        widget=forms.DateInput(attrs={'type': 'date'}),
-        label='Data de Nascimento'
-    )
+
 
     class Meta:
-        # Usa o modelo de usuário personalizado
         model = Usuario
-        
-        fields = ('email', 'username', 'first_name', 'last_name', 'data_nascimento')
-        # Se você estiver usando o AbstractUser, 'username' já vem no UserCreationForm base,
-        # mas você o incluiu em REQUIRED_FIELDS, então garantimos que está aqui.
+   
+        fields = ('email', 'first_name', 'last_name') 
 
-   
-   
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Ajustando rótulos dos campos do modelo
+        self.fields['email'].label = 'Email'
+        self.fields['first_name'].label = 'Primeiro nome'
+        self.fields['last_name'].label = 'Último nome'
+        
+      
+
+## Formulário Completo: Adicionando Data de Nascimento
+class CadastroCompletoForm(CadastroUsuarioBaseForm):
+
+    data_nascimento = forms.DateField(
+        label=_("Data de Nascimento: "),
+        widget=forms.DateInput(attrs={'type': 'date', 'placeholder': 'dd/mm/aaaa'}),
+        error_messages={'required': 'A data de nascimento é obrigatória.'}
+    )
+
     def clean_data_nascimento(self):
         data_nascimento = self.cleaned_data.get('data_nascimento')
-
-        if data_nascimento:
-            hoje = date.today()
-            
-    
-            if data_nascimento > hoje:
-                raise forms.ValidationError("Data de nascimento inválida: Não pode ser uma data futura.")
-            
-           
-            idade = hoje.year - data_nascimento.year
-            if (hoje.month, hoje.day) < (data_nascimento.month, data_nascimento.day):
-                idade -= 1
-                
-            if idade < IDADE_MINIMA_ANOS:
-                raise forms.ValidationError(f"Usuário deve ter pelo menos {IDADE_MINIMA_ANOS} anos.")
-
-        return data_nascimento
-
-    def save(self, commit=True):
-        user = super().save(commit=False)
         
-        if commit:
-            user.save()
-        return user
+        
+        if not data_nascimento:
+             return data_nascimento
+
+        hoje = date.today()
+
+        if data_nascimento > hoje:
+            raise ValidationError("Data de nascimento inválida (não pode ser futura).")
+
+    
+        idade = hoje.year - data_nascimento.year
+        if hoje.month < data_nascimento.month or \
+           (hoje.month == data_nascimento.month and hoje.day < data_nascimento.day):
+            idade -= 1
+        
+        if idade < 18:
+            raise ValidationError("Usuário deve ter pelo menos 18 anos para se cadastrar.")
+            
+        return data_nascimento
