@@ -51,28 +51,85 @@ O time de Back-end do Projeto Integrador é composto pelos seguintes membros (em
 **Curso:** Programador de Sistemas
 **Instituição:** SENAC em parceria com Serasa (Programa Transforme-se)
 
-### 2. Clonar e Acessar o Repositório
+# 🚀 Passo a passo para rodar o projeto localmente
+
+## 1️⃣ Clonar o repositório
 
 ```bash
-git clone link_do_repositório
-cd [nome-do-repositorio]
+git clone https://github.com/simboralab/simbora.git
+cd simbora
+```
 
-# 1. Criar ambiente virtual
-python -m venv venv 
+## 2️⃣ Criar ambiente virtual
 
-# 2. Ativar ambiente virtual (Linux/macOS)
-source venv/bin/activate 
+```bash
+python -m venv venv
+```
 
-# 2. Ativar ambiente virtual (Windows)
+## 3️⃣ Ativar o ambiente virtual
+
+### 🔹 Linux / macOS
+```bash
+source venv/bin/activate
+```
+
+### 🔹 Windows (PowerShell)
+```bash
 .\venv\Scripts\activate
+```
 
-#3. Com o ambiente virtual ativo, instale todas as bibliotecas Python necessárias:
+## 4️⃣ Instalar dependências
+
+```bash
 pip install -r requirements.txt
+```
 
-#4. Aplique as migrações do Django para criar o banco de dados (db.sqlite3) e as tabelas:
-python manage.py makemigrations 
+## 5️⃣ Criar o arquivo `.env`
+
+```bash
+touch .env
+```
+
+Dentro do `.env`, coloque:
+
+```env
+# Chave secreta da criptografia do CPF
+CPF_SECRET_KEY=troque_por_uma_chave_forte
+
+# Outras variáveis...
+DEBUG=True
+```
+
+## 6️⃣ Gerar nova chave secreta (opcional)
+
+Abra o shell Python:
+
+```bash
+python
+```
+
+Gere a chave:
+
+```python
+import secrets
+print(secrets.token_urlsafe(32))
+```
+
+Cole no `.env`:
+
+```env
+CPF_SECRET_KEY=valor_gerado_aqui
+```
+
+## 7️⃣ Aplicar migrações
+
+```bash
+python manage.py makemigrations
 python manage.py migrate
+```
 
-#5. Inicie o servidor de desenvolvimento do Django:
+## 8️⃣ Rodar o servidor
+
+```bash
 python manage.py runserver
-
+```
