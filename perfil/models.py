@@ -35,6 +35,13 @@ class Usuario(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     email = models.EmailField(unique=True)
+    
+    username = models.CharField(
+        max_length=150,
+        unique=False,  # <--- REMOVE a restrição UNIQUE
+        null=True,     # <--- Permite ser None (nulo) no DB
+        blank=True     # <--- Permite ser None/vazio em formulários
+    )
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
