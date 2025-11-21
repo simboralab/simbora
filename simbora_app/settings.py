@@ -1,27 +1,16 @@
 from pathlib import Path
-import os
-from django.core.exceptions import ImproperlyConfigured
-from dotenv import load_dotenv
+from config import settings
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv(os.fspath(BASE_DIR / '.env'))
+# Configurações do Dynaconf (com validação automática e tipagem)
+SECRET_KEY = settings.SECRET_KEY
+FIELD_ENCRYPTION_KEY = settings.FIELD_ENCRYPTION_KEY
+DEBUG = settings.DEBUG
+ALLOWED_HOSTS = settings.ALLOWED_HOSTS
 
-def get_env_variable(name: str, default=None, required: bool = False):
-    
-    val = os.getenv(name, default)
-    if required and val is None:
-        raise ImproperlyConfigured(f"A variável de ambiente {name} não está definida.")
-    return val
-
-SECRET_KEY = get_env_variable('SECRET_KEY', required=True) # trocar e criar variável no .env antes de fazer deploy
-FIELD_ENCRYPTION_KEY = get_env_variable('FIELD_ENCRYPTION_KEY', required=True) #chave secreta da criptografia do cpf (trocar e criar uma variável no .env antes de fazer deploy) (da pra criar uma nova chave com -> import secrets; print(secrets.token_urlsafe(32)))
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = get_env_variable('DEBUG', default='False').lower() in ('1', 'true', 'yes')
-
-allowed_hosts = get_env_variable('DJANGO_ALLOWED_HOSTS', default='127.0.0.1').split(',')
-ALLOWED_HOSTS = [h.strip() for h in allowed_hosts if h.strip()]
+# Ambiente atual (útil para validação e logs)
+ENVIRONMENT = settings.current_env
 
 # Application definition
 
@@ -102,9 +91,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'pt-BR'
+LANGUAGE_CODE = settings.get('LANGUAGE_CODE', 'pt-BR')
 
-TIME_ZONE = 'America/Sao_Paulo'
+TIME_ZONE = settings.get('TIME_ZONE', 'America/Sao_Paulo')
 
 USE_I18N = True
 

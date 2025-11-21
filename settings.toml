@@ -1,0 +1,24 @@
+[default]
+# Configurações padrão aplicadas a todos os ambientes
+debug = false
+allowed_hosts = ["127.0.0.1", "localhost"]
+language_code = "pt-BR"
+time_zone = "America/Sao_Paulo"
+
+[development]
+# Configurações para desenvolvimento local
+debug = true
+allowed_hosts = ["127.0.0.1", "localhost", ".localhost"]
+
+[production]
+# Configurações para produção
+# IMPORTANTE: Defina SIMBORA_ALLOWED_HOSTS via variável de ambiente em produção real
+# Exemplo: export SIMBORA_ALLOWED_HOSTS='["seu-dominio.com", "www.seu-dominio.com"]'
+debug = false
+allowed_hosts = ["127.0.0.1", "localhost"]  # Valores padrão para testes locais - sobrescreva via variável de ambiente em produção real
+
+[testing]
+# Configurações para testes
+debug = true
+allowed_hosts = ["testserver"]
+

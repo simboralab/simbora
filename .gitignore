@@ -128,13 +128,16 @@ venv.bak/
 .env.production
 .env.development
 .env.backup
+# Exceção: arquivos com "example" devem ser versionados
+!.env.example
+!*.example
 
 # ===== SECRETS E CHAVES =====
-.secrets.*
-secrets.toml
 .secrets.toml
 *.key
 *.pem
+# Exceção: arquivos com "example" devem ser versionados
+!.secrets.toml.example
 
 # ===== IDEs =====
 .vscode/
