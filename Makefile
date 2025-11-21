@@ -137,7 +137,8 @@ collectstatic: ## Coleta arquivos estáticos para produção
 generate-keys: ## Gera SECRET_KEY e FIELD_ENCRYPTION_KEY
 	@echo "$(BLUE)🔑 Gerando chaves de segurança...$(NC)"
 	@echo ""
-	$(PYTHON) -c "from cryptography.fernet import Fernet; print('SECRET_KEY:', Fernet.generate_key().decode()); print('FIELD_ENCRYPTION_KEY:', Fernet.generate_key().decode())"
+	@echo "SECRET_KEY: $$($(PYTHON) contrib/secret_gen.py)"
+	@$(PYTHON) -c "from cryptography.fernet import Fernet; print('FIELD_ENCRYPTION_KEY:', Fernet.generate_key().decode())"
 	@echo ""
 	@echo "$(GREEN)✅ Chaves geradas! Cole-as no arquivo .secrets.toml$(NC)"
 
