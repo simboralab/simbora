@@ -1,0 +1,24 @@
+name: build
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      SIMBORA_ENV: testing
+      SIMBORA_SECRET_KEY: ${{ secrets.SIMBORA_SECRET_KEY }}
+      SIMBORA_FIELD_ENCRYPTION_KEY: ${{ secrets.SIMBORA_FIELD_ENCRYPTION_KEY }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+      - name: "Set up Python"
+        uses: actions/setup-python@v6
+        with:
+          python-version-file: ".python-version"
+      - name: Install the project
+        run: uv sync
+      - name: Run tests
+        run: uv run python manage.py test
