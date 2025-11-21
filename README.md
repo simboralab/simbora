@@ -14,6 +14,8 @@ O objetivo desta fase é estabelecer a base de dados e a lógica de negócios pa
 * **Banco de Dados:** SQLite (`db.sqlite3`)
 * **Gerenciamento de Dependências:** `uv` com `pyproject.toml` (padrão moderno Python)
 * **Gerenciamento de Configurações:** Dynaconf (múltiplos ambientes, validação automática)
+* **CI/CD:** GitHub Actions (testes automatizados)
+* **Gerenciamento de Dependências Automático:** Dependabot (atualizações semanais)
 
 ## 🧩 Estrutura Inicial do Repositório
 
@@ -32,6 +34,11 @@ O repositório está estruturado em *apps* do Django para modularizar as funcion
 | `core/` | App principal do projeto. Contém configurações básicas e modelos fundamentais. |
 | `perfil/` | App dedicada à gestão dos dados adicionais do perfil do usuário. |
 | `simbora_app/` | Diretório principal do projeto Django (contém `settings.py`, `urls.py`). |
+| `.github/` | Configurações do GitHub (workflows, Dependabot). |
+| `.github/workflows/` | GitHub Actions para CI/CD (testes automatizados). |
+| `.github/dependabot.yml` | Configuração do Dependabot para atualizações automáticas de dependências. |
+| `contrib/` | Arquivos auxiliares e documentação de contribuição. |
+| `contrib/CONTRIBUTING.md` | Guia completo de como contribuir com o projeto. |
 | `media/fotos_perfil/` | Configurado para armazenar arquivos de mídia (ex: fotos de perfil). |
 
 
@@ -77,6 +84,14 @@ O time de Back-end do Projeto Integrador é composto pelos seguintes membros (em
 
 **Curso:** Programador de Sistemas
 **Instituição:** SENAC em parceria com Serasa (Programa Transforme-se)
+
+## 🤝 Como Contribuir
+
+Contribuições são bem-vindas! 
+
+**⚠️ Importante:** Todas as contribuições devem ser feitas via **Pull Request** para garantir qualidade, permitir revisão de código e fazer as automações (GitHub Actions) funcionarem corretamente. É uma boa prática não fazer commit direto na `main`.
+
+Para um guia completo sobre como contribuir, consulte: **[Guia de Contribuição](contrib/CONTRIBUTING.md)**
 
 # 🚀 Quick Start
 
@@ -212,7 +227,7 @@ secret_key = "cole-a-chave-secret-key-aqui"
 field_encryption_key = "cole-a-chave-field-encryption-key-aqui"
 ```
 
-**⚠️ IMPORTANTE:** 
+**⚠️ IMPORTANTE:**
 - O arquivo `.secrets.toml` está no `.gitignore` e **não será commitado**
 - Cada desenvolvedor cria seu próprio `.secrets.toml` a partir do template `.secrets.toml.example`
 - Se o `.env` não existir, o Dynaconf usa automaticamente o `.secrets.toml`
@@ -261,7 +276,7 @@ SIMBORA_DEBUG=True
 SIMBORA_ALLOWED_HOSTS=["127.0.0.1", "localhost"]
 ```
 
-**⚠️ IMPORTANTE:** 
+**⚠️ IMPORTANTE:**
 - O `.env` está no `.gitignore` e **não será commitado**
 - O Dynaconf prioriza: variáveis de ambiente > `.secrets.toml` > `settings.toml` > `.env`
 - Para secrets, prefira usar `.secrets.toml` (mais seguro e organizado)
@@ -344,6 +359,62 @@ uv run python manage.py show_env
 
 O servidor estará disponível em `http://127.0.0.1:8000/` ou `http://localhost:8000/`
 
+## 🤖 Automação e Qualidade
+
+### GitHub Actions (CI/CD)
+
+O projeto utiliza **GitHub Actions** para executar testes automaticamente a cada push na branch `main`.
+
+**Workflow configurado:**
+- ✅ Executa testes do Django automaticamente
+- ✅ Valida instalação de dependências
+- ✅ Ambiente de teste isolado (Ubuntu)
+
+**Arquivo:** `.github/workflows/main.yml`
+
+**Como funciona:**
+1. A cada push na branch `main`, o workflow é acionado
+2. Instala dependências usando `uv`
+3. Executa todos os testes do projeto
+4. Reporta falhas diretamente no GitHub
+
+**Secrets necessários no GitHub:**
+- `SIMBORA_SECRET_KEY`: Chave secreta do Django
+- `SIMBORA_FIELD_ENCRYPTION_KEY`: Chave de criptografia para campos
+
+**Configurar secrets no GitHub:**
+1. Vá em **Settings** → **Secrets and variables** → **Actions**
+2. Clique em **New repository secret**
+3. Adicione os secrets necessários
+
+### Dependabot
+
+O projeto utiliza **Dependabot** para manter as dependências atualizadas automaticamente.
+
+**Configuração:**
+- ✅ Monitora dependências Python (`uv`)
+- ✅ Monitora GitHub Actions
+- ✅ Verificações semanais automáticas
+- ✅ Agrupamento inteligente de atualizações relacionadas
+- ✅ Labels automáticos nos PRs
+
+**Arquivo:** `.github/dependabot.yml`
+
+**Funcionalidades:**
+- **Agrupamento:** Atualizações do Django são agrupadas em um único PR
+- **Labels:** PRs recebem labels automáticos (`dependencies`, `python`, `automated`)
+- **Mensagens:** Commits padronizados com prefixo `chore(deps):`
+
+**Como funciona:**
+1. Dependabot verifica atualizações semanalmente
+2. Cria Pull Requests automaticamente quando há atualizações disponíveis
+3. Agrupa atualizações relacionadas (ex: todas as atualizações do Django)
+4. Aplica labels e formata mensagens de commit automaticamente
+
+**Primeira execução:**
+- O Dependabot começa a funcionar em até 24 horas após o push do arquivo de configuração
+- Você pode verificar em **Settings** → **Code security and analysis** → **Dependabot**
+
 ## 🔍 Makefile - Comandos Úteis
 
 O projeto inclui um **Makefile** completo com 30+ comandos úteis para facilitar o desenvolvimento.
@@ -416,6 +487,20 @@ O projeto inclui um **Makefile** completo com comandos úteis. Use `make help` p
 - ✅ Padronização entre desenvolvedores
 - ✅ Integração automática com `uv run`
 - ✅ Suporte a múltiplos ambientes
+
+### Sobre CI/CD e Automação
+
+O projeto utiliza **GitHub Actions** e **Dependabot** para garantir qualidade e manter dependências atualizadas:
+
+**GitHub Actions:**
+- Executa testes automaticamente em cada push
+- Valida que o código funciona corretamente
+- Ambiente isolado e reproduzível
+
+**Dependabot:**
+- Mantém dependências atualizadas automaticamente
+- Cria PRs com atualizações de segurança e correções
+- Agrupa atualizações relacionadas para facilitar revisão
 
 ### Segurança
 
