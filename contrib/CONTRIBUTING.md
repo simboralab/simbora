@@ -89,6 +89,7 @@ git push origin feature/nome-da-sua-feature
 - ✅ **Revisão de código**: Permitir que outros desenvolvedores revisem e sugiram melhorias
 - ✅ **Automações funcionando**: Os workflows do GitHub Actions executam testes automaticamente, validando que o código funciona corretamente antes do merge
 - ✅ **Histórico e rastreabilidade**: Manter um histórico claro de mudanças e discussões
+- ✅ **Facilita desfazer mudanças**: Se problemas forem detectados após a integração na `main`, é mais fácil identificar, reverter ou corrigir mudanças que foram feitas via PR do que commits diretos na branch principal
 
 ### Regras Importantes
 
