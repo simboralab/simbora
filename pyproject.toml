@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "django-encrypted-model-fields==0.6.5",
-    "django==5.1.14",
+    "django==5.2.8",
     "dynaconf>=3.2.12",
     "pillow==12.0.0",
     "python-dotenv==1.2.1",
