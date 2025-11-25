@@ -69,9 +69,5 @@ def sucess_view(request):
 
 
 def logout_view(request):
-    """
-    Processa o logoff do usuário.
-    """
     logout(request)
-    # Redireciona para a página de login (ou a página inicial)
     return redirect('account')
