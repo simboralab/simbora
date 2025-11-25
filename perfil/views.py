@@ -1,34 +1,77 @@
-# Seu views.py (não precisa mudar, a lógica é a mesma)
-from django.shortcuts import render, redirect
-from django.db import transaction
-from .forms import CadastroCompletoForm
 from django.contrib import messages
-from .models import Perfil
+from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import redirect, render
+from django.urls import reverse
+from perfil.models import Perfil
+from django.db import transaction
 
-def cadastro_login(request):
-    form = CadastroCompletoForm(request.POST or None)
-    
+
+from .forms import (CadastroCompletoForm,  
+                    LoginForm)
+
+
+def account_view(request):
+    if request.user.is_authenticated:
+        return redirect('sucesso') 
+
+    login_form = LoginForm()
+    cadastro_form = CadastroCompletoForm()
+
     if request.method == 'POST':
-        if form.is_valid():
-            
-            #Garantindo que o campo de perfil seja criado
-            with transaction.atomic(): 
-                usuario = form.save()
-                
-                data_nascimento = form.cleaned_data['data_nascimento']
-                
-                Perfil.objects.create(
-                    usuario=usuario,
-                    data_nascimento=data_nascimento
-                    # O resto dos campos do Perfil será NULL ou DEFAULT.
-                )
+        action = request.POST.get('action') 
 
-            messages.success(request, 'Cadastro realizado com sucesso! Faça login para continuar.')
+        if action == 'login':
+            # 1. Processar Login
+            login_form = LoginForm(request, data=request.POST)
+            if login_form.is_valid():
+                user = login_form.get_user()
+                login(request, user)
+                return redirect('sucesso')
+            else:
+                messages.error(request, 'Email ou senha inválidos. Por favor, tente novamente.')
+        
+        elif action == 'cadastro':
+            # 2. Processar Cadastro
+            cadastro_form = CadastroCompletoForm(request.POST)
+            if cadastro_form.is_valid():
+                with transaction.atomic():
+                    usuario = cadastro_form.save()
+                    Perfil.objects.create(
+                        usuario=usuario,
+                        data_nascimento=cadastro_form.cleaned_data['data_nascimento']
+                    )
+
+                login(request, usuario)
+                messages.success(request, 'Cadastro realizado com sucesso!')
+                return redirect('sucesso')
             
-            return redirect('account') 
+        else:
+            messages.error(request, 'Ação desconhecida.')
 
     context = {
-        'form': form,
+        'login_form': login_form,
+        'cadastro_form': cadastro_form,
     }
+    return render(request, 'perfil/account.html', context)
 
-    return render(request, 'perfil/cadastro.html', context)
+
+def sucess_view(request):
+    if not request.user.is_authenticated:
+        return redirect('account') 
+
+    nome_completo = f"{request.user.first_name} {request.user.last_name}"
+    
+    context = {
+        'nome_completo': nome_completo
+    }
+    return render(request, 'perfil/sucess.html', context)
+
+
+
+def logout_view(request):
+    """
+    Processa o logoff do usuário.
+    """
+    logout(request)
+    # Redireciona para a página de login (ou a página inicial)
+    return redirect('account')

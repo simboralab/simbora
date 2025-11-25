@@ -3,7 +3,7 @@
 from datetime import date
 
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
@@ -59,3 +59,15 @@ class CadastroCompletoForm(CadastroUsuarioBaseForm):
             raise ValidationError("Usuário deve ter pelo menos 18 anos para se cadastrar.")
             
         return data_nascimento
+    
+
+
+
+class LoginForm(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Renomeando o label do campo 'username' para 'Email'
+        self.fields['username'].label = 'Email'
+        self.fields['username'].widget.attrs.update({'placeholder': 'Seu email'})
+        self.fields['password'].label = 'Senha'
+        self.fields['password'].widget.attrs.update({'placeholder': 'Sua senha'})
