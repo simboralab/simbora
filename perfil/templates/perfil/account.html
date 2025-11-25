@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Acesso à Conta</title>
+</head>
+<body>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <p class="{{ message.tags }}">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
+    <div style="display: flex; justify-content: space-around;">
+        
+        <section>
+            <h2>Entrar</h2>
+            <form method="post" action="{% url "account" %}">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="login"> 
+                
+                {{ login_form.as_p }}
+                <button type="submit">Entrar na Conta</button>
+            </form>
+        </section>
+
+        <section>
+            <h2>Criar Conta</h2>
+            <form method="post" action="{% url "account" %}">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="cadastro"> 
+                
+                {{ cadastro_form.as_p }}
+                <button type="submit">Cadastrar</button>
+            </form>
+        </section>
+    </div>
+</body>
+</html>
