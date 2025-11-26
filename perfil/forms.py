@@ -3,17 +3,26 @@
 from datetime import date
 
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 from .models import Usuario
 
+GENERO_CHOICES = [
+    ('', 'Selecione seu gênero'), 
+    ('HOMEM_CIS', 'Homem cis'),
+    ('MULHER_CIS', 'Mulher cis'),
+    ('HOMEM_TRANS', 'Homem Trans'),
+    ('MULHER_TRANS', 'Mulher Trans'),
+    ('NAO_BINARIO', 'Não-binário'),
+    ('AGENERO', 'Agênero'),
+    ('GENERO_FLUIDO', 'Gênero fluido'),
+    ('OUTRO', 'Outro'),
+    ('NAO_INFORMAR', 'Prefiro não informar'),
+]
 
 class CadastroUsuarioBaseForm(UserCreationForm):
-
-
-
     class Meta:
         model = Usuario
    
@@ -37,6 +46,25 @@ class CadastroCompletoForm(CadastroUsuarioBaseForm):
         error_messages={'required': 'A data de nascimento é obrigatória.'}
     )
 
+    genero = forms.ChoiceField(
+        label=_("Gênero: "),
+        choices=GENERO_CHOICES,
+        required=True, 
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
+    def clean_genero(self):
+        genero = self.cleaned_data.get('genero')
+        
+        if genero == '':
+            return None 
+            
+        valid_values = [v[0] for v in GENERO_CHOICES if v[0] != '']
+        if genero and genero not in valid_values:
+            raise ValidationError("Seleção de gênero inválida.")
+            
+        return genero
+
     def clean_data_nascimento(self):
         data_nascimento = self.cleaned_data.get('data_nascimento')
         
@@ -59,3 +87,15 @@ class CadastroCompletoForm(CadastroUsuarioBaseForm):
             raise ValidationError("Usuário deve ter pelo menos 18 anos para se cadastrar.")
             
         return data_nascimento
+    
+
+
+
+class LoginForm(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Renomeando o label do campo 'username' para 'Email'
+        self.fields['username'].label = 'Email'
+        self.fields['username'].widget.attrs.update({'placeholder': 'Seu email'})
+        self.fields['password'].label = 'Senha'
+        self.fields['password'].widget.attrs.update({'placeholder': 'Sua senha'})

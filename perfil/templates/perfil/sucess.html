@@ -1,0 +1,8 @@
+<h1>Logado</h1>
+
+<input type="submit" value="Sair" onclick="window.location.href='{% url 'logout' %}'"/>
+
+{% if user.is_authenticated %}
+    <p>Bem-vindo, {{ user.nome_completo }}!</p>
+    <a href="{% url 'password_change' %}">Alterar senha</a>
+{% endif %}
