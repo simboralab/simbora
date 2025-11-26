@@ -1,13 +1,12 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.db import transaction
 from django.shortcuts import redirect, render
 from django.urls import reverse
+
 from perfil.models import Perfil
-from django.db import transaction
 
-
-from .forms import (CadastroCompletoForm,  
-                    LoginForm)
+from .forms import CadastroCompletoForm, LoginForm
 
 
 def account_view(request):
@@ -38,7 +37,8 @@ def account_view(request):
                     usuario = cadastro_form.save()
                     Perfil.objects.create(
                         usuario=usuario,
-                        data_nascimento=cadastro_form.cleaned_data['data_nascimento']
+                        data_nascimento=cadastro_form.cleaned_data['data_nascimento'],
+                        genero=cadastro_form.cleaned_data['genero']
                     )
 
                 login(request, usuario)
