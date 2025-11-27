@@ -26,14 +26,25 @@ class CadastroUsuarioBaseForm(UserCreationForm):
     class Meta:
         model = Usuario
    
-        fields = ('email', 'first_name', 'last_name') 
+        fields = ('email', 'first_name', 'last_name','password', 'password2') 
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Ajustando rótulos dos campos do modelo
+        # Mapeamento dos campos do UserCreationForm para os IDs do seu HTML
         self.fields['email'].label = 'Email'
+        self.fields['email'].widget.attrs.update({'id': 'id_email_cadastro', 'placeholder': 'Digite seu e-mail'})
+        
         self.fields['first_name'].label = 'Primeiro nome'
+        self.fields['first_name'].widget.attrs.update({'id': 'id_nome', 'placeholder': 'Digite seu nome'})
+        
         self.fields['last_name'].label = 'Último nome'
+        self.fields['last_name'].widget.attrs.update({'id': 'id_sobrenome', 'placeholder': 'Digite seu sobrenome'})
+        
+        # Django UserCreationForm usa 'password' e 'password2'
+        self.fields['password'].widget.attrs.update({'id': 'id_senha_cadastro', 'placeholder': 'Crie uma senha'})
+        self.fields['password2'].label = 'Confirmar Senha' # Nome padrão é 'Password confirmation'
+        self.fields['password2'].widget.attrs.update({'id': 'id_confirmar_senha', 'placeholder': 'Confirme sua senha'})
         
       
 
