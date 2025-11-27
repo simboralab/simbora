@@ -1,0 +1,114 @@
+
+    <form method="post">
+        <div class="row-inputs">
+            <div class="input-container">
+                <label for="id_nome">Nome</label>
+                <div class="input-group">
+                    <span class="material-symbols-rounded icon" aria-hidden="true">person</span>
+                    <input type="text" id="id_nome" name="nome" placeholder="Digite seu nome" 
+                            autocomplete="given-name" required
+                            aria-describedby="erro-nome" />
+                    <span class="material-symbols-rounded icon-check" aria-hidden="true">check_circle</span>
+                    <span class="material-symbols-rounded icon-error" aria-hidden="true">error</span>
+                </div>
+                <span id="erro-nome" class="error-message" role="alert"></span>
+            </div>
+            <div class="input-container">
+                <label for="id_sobrenome">Sobrenome</label>
+                <div class="input-group">
+                    <span class="material-symbols-rounded icon" aria-hidden="true">person</span>
+                    <input type="text" id="id_sobrenome" name="sobrenome" placeholder="Digite seu sobrenome" 
+                            autocomplete="family-name" required
+                            aria-describedby="erro-sobrenome" />
+                    <span class="material-symbols-rounded icon-check" aria-hidden="true">check_circle</span>
+                    <span class="material-symbols-rounded icon-error" aria-hidden="true">error</span>
+                </div>
+                <span id="erro-sobrenome" class="error-message" role="alert"></span>
+            </div>
+        </div>
+    <div class="input-container">
+            <label for="id_email_cadastro">E-mail</label>
+            <div class="input-group">
+                <span class="material-symbols-rounded icon" aria-hidden="true">mail</span>
+                <input type="email" id="id_email_cadastro" name="email" placeholder="Digite seu e-mail" 
+                        autocomplete="email" required
+                        aria-describedby="erro-email-cadastro" />
+                <span class="material-symbols-rounded icon-check" aria-hidden="true">check_circle</span>
+                <span class="material-symbols-rounded icon-error" aria-hidden="true">error</span>
+            </div>
+            <span id="erro-email-cadastro" class="error-message" role="alert"></span>
+        </div>
+        
+        <div class="row-inputs">
+            <div class="input-container">
+                <label for="id_data_nascimento">Data de Nascimento</label>
+                <div class="input-group">
+                    <span class="material-symbols-rounded icon" aria-hidden="true">cake</span>
+                    <input type="date" id="id_data_nascimento" name="data_nascimento" 
+                            autocomplete="bday" required
+                            aria-describedby="erro-data-nascimento" />
+                    <span class="material-symbols-rounded icon-check" aria-hidden="true">check_circle</span>
+                    <span class="material-symbols-rounded icon-error" aria-hidden="true">error</span>
+                </div>
+                <span id="erro-data-nascimento" class="error-message" role="alert"></span>
+            </div>
+            <div class="input-container">
+                <label for="id_genero">Gênero</label>
+                <div class="input-group">
+                    <span class="material-symbols-rounded icon" aria-hidden="true">person</span>
+                    <select id="id_genero" name="genero" required
+                            aria-describedby="erro-genero">
+                        <option value="">Selecione</option>
+                        <option value="masculino">Masculino</option>
+                        <option value="feminino">Feminino</option>
+                        <option value="outro">Outro</option>
+                        <option value="prefiro_nao_informar">Prefiro não informar</option>
+                    </select>
+                    <span class="material-symbols-rounded icon-check" aria-hidden="true">check_circle</span>
+                    <span class="material-symbols-rounded icon-error" aria-hidden="true">error</span>
+                </div>
+                <span id="erro-genero" class="error-message" role="alert"></span>
+            </div>
+        </div>
+
+        <div class="row-inputs">
+            <div class="input-container">
+                <label for="id_senha_cadastro">Senha</label>
+                <div class="input-group">
+                    <span class="material-symbols-rounded icon" aria-hidden="true">lock</span>
+                    <input type="password" id="id_senha_cadastro" name="senha" placeholder="Crie uma senha" 
+                            autocomplete="new-password" required
+                            aria-describedby="erro-senha-cadastro" />
+                    <span class="material-symbols-rounded icon-check" aria-hidden="true">check_circle</span>
+                    <span class="material-symbols-rounded icon-error" aria-hidden="true">error</span>
+                </div>
+                <span id="erro-senha-cadastro" class="error-message" role="alert"></span>
+            </div>
+            <div class="input-container">
+                <label for="id_confirmar_senha">Confirmar Senha</label>
+                <div class="input-group">
+                    <span class="material-symbols-rounded icon" aria-hidden="true">verified_user</span>
+                    <input type="password" id="id_confirmar_senha" name="confirmar_senha" 
+                            placeholder="Confirme sua senha" autocomplete="new-password" required
+                            aria-describedby="erro-confirmar-senha" />
+                    <span class="material-symbols-rounded icon-check" aria-hidden="true">check_circle</span>
+                    <span class="material-symbols-rounded icon-error" aria-hidden="true">error</span>
+                </div>
+                <span id="erro-confirmar-senha" class="error-message" role="alert"></span>
+            </div>
+        </div>
+
+        <div class="checkbox-container">
+            <input type="checkbox" id="id_aceitar_politicas" name="aceitar_politicas" required
+                    aria-describedby="erro-aceitar-politicas" />
+            <label for="id_aceitar_politicas" class="checkbox-label">
+                Eu concordo com os 
+                <a href="#" target="_blank" rel="noopener noreferrer">Termos de Serviço</a> 
+                e a 
+                <a href="#" target="_blank" rel="noopener noreferrer">Política de Privacidade</a>
+            </label>
+            <span id="erro-aceitar-politicas" class="error-message" role="alert"></span>
+        </div>
+
+        <button type="submit" class="btn-primary">CADASTRE-SE</button>
+    </form>

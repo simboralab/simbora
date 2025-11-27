@@ -1,0 +1,26 @@
+<form method="post">
+    <div class="input-container">
+        <label for="id_email_login">E-mail</label>
+        <div class="input-group">
+            <span class="material-symbols-rounded icon" aria-hidden="true">mail</span>
+            <input type="email" id="id_email_login" name="email" placeholder="Digite seu e-mail" 
+                    autocomplete="email" required
+                    aria-describedby="erro-email-login" />
+            <span class="material-symbols-rounded icon-check" aria-hidden="true">check_circle</span>
+            <span class="material-symbols-rounded icon-error" aria-hidden="true">error</span>
+        </div>
+        <span id="erro-email-login" class="error-message" role="alert"></span>
+    </div>
+
+    <div class="input-container">
+        <label for="id_senha_login">Senha</label>
+        <div class="input-group">
+            <span class="material-symbols-rounded icon" aria-hidden="true">lock</span>
+            <input type="password" id="id_senha_login" name="senha" placeholder="Digite sua senha" 
+                    autocomplete="current-password" required />
+        </div>
+    </div>
+
+
+    <button type="submit" class="btn-primary">ENTRAR</button>
+</form>
