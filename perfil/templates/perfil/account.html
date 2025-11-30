@@ -8,7 +8,7 @@
 {% block title %}Cadastro | Login{% endblock title %}
 
 {% block content %}
-    <main id="main-content" class="container cadastro-ativo">
+    <main id="main-content" class="container login-ativo">
         <section class="image-section">
             <div class="logo-overlay">
                 <a href="index.html" aria-label="Ir para página inicial">
@@ -28,7 +28,7 @@
         <section class="form-section">
             <div class="form-wrapper">
                 <!-- Cadastro -->
-                <section class="form-card cadastro-form active" aria-labelledby="cadastro-title">
+                <section class="form-card cadastro-form" aria-labelledby="cadastro-title">
                     <h1 id="cadastro-title">Crie sua conta</h1>
                     <p>Encontre pessoas que querem ir aos mesmos lugares que você</p>
                     {% include "perfil/partials/form_cadastro.html" %}                            
@@ -41,7 +41,7 @@
                     </div>
                 </section>
                 <!-- Login -->
-                <section class="form-card login-form" aria-labelledby="login-title">
+                <section class="form-card login-form active" aria-labelledby="login-title">
                     <h1 id="login-title">Que bom te ver de volta!</h1>
                     <p>Descubra quem tem os mesmos planos que você</p>
                     {% include "perfil/partials/form_login.html" %}

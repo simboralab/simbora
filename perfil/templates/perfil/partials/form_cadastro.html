@@ -1,6 +1,6 @@
-<form method="post">
+<form method="post" action="{% url 'account' %}">
     {% csrf_token %}
-
+    <input type="hidden" name="action" value="cadastro">
     <div class="row-inputs">
         <div class="input-container">
             <label for="id_nome">Nome</label>
@@ -10,10 +10,11 @@
                 <span class="material-symbols-rounded icon-check" aria-hidden="true">check_circle</span>
                 <span class="material-symbols-rounded icon-error" aria-hidden="true">error</span>
             </div>
-            <span id="erro-nome" class="error-message" role="alert"></span>
-            {% for error in form.first_name.errors %}
-                <span id="erro-nome" class="error-message" role="alert">{{ error }}</span>
-            {% endfor %}
+            <span id="erro-nome" class="error-message" role="alert">
+                {% for error in cadastro_form.first_name.errors %}
+                    {{ error }}
+                {% endfor %}
+            </span>
         </div>
         
         <div class="input-container">
@@ -24,9 +25,11 @@
                 <span class="material-symbols-rounded icon-check" aria-hidden="true">check_circle</span>
                 <span class="material-symbols-rounded icon-error" aria-hidden="true">error</span>
             </div>
-            {% for error in cadastro_form.last_name.errors %}
-                <span id="erro-sobrenome" class="error-message" role="alert">{{ error }}</span>
-            {% endfor %}
+            <span id="erro-sobrenome" class="error-message" role="alert">
+                {% for error in cadastro_form.last_name.errors %}
+                    {{ error }}
+                {% endfor %}
+            </span>
         </div>
     </div>
     
@@ -38,9 +41,11 @@
             <span class="material-symbols-rounded icon-check" aria-hidden="true">check_circle</span>
             <span class="material-symbols-rounded icon-error" aria-hidden="true">error</span>
         </div>
-        {% for error in cadastro_form.email.errors %}
-            <span id="erro-email-cadastro" class="error-message" role="alert">{{ error }}</span>
-        {% endfor %}
+        <span id="erro-email-cadastro" class="error-message" role="alert">
+            {% for error in cadastro_form.email.errors %}
+                {{ error }}
+            {% endfor %}
+        </span>
     </div>
     
     <div class="row-inputs">
@@ -52,9 +57,11 @@
                 <span class="material-symbols-rounded icon-check" aria-hidden="true">check_circle</span>
                 <span class="material-symbols-rounded icon-error" aria-hidden="true">error</span>
             </div>
-            {% for error in form.data_nascimento.errors %}
-                <span id="erro-data-nascimento" class="error-message" role="alert">{{ error }}</span>
-            {% endfor %}
+            <span id="erro-data-nascimento" class="error-message" role="alert">
+                {% for error in cadastro_form.data_nascimento.errors %}
+                    {{ error }}
+                {% endfor %}
+            </span>
         </div>
         
         <div class="input-container">
@@ -65,37 +72,44 @@
                 <span class="material-symbols-rounded icon-check" aria-hidden="true">check_circle</span>
                 <span class="material-symbols-rounded icon-error" aria-hidden="true">error</span>
             </div>
-            {% for error in cadastro_form.genero.errors %}
-                <span id="erro-genero" class="error-message" role="alert">{{ error }}</span>
-            {% endfor %}
+            <span id="erro-genero" class="error-message" role="alert">
+                {% for error in cadastro_form.genero.errors %}
+                    {{ error }}
+                {% endfor %}
+            </span>
         </div>
     </div>
 
     <div class="row-inputs">
         <div class="input-container">
-            <label for="{{ cadastro_form.password.id_for_label }}">Senha</label>
+            <label for="id_senha">Senha</label>
             <div class="input-group">
                 <span class="material-symbols-rounded icon" aria-hidden="true">lock</span>
-                {{ cadastro_form.password }}
+                {{ cadastro_form.password1 }}
                 <span class="material-symbols-rounded icon-check" aria-hidden="true">check_circle</span>
                 <span class="material-symbols-rounded icon-error" aria-hidden="true">error</span>
             </div>
-            {% for error in cadastro_form.password.errors %}
-                <span id="erro-senha-cadastro" class="error-message" role="alert">{{ error }}</span>
-            {% endfor %}
+            <span id="erro-senha-cadastro" class="error-message" role="alert">
+                {% for error in cadastro_form.password1.errors %}
+                    {{ error }}
+                {% endfor %}
+            </span>
+            
         </div>
         
         <div class="input-container">
-            <label for="{{ cadastro_form.password2.id_for_label }}">Confirmar Senha</label>
+            <label for="id_confirmar_senha">Confirmar Senha</label>
             <div class="input-group">
                 <span class="material-symbols-rounded icon" aria-hidden="true">verified_user</span>
                 {{ cadastro_form.password2 }}
                 <span class="material-symbols-rounded icon-check" aria-hidden="true">check_circle</span>
                 <span class="material-symbols-rounded icon-error" aria-hidden="true">error</span>
             </div>
-            {% for error in cadastro_form.password2.errors %}
-                <span id="erro-confirmar-senha" class="error-message" role="alert">{{ error }}</span>
-            {% endfor %}
+            <span id="erro-confirmar-senha" class="error-message" role="alert">
+                {% for error in cadastro_form.password2.errors %}
+                    {{ error }}
+                {% endfor %}
+            </span>
         </div>
     </div>
     
@@ -110,6 +124,6 @@
         </label>
         <span id="erro-aceitar-politicas" class="error-message" role="alert"></span>
     </div>
-
+    
     <button type="submit" class="btn-primary">CADASTRE-SE</button>
 </form>

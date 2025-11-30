@@ -26,7 +26,7 @@ class CadastroUsuarioBaseForm(UserCreationForm):
     class Meta:
         model = Usuario
    
-        fields = ('email', 'first_name', 'last_name','password', 'password2') 
+        fields = ('email', 'first_name', 'last_name','password1', 'password2') 
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -40,11 +40,13 @@ class CadastroUsuarioBaseForm(UserCreationForm):
         
         self.fields['last_name'].label = 'Último nome'
         self.fields['last_name'].widget.attrs.update({'id': 'id_sobrenome', 'placeholder': 'Digite seu sobrenome'})
-        
-        # Django UserCreationForm usa 'password' e 'password2'
-        self.fields['password'].widget.attrs.update({'id': 'id_senha_cadastro', 'placeholder': 'Crie uma senha'})
-        self.fields['password2'].label = 'Confirmar Senha' # Nome padrão é 'Password confirmation'
+
+        self.fields['password1'].label = 'Senha'
+        self.fields['password1'].widget.attrs.update({'id': 'id_senha_cadastro', 'placeholder': 'Digite sua senha'})
+
+        self.fields['password2'].label = 'Confirmação de senha'
         self.fields['password2'].widget.attrs.update({'id': 'id_confirmar_senha', 'placeholder': 'Confirme sua senha'})
+        
         
       
 
@@ -107,6 +109,6 @@ class LoginForm(AuthenticationForm):
         super().__init__(*args, **kwargs)
         # Renomeando o label do campo 'username' para 'Email'
         self.fields['username'].label = 'Email'
-        self.fields['username'].widget.attrs.update({'placeholder': 'Seu email'})
+        self.fields['username'].widget.attrs.update({'placeholder': 'Digite seu e-mail', 'id': 'id_email_login'})
         self.fields['password'].label = 'Senha'
-        self.fields['password'].widget.attrs.update({'placeholder': 'Sua senha'})
+        self.fields['password'].widget.attrs.update({'placeholder': 'Digite sua senha', 'id': 'id_senha_login'})

@@ -1,11 +1,11 @@
-<form method="post">
+<form method="post" action="{% url 'account' %}">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="login">
     <div class="input-container">
         <label for="id_email_login">E-mail</label>
         <div class="input-group">
             <span class="material-symbols-rounded icon" aria-hidden="true">mail</span>
-            <input type="email" id="id_email_login" name="email" placeholder="Digite seu e-mail" 
-                    autocomplete="email" required
-                    aria-describedby="erro-email-login" />
+            {{ login_form.username }}
             <span class="material-symbols-rounded icon-check" aria-hidden="true">check_circle</span>
             <span class="material-symbols-rounded icon-error" aria-hidden="true">error</span>
         </div>
@@ -16,8 +16,7 @@
         <label for="id_senha_login">Senha</label>
         <div class="input-group">
             <span class="material-symbols-rounded icon" aria-hidden="true">lock</span>
-            <input type="password" id="id_senha_login" name="senha" placeholder="Digite sua senha" 
-                    autocomplete="current-password" required />
+            {{ login_form.password }}
         </div>
     </div>
 
