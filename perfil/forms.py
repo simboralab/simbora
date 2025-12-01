@@ -47,7 +47,21 @@ class CadastroUsuarioBaseForm(UserCreationForm):
         self.fields['password2'].label = 'Confirmação de senha'
         self.fields['password2'].widget.attrs.update({'id': 'id_confirmar_senha', 'placeholder': 'Confirme sua senha'})
         
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+    
+        # Garante que a verificação só ocorra se o email não estiver vazio
+        if not email:
+            raise forms.ValidationError("O campo Email é obrigatório.")
         
+        # Verifica se já existe um usuário com este e-mail
+        # Usa o mesmo modelo definido no 'Meta'
+        if Usuario.objects.filter(email=email).exists():
+            raise forms.ValidationError(
+                "Este e-mail já está cadastrado. Tente fazer login ou use outro e-mail."
+            )
+
+        return email
       
 
 ## Formulário Completo: Adicionando Data de Nascimento

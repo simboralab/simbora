@@ -18,7 +18,7 @@ def signup_view(request):
         if cadastro_form.is_valid():
             with transaction.atomic():
                 usuario = cadastro_form.save()
-                # Cria a instância de Perfil
+               
                 Perfil.objects.create(
                     usuario=usuario,
                     data_nascimento=cadastro_form.cleaned_data['data_nascimento'],
@@ -33,7 +33,7 @@ def signup_view(request):
     context = {
         'cadastro_form': cadastro_form,
     }
-    # Sugestão: Use um template dedicado, por exemplo, 'perfil/signup.html'
+    
     return render(request, 'perfil/page/signup.html', context)
 
 def signin_view(request):
