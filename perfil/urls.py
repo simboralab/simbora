@@ -6,7 +6,8 @@ from . import views
 # app_name = 'perfil'
 
 urlpatterns = [
-    path('account/', views.account_view,name='account'),
+    path('signup/', views.signup_view, name='signup'),
+    path('signin/', views.signin_view, name='signin'),
     path('sucesso/', views.sucess_view, name='sucesso'),
     path('logout/', views.logout_view, name='logout'),
     path('password_change/', auth_views.PasswordChangeView.as_view(), name='password_change'),
@@ -15,5 +16,5 @@ urlpatterns = [
     path('password_reset_done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
     path('password_reset_confirm/<uidb64>/<token>', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('password_reset_complete/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
-    path('teste/', views.teste_view, name='teste'),
+
 ]

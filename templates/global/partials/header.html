@@ -1,7 +1,8 @@
+{% load static %}
 <header class="hero-header">
       <div class="header-container">
           <a href="index.html" class="logo-link" aria-label="Página Inicial do Simbora">
-              <img src="static/img/logo/marca_verde.png" alt="Simbora" class="logo-img-header">
+              <img src="{% static 'global/img/logo/marca_verde.png'%}" alt="Simbora" class="logo-img-header">
           </a>
 
           <nav class="nav-menu">
@@ -10,11 +11,11 @@
               <a href="quem-somos.html" class="nav-link">Quem somos</a>
               <a href="#" class="nav-link">Contato</a>
               <div class="auth-buttons">
-                  <a href="account.html" class="btn-login">
+                  <a href= "{% url 'signin' %}" class="btn-login">
                       <span class="material-symbols-rounded">login</span>
                       Entrar
                   </a>
-                  <a href="account.html" class="btn-signup">
+                  <a href="{% url 'signup' %}" class="btn-signup">
                       <span class="material-symbols-rounded">person_add</span>
                       Criar conta  
                   </a>

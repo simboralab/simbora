@@ -1,6 +1,5 @@
-<form method="post" action="{% url 'account' %}">
+<form method="post" action="{% url 'signup' %}">
     {% csrf_token %}
-    <input type="hidden" name="action" value="cadastro">
     <div class="row-inputs">
         <div class="input-container">
             <label for="id_nome">Nome</label>

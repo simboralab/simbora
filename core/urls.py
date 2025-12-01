@@ -1,4 +1,9 @@
 from django.urls import path
 
-patterns = [
+# core/urls.py
+# MUDAR ISSO:
+from . import views
+
+urlpatterns = [
+    path('', views.home, name='home'),
 ]

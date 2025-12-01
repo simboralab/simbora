@@ -9,62 +9,53 @@ from perfil.models import Perfil
 from .forms import CadastroCompletoForm, LoginForm
 
 
-def account_view(request):
+def signup_view(request):
     if request.user.is_authenticated:
         return redirect('sucesso') 
 
-    login_form = LoginForm()  
-    cadastro_form = CadastroCompletoForm() 
-
     if request.method == 'POST':
-        action = request.POST.get('action') 
+        cadastro_form = CadastroCompletoForm(request.POST) 
+        if cadastro_form.is_valid():
+            with transaction.atomic():
+                usuario = cadastro_form.save()
+                # Cria a instância de Perfil
+                Perfil.objects.create(
+                    usuario=usuario,
+                    data_nascimento=cadastro_form.cleaned_data['data_nascimento'],
+                    genero=cadastro_form.cleaned_data['genero']
+                )
 
-        if action == 'login':
-            # 1. Processar Login
-            # Cria a instância do formulário de login com request e dados
-            login_form = LoginForm(request, data=request.POST) 
-            if login_form.is_valid():
-                user = login_form.get_user()
-                login(request, user)
-                # Redirecionamento após LOGIN BEM-SUCEDIDO
-                return redirect('sucesso') 
-            else:
-                # Se falhar, a instância 'login_form' já contém os erros.
-                # A mensagem de erro já está sendo adicionada, mas o form
-                # com os erros precisa ser passado para o contexto.
-                messages.error(request, 'Email ou senha inválidos. Por favor, tente novamente.')
-        
-        elif action == 'cadastro':
-            # 2. Processar Cadastro
-            cadastro_form = CadastroCompletoForm(request.POST) # Cria a instância do formulário de cadastro com dados
-            if cadastro_form.is_valid():
-                with transaction.atomic():
-                    usuario = cadastro_form.save()
-                    Perfil.objects.create(
-                        usuario=usuario,
-                        data_nascimento=cadastro_form.cleaned_data['data_nascimento'],
-                        genero=cadastro_form.cleaned_data['genero']
-                    )
+            login(request, usuario)
+            return redirect('sucesso')
+    else:
+        cadastro_form = CadastroCompletoForm() 
 
-                login(request, usuario)
-                # Redirecionamento após CADASTRO BEM-SUCEDIDO
-                return redirect('sucesso')
-            # Se o cadastro falhar, a instância 'cadastro_form' já contém os erros
-            
-        else:
-            messages.error(request, 'Ação desconhecida.')
-
-    # O contexto final usa as instâncias atualizadas (com erros, se houver) ou as instâncias vazias.
     context = {
-        'login_form': login_form,
         'cadastro_form': cadastro_form,
     }
-    return render(request, 'perfil/account.html', context)
+    # Sugestão: Use um template dedicado, por exemplo, 'perfil/signup.html'
+    return render(request, 'perfil/page/signup.html', context)
 
+def signin_view(request):
+    if request.user.is_authenticated:
+        return redirect('sucesso') 
+
+    if request.method == 'POST':
+        login_form = LoginForm(request, data = request.POST) 
+        if login_form.is_valid():
+            usuario = login_form.get_user()
+            login(request, usuario)
+            return redirect('sucesso')
+    else:
+        login_form = LoginForm()        
+    context = {
+        'login_form': login_form,
+    }
+    return render(request, 'perfil/page/signin.html', context)
 
 def sucess_view(request):
     if not request.user.is_authenticated:
-        return redirect('account') 
+        return redirect('signin') 
 
     nome_completo = f"{request.user.first_name} {request.user.last_name}"
     
@@ -77,12 +68,5 @@ def sucess_view(request):
 
 def logout_view(request):
     logout(request)
-    return redirect('account')
+    return redirect('home')
 
-
-def teste_view(request):
-    cadastro_form = CadastroCompletoForm()
-    context = {
-        'cadastro_form': cadastro_form,
-    }
-    return render(request, 'perfil/rotateste.html', context)
