@@ -4,6 +4,316 @@
 
 {% block content %}
     {% include "global/partials/header.html" %}
-        <h1>Em Desenvolvimento...</h1>
+        <!-- Conteúdo Principal -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <h1 class="hero-title">Seu próximo destino começa aqui. <br /> O que vamos fazer hoje?</h1>
+                <div class="hero-search">
+                    <div class="search-wrapper">
+                        <input type="text" class="search-input" placeholder="Buscar eventos, locais ou companhias...">
+                        <button class="search-button">Buscar</button>
+                    </div>
+                    <button class="explore-button">Explorar</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Eventos em Destaque -->
+        <section class="events-section">
+            <div class="events-container">
+                <!-- <h2 class="section-title">Próximos eventos</h2> -->
+                <div class="events-carousel">
+                    <!-- Evento 1 -->
+                    <article class="event-card">
+                        <div class="event-image" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDd-jeX3qbJ3Obutsn2JsaieKE63CiXAm0-3bPHop3viUXjcBfJ4OJ_AlMVZ7c1v78yA1mDdtnfbehkSINcd5GHC1EHc0feeNPpb5jnu3jm2XGyZAP8N9XYxCfxPxVwpxXUp6ea2ug8jKgTj6zD_4kShf3XFeqWGQvliIuMgKy6sD_h4fCucrXIWgzT7BQ8RaafAkV2Jv9gVzBaUZtOh4X0ZVzLUm_I0Eas_78Pe1qaI9JFp50K6DPxSYYeY8k_znm2pgDiJIjEHPk');"></div>
+                        <div class="event-content">
+                            <h3 class="event-title">Festival de Rock Independente</h3>
+                            <div class="event-details">
+                                <div class="event-detail-item">
+                                    <span class="material-symbols-rounded">calendar_today</span>
+                                    <span>Sex, 26 de Dezembro - 20h</span>
+                                </div>
+                                <div class="event-detail-item">
+                                    <span class="material-symbols-rounded">location_on</span>
+                                    <span>Estúdio Central</span>
+                                </div>
+                                <div class="event-detail-item">
+                                    <span class="material-symbols-rounded">group</span>
+                                    <div class="event-avatars">
+                                        <img src="https://avatars.githubusercontent.com/u/128330949?s=40&v=4" alt="Avatar">
+                                        <img src="https://avatars.githubusercontent.com/u/187967201?v=4" alt="Avatar">
+                                        <span class="avatar-count">+5 pessoas</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="event-action-wrapper">
+                                <button class="btn-event-join">
+                                    <span class="material-symbols-rounded">group_add</span>
+                                    Bora!
+                                </button>
+                                <div class="event-action-menu">
+                                    <a href="event-details.html" class="event-action-item">
+                                        <span class="material-symbols-rounded">info</span>
+                                        <span>Saber mais</span>
+                                    </a>
+                                    <button class="event-action-item event-action-join">
+                                        <span class="material-symbols-rounded">check_circle</span>
+                                        <span>Eu vou!</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Evento 2 -->
+                    <article class="event-card">
+                        <div class="event-image" style="background-image: url('https://www.pe.senac.br/wp-content/uploads/2025/09/banner-post-site-volta-ao-mundo-003-1200x565-1.png');"></div>
+                        <div class="event-content">
+                            <h3 class="event-title">Festival Volta ao Mundo</h3>
+                            <div class="event-details">
+                                <div class="event-detail-item">
+                                    <span class="material-symbols-rounded">calendar_today</span>
+                                    <span>Quarta, 25 de Novembro - 12h</span>
+                                </div>
+                                <div class="event-detail-item">
+                                    <span class="material-symbols-rounded">location_on</span>
+                                    <span>Senac PE</span>
+                                </div>
+                                <div class="event-detail-item">
+                                    <span class="material-symbols-rounded">group</span>
+                                    <div class="event-avatars">
+                                        <img src="https://avatars.githubusercontent.com/u/194426218?v=4" alt="Avatar">
+                                        <img src="https://avatars.githubusercontent.com/u/6483341?v=4" alt="Avatar">
+                                        <img src="https://avatars.githubusercontent.com/u/143225752?s=40&v=4" alt="Avatar">
+                                        <span class="avatar-count">+12 pessoas</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="event-action-wrapper">
+                                <button class="btn-event-join">
+                                    <span class="material-symbols-rounded">group_add</span>
+                                    Bora!
+                                </button>
+                                <div class="event-action-menu">
+                                    <a href="event-details.html" class="event-action-item">
+                                        <span class="material-symbols-rounded">info</span>
+                                        <span>Saber mais</span>
+                                    </a>
+                                    <button class="event-action-item event-action-join">
+                                        <span class="material-symbols-rounded">check_circle</span>
+                                        <span>Eu vou!</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                    
+
+                    <!-- Evento 3 -->
+                    <article class="event-card">
+                        <div class="event-image" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB9gkWbHM-W4UGCSYP56fZPUIHb-KXXFIp7P43Bh7O0VG-Id2SkjhXl-b5DixPuQ2_OJ7oL3a0P-tqi_hH412aXuyIcPQ0RNUXxyPmPV-DCbziloJKq7bu9JVkkNuIOjo10Loj6JZHO-IAYQ0ReycWIO8IRNv6-5q-IrLDr_tjSt2AFYQFQhXQOYGAo5sXxV63KMjI3jmdrdF-0i-f1PBCKP7i74zzZExuGAkzDmGwKis1714QuSYTa3Bpds3Zj8TjYUUyU8niWLwg');"></div>
+                        <div class="event-content">
+                            <h3 class="event-title">Feira Gastronômica da Cidade</h3>
+                            <div class="event-details">
+                                <div class="event-detail-item">
+                                    <span class="material-symbols-rounded">calendar_today</span>
+                                    <span>Dom, 28 de Julho - 12h</span>
+                                </div>
+                                <div class="event-detail-item">
+                                    <span class="material-symbols-rounded">location_on</span>
+                                    <span>Parque da Cidade</span>
+                                </div>
+                                <div class="event-detail-item">
+                                    <span class="material-symbols-rounded">group</span>
+                                    <div class="event-avatars">
+                                        <img src="https://avatars.githubusercontent.com/u/194426218?v=4" alt="Avatar">
+                                        <img src="https://avatars.githubusercontent.com/u/236921260?s=40&v=4" alt="Avatar">
+                                        <img src="https://avatars.githubusercontent.com/u/236921598?v=4" alt="Avatar">
+                                        <span class="avatar-count">+11 pessoas</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="event-action-wrapper">
+                                <button class="btn-event-join">
+                                    <span class="material-symbols-rounded">group_add</span>
+                                    Bora!
+                                </button>
+                                <div class="event-action-menu">
+                                    <a href="event-details.html" class="event-action-item">
+                                        <span class="material-symbols-rounded">info</span>
+                                        <span>Saber mais</span>
+                                    </a>
+                                    <button class="event-action-item event-action-join">
+                                        <span class="material-symbols-rounded">check_circle</span>
+                                        <span>Eu vou!</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Evento 4 -->
+                    <article class="event-card">
+                        <div class="event-image" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuATmcEPk27YChfVACM_imKlAXRNeaqrXPfOlQCvZtDEEqTvQZdugc1ldwlo4sgvGDAGnP9k7AfHd5K0DKysWACx6xTxvS4rNmJHp1PFNVXaAJZpjTl96TGJlOhilm4kVdmoe8JFodPDOHeKVTR72M97oz3C7sebSDau7tVgo2UZ3tTJi5UcQHhtmoR1Z9UDRTfdmnkmrSFwatJxpKLPJrFs722hXQlZrsNEualQq8zicht7wNOJmjnLmEKzn6Hmoa-d4w5K_CISq68');"></div>
+                        <div class="event-content">
+                            <h3 class="event-title">Torneio de Vôlei de Praia</h3>
+                            <div class="event-details">
+                                <div class="event-detail-item">
+                                    <span class="material-symbols-rounded">calendar_today</span>
+                                    <span>Dom, 04 de Agosto - 09h</span>
+                                </div>
+                                <div class="event-detail-item">
+                                    <span class="material-symbols-rounded">location_on</span>
+                                    <span>Praia de Copacabana</span>
+                                </div>
+                                <div class="event-detail-item">
+                                    <span class="material-symbols-rounded">group</span>
+                                    <div class="event-avatars">
+                                        <img src="https://avatars.githubusercontent.com/u/128330949?s=40&v=4" alt="Avatar">
+                                        <img src="https://avatars.githubusercontent.com/u/19601448?v=4" alt="Avatar">
+                                        <img src="https://avatars.githubusercontent.com/u/175169535?v=4" alt="Avatar">
+                                        <span class="avatar-count">+8 pessoas</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="event-action-wrapper">
+                                <button class="btn-event-join">
+                                    <span class="material-symbols-rounded">group_add</span>
+                                    Bora!
+                                </button>
+                                <div class="event-action-menu">
+                                    <a href="event-details.html" class="event-action-item">
+                                        <span class="material-symbols-rounded">info</span>
+                                        <span>Saber mais</span>
+                                    </a>
+                                    <button class="event-action-item event-action-join">
+                                        <span class="material-symbols-rounded">check_circle</span>
+                                        <span>Eu vou!</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+                <!-- Seção Comunidade -->
+                <section class="community-section">
+                    <div class="community-container">
+                        <div class="community-content">
+                            <div class="community-info">
+                                <h2 class="community-title">Conecte-se com a Comunidade</h2>
+                                <p class="community-text">Novos membros, grupos locais e muita gente querendo companhia. Sua próxima turma está aqui!</p>
+                                
+                                <div class="community-stats">
+                                    <div class="stat-card">
+                                        <h3 class="stat-title">Novos Membros</h3>
+                                        <div class="stat-avatars">
+                                            <img src="https://avatars.githubusercontent.com/u/187967201?v=4" alt="Membro">
+                                            <img src="https://avatars.githubusercontent.com/u/6483341?v=4" alt="Membro">
+                                            <img src="https://avatars.githubusercontent.com/u/236921598?v=4" alt="Membro">
+                                            <img src="https://avatars.githubusercontent.com/u/175169535?v=4" alt="Membro">
+                                        </div>
+                                        <p class="stat-count">+27 esta semana</p>
+                                    </div>
+                                    
+                                    <div class="stat-card">
+                                        <h3 class="stat-title">Grupos Locais</h3>
+                                        <div class="stat-avatars">
+                                            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrXAtjT0CMkfjeS4WVJbaEAGhFL5i3gEaXX0FCUsOdTa5lEE3Vl3Hbl2pPB1Mlt1dLBFiFNhxGWhIRjRtaLrne9FOeh2F6WX7kPJfKLTBVMZlPLKaTIvJkaNVH19J3U32ul-9Ak9fjhaWR9wF91MAS1usPjohMyf2zfpKVdHl-Y1OBOl0CWQJai3vKiT5fhyGes9Sjubxj8-mn2K1wYeRpFxY1IniYGuWnV4ZLOLo5JFJj49X1Fz1BOVo9-QWGxjmEdm1EobFsErY" alt="Grupo">
+                                            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdoxLPMAgpZNQwwimhbMttBmmqa0E1we7kPdTaTXEMuOAHz5OybQBr5GXnsHZJNnWzp5tUwL7tt-0FQxPwu0G99VaThJzkcbCufMrNHVLId6jK7PId4L8Xa8YM1nWN1TX31ZRs1LXtEHuDmzZhk4i7RDaFvRt0tMM2IVauYdMvYmKJvfmSgCIrA1eyfPvBzv0h8UU006tkcWwHhIe9tPoNizP8tRnMQ6qEZu4FgRByZ2T54JqdptV-ZpjqzYQPDmlrY8_5wzKe4u4" alt="Grupo">
+                                            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJ0ax7zvHvgwAygb9dLWyYFKJvy4L-XzatfNZb56h1A-LNWMa-VaH64PnIygEA1SENgv9T6Vv4u0eeVboa-1AiQX1ZogRkZxbeA-EoRFZXPLqplxHovY7NjQwiHjdVPQTi_IGOkyotwk9vCw8pxMUJrnq1IlxVDcpcpRKKyq4ghcR1D-JbTkZOj-fTsQFJGcD06FKUMfouUt0Whq-65BoafPGOMLeCGIwmLJ76uRRMb0pcAIaR_bny4IkN_FmutoX5ZqwnD6XXIFI" alt="Grupo">
+                                        </div>
+                                        <p class="stat-count">Junte-se à galera!</p>
+                                    </div>
+                                </div>
+                                
+                                <button class="community-button">Explorar Comunidades</button>
+                            </div>
+                            
+                            <div class="community-groups">
+                                <h3 class="groups-title">Grupos buscando Companhia para...</h3>
+                                <div class="groups-list">
+                                    <a href="#" class="group-item">
+                                        <p class="group-name">Trilha no Pico da Bandeira</p>
+                                        <div class="group-progress">
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: 75%"></div>
+                                            </div>
+                                            <p class="progress-text">Faltam 5</p>
+                                        </div>
+                                    </a>
+                                    
+                                    <a href="#" class="group-item">
+                                        <p class="group-name">Grupo de Estudo para Concurso</p>
+                                        <div class="group-progress">
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: 50%"></div>
+                                            </div>
+                                            <p class="progress-text">Faltam 8</p>
+                                        </div>
+                                    </a>
+                                    
+                                    <a href="#" class="group-item">
+                                        <p class="group-name">Futebol de Terça</p>
+                                        <div class="group-progress">
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: 90%"></div>
+                                            </div>
+                                            <p class="progress-text">Faltam 2</p>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+        
+
+        <!-- Categorias -->
+        <section class="categories-section">
+            <div class="categories-container">
+                <a href="#" class="category-item">
+                    <div class="category-icon">
+                        <span class="material-symbols-rounded">sports_soccer</span>
+                    </div>
+                    <h3 class="category-name">Esporte</h3>
+                </a>
+                <a href="#" class="category-item">
+                    <div class="category-icon">
+                        <span class="material-symbols-rounded">celebration</span>
+                    </div>
+                    <h3 class="category-name">Lazer</h3>
+                </a>
+                <a href="#" class="category-item">
+                    <div class="category-icon">
+                        <span class="material-symbols-rounded">palette</span>
+                    </div>
+                    <h3 class="category-name">Cultura</h3>
+                </a>
+                <a href="#" class="category-item">
+                    <div class="category-icon">
+                        <span class="material-symbols-rounded">laptop_mac</span>
+                    </div>
+                    <h3 class="category-name">Tecnologia</h3>
+                </a>
+                <a href="#" class="category-item">
+                    <div class="category-icon">
+                        <span class="material-symbols-rounded">school</span>
+                    </div>
+                    <h3 class="category-name">Educação</h3>
+                </a>
+            </div>
+        </section>
+
+
+
+
+       
+    </main>
     {% include "global/partials/footer.html" %}
 {% endblock content %}
