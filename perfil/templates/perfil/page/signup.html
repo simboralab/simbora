@@ -31,6 +31,13 @@
                 <section class="form-card cadastro-form active" aria-labelledby="cadastro-title">
                     <h1 id="cadastro-title">Crie sua conta</h1>
                     <p>Encontre pessoas que querem ir aos mesmos lugares que você</p>
+ 
+                    {% if messages %}
+                        <div class="message-container">
+                                <div class="message {{ messages.tags }}">{{ messages }}</div>
+                        </div>
+                    {% endif %}
+
                     {% include "perfil/partials/form_cadastro.html" %}                            
                     
                     <div class="form-switch">
