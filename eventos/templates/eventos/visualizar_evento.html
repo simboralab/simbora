@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ evento.nome_evento }}</title>
+</head>
+<body>
+    <h1>{{ evento.nome_evento }}</h1>
+    <p><strong>Descrição:</strong> {{ evento.descricao }}</p>
+    <p><strong>Data início:</strong> {{ evento.data_inicio|date:"d/m/Y H:i" }}</p>
+    <p><strong>Data término:</strong> {{ evento.data_termino|date:"d/m/Y H:i" }}</p>
+    <p><a href="{% url 'eventos:lista_eventos' %}">Voltar para lista</a></p>
+</body>
+</html>
+
