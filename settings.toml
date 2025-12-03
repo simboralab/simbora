@@ -5,6 +5,14 @@ allowed_hosts = ["127.0.0.1", "localhost"]
 language_code = "pt-BR"
 time_zone = "America/Sao_Paulo"
 
+# Email - Configurações públicas
+email_backend = "django.core.mail.backends.smtp.EmailBackend"
+email_host = "smtp.gmail.com"
+email_port = 587
+email_use_tls = true
+email_host_user = "suporte.simbora.app@gmail.com"
+default_from_email = "suporte.simbora.app@gmail.com"
+
 [development]
 # Configurações para desenvolvimento local
 debug = true
@@ -21,4 +29,6 @@ allowed_hosts = ["127.0.0.1", "localhost"]  # Valores padrão para testes locais
 # Configurações para testes
 debug = true
 allowed_hosts = ["testserver"]
+# Para testes, usar console backend (não envia emails reais)
+email_backend = "django.core.mail.backends.console.EmailBackend"
 
