@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'perfil',
     'core',
+    'eventos',
 ]
 
 MIDDLEWARE = [
@@ -118,10 +119,10 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'suporte.simbora.app@gmail.com'
-EMAIL_HOST_PASSWORD = settings.SIMBORA_PASSWORD
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_BACKEND = settings.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = settings.get('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = settings.get('EMAIL_PORT', 587)
+EMAIL_USE_TLS = settings.get('EMAIL_USE_TLS', True)
+EMAIL_HOST_USER = settings.get('EMAIL_HOST_USER', 'suporte.simbora.app@gmail.com')
+EMAIL_HOST_PASSWORD = settings.get('simbora_password', '')  
+DEFAULT_FROM_EMAIL = settings.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)

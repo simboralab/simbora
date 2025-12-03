@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Eventos</title>
+</head>
+<body>
+    <h1>Lista de eventos</h1>
+
+    {% if eventos %}
+        <ul>
+            {% for evento in eventos %}
+                <li>
+                    <a href="{% url 'eventos:visualizar_evento' evento.id %}">
+                        {{ evento.nome_evento }} - {{ evento.data_inicio|date:"d/m/Y H:i" }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Não há eventos cadastrados.</p>
+    {% endif %}
+</body>
+</html>

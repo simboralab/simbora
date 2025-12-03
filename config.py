@@ -33,6 +33,13 @@ settings = Dynaconf(
             len_min=1,
             env=['production'],
         ),
+        Validator(
+            'simbora_password',
+            must_exist=True,
+            len_min=1,
+            env=['development', 'production'],
+            # Não obrigatório em testing pois pode usar console backend
+        ),
     ],
 )
 
