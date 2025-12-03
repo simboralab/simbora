@@ -26,15 +26,42 @@ class CadastroUsuarioBaseForm(UserCreationForm):
     class Meta:
         model = Usuario
    
-        fields = ('email', 'first_name', 'last_name') 
+        fields = ('email', 'first_name', 'last_name','password1', 'password2') 
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Ajustando rótulos dos campos do modelo
+        # Mapeamento dos campos do UserCreationForm para os IDs do seu HTML
         self.fields['email'].label = 'Email'
-        self.fields['first_name'].label = 'Primeiro nome'
-        self.fields['last_name'].label = 'Último nome'
+        self.fields['email'].widget.attrs.update({'id': 'id_email_cadastro', 'placeholder': 'Digite seu e-mail'})
         
+        self.fields['first_name'].label = 'Primeiro nome'
+        self.fields['first_name'].widget.attrs.update({'id': 'id_nome', 'placeholder': 'Digite seu nome'})
+        
+        self.fields['last_name'].label = 'Último nome'
+        self.fields['last_name'].widget.attrs.update({'id': 'id_sobrenome', 'placeholder': 'Digite seu sobrenome'})
+
+        self.fields['password1'].label = 'Senha'
+        self.fields['password1'].widget.attrs.update({'id': 'id_senha_cadastro', 'placeholder': 'Digite sua senha'})
+
+        self.fields['password2'].label = 'Confirmação de senha'
+        self.fields['password2'].widget.attrs.update({'id': 'id_confirmar_senha', 'placeholder': 'Confirme sua senha'})
+        
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+    
+        # Garante que a verificação só ocorra se o email não estiver vazio
+        if not email:
+            raise forms.ValidationError("O campo Email é obrigatório.")
+        
+        # Verifica se já existe um usuário com este e-mail
+        # Usa o mesmo modelo definido no 'Meta'
+        if Usuario.objects.filter(email=email).exists():
+            raise forms.ValidationError(
+                "Este e-mail já está cadastrado. Tente fazer login ou use outro e-mail."
+            )
+
+        return email
       
 
 ## Formulário Completo: Adicionando Data de Nascimento
@@ -96,6 +123,6 @@ class LoginForm(AuthenticationForm):
         super().__init__(*args, **kwargs)
         # Renomeando o label do campo 'username' para 'Email'
         self.fields['username'].label = 'Email'
-        self.fields['username'].widget.attrs.update({'placeholder': 'Seu email'})
+        self.fields['username'].widget.attrs.update({'placeholder': 'Digite seu e-mail', 'id': 'id_email_login'})
         self.fields['password'].label = 'Senha'
-        self.fields['password'].widget.attrs.update({'placeholder': 'Sua senha'})
+        self.fields['password'].widget.attrs.update({'placeholder': 'Digite sua senha', 'id': 'id_senha_login'})

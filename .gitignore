@@ -6,7 +6,7 @@ __pycache__/
 *.pyo
 *.pyd
 *.so
-pycache/
+*.pycache
 
 # Distribution / packaging
 .Python
@@ -97,8 +97,6 @@ docs/_build/
 target/
 
 # Static e media (caso venham a existir)
-static/
-staticfiles/
 media/
 
 # Local settings (adicional)

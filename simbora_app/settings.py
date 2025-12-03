@@ -1,4 +1,5 @@
 from pathlib import Path
+
 from config import settings
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -92,7 +93,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = settings.get('LANGUAGE_CODE', 'pt-BR')
+LANGUAGE_CODE = settings.get('LANGUAGE_CODE', 'pt-br')
 
 TIME_ZONE = settings.get('TIME_ZONE', 'America/Sao_Paulo')
 
@@ -106,6 +107,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'static'
+STATICFILES_DIRS = [
+    BASE_DIR / 'assets',
+]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'

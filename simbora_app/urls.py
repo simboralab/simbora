@@ -21,9 +21,14 @@ from django.urls import include, path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', include('perfil.urls')),
+    path('', include('core.urls')),
     path('perfil/', include('perfil.urls')),
     path('eventos/', include('eventos.urls')),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+handler404 = 'core.views.custom_404_view'

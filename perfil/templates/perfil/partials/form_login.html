@@ -1,0 +1,38 @@
+<form method="post" action="{% url 'signin' %}">
+    {% csrf_token %}
+    <div class="input-container">
+        {% if login_form.non_field_errors %}
+            <div class="alert alert-danger" role="alert">
+                {% for error in login_form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+        <label for="id_email_login">E-mail</label>
+        <div class="input-group">
+            <span class="material-symbols-rounded icon" aria-hidden="true">mail</span>
+            {{ login_form.username }}
+            <span class="material-symbols-rounded icon-check" aria-hidden="true">check_circle</span>
+            <span class="material-symbols-rounded icon-error" aria-hidden="true">error</span>
+        </div>
+        <span id="erro-email-login" class="error-message" role="alert">
+            {% for error in login_form.username.errors %}
+                {{ error }}
+            {% endfor %}
+        </span>
+    </div>
+
+    <div class="input-container">
+        <label for="id_senha_login">Senha</label>
+        <div class="input-group">
+            <span class="material-symbols-rounded icon" aria-hidden="true">lock</span>
+            {{ login_form.password }}
+            {%for error in login_form.password.errors %}
+                <span class="material-symbols-rounded icon-error" aria-hidden="true">error</span>
+            {% endfor %}
+        </div>
+    </div>
+
+
+    <button type="submit" class="btn-primary">ENTRAR</button>
+</form>

@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="{% static 'perfil/css/account.css' %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 {% endblock extra_head %}
-{% block title %}Recuperar senha{% endblock title %}
+{% block title %}Cadastro{% endblock title %}
 
 {% block content %}
     <main id="main-content" class="container cadastro-ativo">
@@ -25,19 +25,25 @@
             </div>
         </section>
         
-        
-   <section class="form-section">
-      <div class="form-wrapper">
+        <section class="form-section">
+            <div class="form-wrapper">
+                <!-- Cadastro -->
+                <section class="form-card cadastro-form active" aria-labelledby="cadastro-title">
+                    <h1 id="cadastro-title">Crie sua conta</h1>
+                    <p>Encontre pessoas que querem ir aos mesmos lugares que você</p>
+ 
 
-        <section class="form-card cadastro-form active" aria-labelledby="cadastro-title">
-            <h1 id="cadastro-title">Redefinição de senha enviada</h1>
-            <p>Nós te enviamos um email com instruções para configurar sua senha, se uma conta existe com o email fornecido. Você receberá a mensagem em breve.</p>
-            <p>Se você não recebeu um email, por favor certifique-se que você forneceu o endereço que você está cadastrado, e verifique sua pasta de spam.</p>
-            <a href= "{% url 'signin' %}" class="btn-signup">
-                <span class="material-symbols-rounded">login</span>
-                Página inicial
-            </a>
-         </div>
-    </section>
-  </main>
+                    {% include "perfil/partials/form_cadastro.html" %}                            
+                    
+                    <div class="form-switch">
+                        <p>
+                            Já possui uma conta?
+                            <a href="{% url 'signin' %}" class = "btn-link">Faça login</a>
+                        </p>
+                    </div>
+                </section>
+            </div>
+        </section>
+            
+    </main>
 {% endblock content %}
