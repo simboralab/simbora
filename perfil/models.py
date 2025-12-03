@@ -144,4 +144,12 @@ class Perfil(models.Model):
         if (hoje.month, hoje.day) < (self.data_nascimento.month, self.data_nascimento.day): #se ainda n fez aniversario este ano, corrige com -1
             idade -= 1
         return idade
+    
+    def __str__(self):
+        """Retorna uma representação legível do perfil"""
+        if self.nome_social:
+            return self.nome_social
+        elif self.usuario:
+            return self.usuario.nome_completo or self.usuario.email
+        return f"Perfil #{self.id}"
 
