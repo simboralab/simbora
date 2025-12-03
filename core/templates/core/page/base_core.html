@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Eventos</title>
+
+    <title>Simbora | {% block title %}{% endblock title %}</title>
+
+    {% include "global/partials/font_links.html" %}
+
+    {% block extra_head %}
+        <link rel="stylesheet" href="{% static 'global/css/main_header.css' %}">
+        <link rel="stylesheet" href="{% static 'global/css/style.css' %}">
+    {% endblock extra_head %}
+    
+
+</head>
+<body>
+    {% include "core/partials/main_header.html" %}
+
+    {% block content %}
+    {% endblock content %}
+
+    {% block extra_js %}
+        <script src="{% static 'global/js/principal.js' %}"></script>
+    {% endblock extra_js %}
+
+    {% include "global/partials/footer.html" %}
+</body>
+</html>
