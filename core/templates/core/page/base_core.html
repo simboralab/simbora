@@ -8,9 +8,12 @@
     <title>Simbora | {% block title %}{% endblock title %}</title>
 
     {% include "global/partials/font_links.html" %}
-    
+
+    {% block extra_head %}
         <link rel="stylesheet" href="{% static 'global/css/main_header.css' %}">
         <link rel="stylesheet" href="{% static 'global/css/style.css' %}">
+    {% endblock extra_head %}
+    
 
 </head>
 <body>

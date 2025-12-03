@@ -1,0 +1,49 @@
+body.has-header {
+  display: block;
+  align-items: normal;
+  justify-content: normal;
+  min-height: auto;
+  padding-top: 0;
+  background-color: var(--cinza-claro);
+}
+
+/* Ajuste de containers comuns */
+.main-header + .container {
+  margin-top: 0;
+}
+
+.main-header ~ .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0;
+  width: 100%;
+  height: auto;
+  display: block;
+  background-color: var(--branco);
+}
+
+.container-erro {
+  margin: 200px 100px;
+  text-align: center;
+}
+
+h1 {
+  font-family: var(--font-heading);
+  font-size: 6rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--azul-principal);
+  margin-bottom: var(--spacing-md);
+  line-height: 1.2;
+}
+
+h3 {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  letter-spacing: -0.03em;
+  color: var(--texto-principal);
+}
+
+p {
+  margin: 20px;
+}
