@@ -1,10 +1,10 @@
-{% extends "global/page/base.html" %}
+{% extends "core/page/base.html" %}
 
 {% block title %}Página Principal{% endblock title %}
 
 {% block content %}
-    {% include "global/partials/header.html" %}
-        <!-- Conteúdo Principal -->
+    {% include "core/partials/header.html" %}
+    <!-- Conteúdo Principal -->
     <main>
         <!-- Hero Section -->
         <section class="hero-section">
@@ -55,7 +55,7 @@
                                     Bora!
                                 </button>
                                 <div class="event-action-menu">
-                                    <a href="event-details.html" class="event-action-item">
+                                    <a href="#" class="event-action-item">
                                         <span class="material-symbols-rounded">info</span>
                                         <span>Saber mais</span>
                                     </a>
@@ -98,7 +98,7 @@
                                     Bora!
                                 </button>
                                 <div class="event-action-menu">
-                                    <a href="event-details.html" class="event-action-item">
+                                    <a href="#" class="event-action-item">
                                         <span class="material-symbols-rounded">info</span>
                                         <span>Saber mais</span>
                                     </a>
@@ -142,7 +142,7 @@
                                     Bora!
                                 </button>
                                 <div class="event-action-menu">
-                                    <a href="event-details.html" class="event-action-item">
+                                    <a href="#" class="event-action-item">
                                         <span class="material-symbols-rounded">info</span>
                                         <span>Saber mais</span>
                                     </a>
@@ -185,7 +185,7 @@
                                     Bora!
                                 </button>
                                 <div class="event-action-menu">
-                                    <a href="event-details.html" class="event-action-item">
+                                    <a href="#" class="event-action-item">
                                         <span class="material-symbols-rounded">info</span>
                                         <span>Saber mais</span>
                                     </a>
@@ -201,78 +201,77 @@
             </div>
         </section>
 
-                <!-- Seção Comunidade -->
-                <section class="community-section">
-                    <div class="community-container">
-                        <div class="community-content">
-                            <div class="community-info">
-                                <h2 class="community-title">Conecte-se com a Comunidade</h2>
-                                <p class="community-text">Novos membros, grupos locais e muita gente querendo companhia. Sua próxima turma está aqui!</p>
-                                
-                                <div class="community-stats">
-                                    <div class="stat-card">
-                                        <h3 class="stat-title">Novos Membros</h3>
-                                        <div class="stat-avatars">
-                                            <img src="https://avatars.githubusercontent.com/u/187967201?v=4" alt="Membro">
-                                            <img src="https://avatars.githubusercontent.com/u/6483341?v=4" alt="Membro">
-                                            <img src="https://avatars.githubusercontent.com/u/236921598?v=4" alt="Membro">
-                                            <img src="https://avatars.githubusercontent.com/u/175169535?v=4" alt="Membro">
-                                        </div>
-                                        <p class="stat-count">+27 esta semana</p>
-                                    </div>
-                                    
-                                    <div class="stat-card">
-                                        <h3 class="stat-title">Grupos Locais</h3>
-                                        <div class="stat-avatars">
-                                            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrXAtjT0CMkfjeS4WVJbaEAGhFL5i3gEaXX0FCUsOdTa5lEE3Vl3Hbl2pPB1Mlt1dLBFiFNhxGWhIRjRtaLrne9FOeh2F6WX7kPJfKLTBVMZlPLKaTIvJkaNVH19J3U32ul-9Ak9fjhaWR9wF91MAS1usPjohMyf2zfpKVdHl-Y1OBOl0CWQJai3vKiT5fhyGes9Sjubxj8-mn2K1wYeRpFxY1IniYGuWnV4ZLOLo5JFJj49X1Fz1BOVo9-QWGxjmEdm1EobFsErY" alt="Grupo">
-                                            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdoxLPMAgpZNQwwimhbMttBmmqa0E1we7kPdTaTXEMuOAHz5OybQBr5GXnsHZJNnWzp5tUwL7tt-0FQxPwu0G99VaThJzkcbCufMrNHVLId6jK7PId4L8Xa8YM1nWN1TX31ZRs1LXtEHuDmzZhk4i7RDaFvRt0tMM2IVauYdMvYmKJvfmSgCIrA1eyfPvBzv0h8UU006tkcWwHhIe9tPoNizP8tRnMQ6qEZu4FgRByZ2T54JqdptV-ZpjqzYQPDmlrY8_5wzKe4u4" alt="Grupo">
-                                            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJ0ax7zvHvgwAygb9dLWyYFKJvy4L-XzatfNZb56h1A-LNWMa-VaH64PnIygEA1SENgv9T6Vv4u0eeVboa-1AiQX1ZogRkZxbeA-EoRFZXPLqplxHovY7NjQwiHjdVPQTi_IGOkyotwk9vCw8pxMUJrnq1IlxVDcpcpRKKyq4ghcR1D-JbTkZOj-fTsQFJGcD06FKUMfouUt0Whq-65BoafPGOMLeCGIwmLJ76uRRMb0pcAIaR_bny4IkN_FmutoX5ZqwnD6XXIFI" alt="Grupo">
-                                        </div>
-                                        <p class="stat-count">Junte-se à galera!</p>
-                                    </div>
+        <!-- Seção Comunidade -->
+        <section class="community-section">
+            <div class="community-container">
+                <div class="community-content">
+                    <div class="community-info">
+                        <h2 class="community-title">Conecte-se com a Comunidade</h2>
+                        <p class="community-text">Novos membros, grupos locais e muita gente querendo companhia. Sua próxima turma está aqui!</p>
+                        
+                        <div class="community-stats">
+                            <div class="stat-card">
+                                <h3 class="stat-title">Novos Membros</h3>
+                                <div class="stat-avatars">
+                                    <img src="https://avatars.githubusercontent.com/u/187967201?v=4" alt="Membro">
+                                    <img src="https://avatars.githubusercontent.com/u/6483341?v=4" alt="Membro">
+                                    <img src="https://avatars.githubusercontent.com/u/236921598?v=4" alt="Membro">
+                                    <img src="https://avatars.githubusercontent.com/u/175169535?v=4" alt="Membro">
                                 </div>
-                                
-                                <button class="community-button">Explorar Comunidades</button>
+                                <p class="stat-count">+27 esta semana</p>
                             </div>
                             
-                            <div class="community-groups">
-                                <h3 class="groups-title">Grupos buscando Companhia para...</h3>
-                                <div class="groups-list">
-                                    <a href="#" class="group-item">
-                                        <p class="group-name">Trilha no Pico da Bandeira</p>
-                                        <div class="group-progress">
-                                            <div class="progress-bar">
-                                                <div class="progress-fill" style="width: 75%"></div>
-                                            </div>
-                                            <p class="progress-text">Faltam 5</p>
-                                        </div>
-                                    </a>
-                                    
-                                    <a href="#" class="group-item">
-                                        <p class="group-name">Grupo de Estudo para Concurso</p>
-                                        <div class="group-progress">
-                                            <div class="progress-bar">
-                                                <div class="progress-fill" style="width: 50%"></div>
-                                            </div>
-                                            <p class="progress-text">Faltam 8</p>
-                                        </div>
-                                    </a>
-                                    
-                                    <a href="#" class="group-item">
-                                        <p class="group-name">Futebol de Terça</p>
-                                        <div class="group-progress">
-                                            <div class="progress-bar">
-                                                <div class="progress-fill" style="width: 90%"></div>
-                                            </div>
-                                            <p class="progress-text">Faltam 2</p>
-                                        </div>
-                                    </a>
+                            <div class="stat-card">
+                                <h3 class="stat-title">Grupos Locais</h3>
+                                <div class="stat-avatars">
+                                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrXAtjT0CMkfjeS4WVJbaEAGhFL5i3gEaXX0FCUsOdTa5lEE3Vl3Hbl2pPB1Mlt1dLBFiFNhxGWhIRjRtaLrne9FOeh2F6WX7kPJfKLTBVMZlPLKaTIvJkaNVH19J3U32ul-9Ak9fjhaWR9wF91MAS1usPjohMyf2zfpKVdHl-Y1OBOl0CWQJai3vKiT5fhyGes9Sjubxj8-mn2K1wYeRpFxY1IniYGuWnV4ZLOLo5JFJj49X1Fz1BOVo9-QWGxjmEdm1EobFsErY" alt="Grupo">
+                                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdoxLPMAgpZNQwwimhbMttBmmqa0E1we7kPdTaTXEMuOAHz5OybQBr5GXnsHZJNnWzp5tUwL7tt-0FQxPwu0G99VaThJzkcbCufMrNHVLId6jK7PId4L8Xa8YM1nWN1TX31ZRs1LXtEHuDmzZhk4i7RDaFvRt0tMM2IVauYdMvYmKJvfmSgCIrA1eyfPvBzv0h8UU006tkcWwHhIe9tPoNizP8tRnMQ6qEZu4FgRByZ2T54JqdptV-ZpjqzYQPDmlrY8_5wzKe4u4" alt="Grupo">
+                                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJ0ax7zvHvgwAygb9dLWyYFKJvy4L-XzatfNZb56h1A-LNWMa-VaH64PnIygEA1SENgv9T6Vv4u0eeVboa-1AiQX1ZogRkZxbeA-EoRFZXPLqplxHovY7NjQwiHjdVPQTi_IGOkyotwk9vCw8pxMUJrnq1IlxVDcpcpRKKyq4ghcR1D-JbTkZOj-fTsQFJGcD06FKUMfouUt0Whq-65BoafPGOMLeCGIwmLJ76uRRMb0pcAIaR_bny4IkN_FmutoX5ZqwnD6XXIFI" alt="Grupo">
                                 </div>
+                                <p class="stat-count">Junte-se à galera!</p>
                             </div>
                         </div>
+                        
+                        <button class="community-button">Explorar Comunidades</button>
                     </div>
-                </section>
-        
+                    
+                    <div class="community-groups">
+                        <h3 class="groups-title">Grupos buscando Companhia para...</h3>
+                        <div class="groups-list">
+                            <a href="#" class="group-item">
+                                <p class="group-name">Trilha no Pico da Bandeira</p>
+                                <div class="group-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 75%"></div>
+                                    </div>
+                                    <p class="progress-text">Faltam 5</p>
+                                </div>
+                            </a>
+                            
+                            <a href="#" class="group-item">
+                                <p class="group-name">Grupo de Estudo para Concurso</p>
+                                <div class="group-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 50%"></div>
+                                    </div>
+                                    <p class="progress-text">Faltam 8</p>
+                                </div>
+                            </a>
+                            
+                            <a href="#" class="group-item">
+                                <p class="group-name">Futebol de Terça</p>
+                                <div class="group-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 90%"></div>
+                                    </div>
+                                    <p class="progress-text">Faltam 2</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <!-- Categorias -->
         <section class="categories-section">
@@ -309,11 +308,6 @@
                 </a>
             </div>
         </section>
-
-
-
-
-       
     </main>
-    {% include "global/partials/footer.html" %}
+    {% include "core/partials/footer.html" %}
 {% endblock content %}
