@@ -2,7 +2,7 @@
 <header class="main-header">
     <div class="header-container">
         <div class="header-logo">
-            <a href="index.html" class="logo-link">
+            <a href="{% url 'home' %}" class="logo-link">
                 <picture>
                     <source media="(max-width: 480px)" srcset="static/img/logo/imagem.png">
                     <img src="{% static 'core/img/logo/marca_azul.png' %}" alt="Simbora" class="logo-img">
@@ -11,8 +11,8 @@
         </div>
 
         <nav class="header-nav">
-            <a href=""{% url 'sucesso' %}" class="nav-link">Início</a>
-            <a href=""{% url 'eventos:lista_eventos' %}" class="nav-link">Explorar</a>
+            <a href="{% url 'home' %}" class="nav-link">Início</a>
+            <a href="{% url 'eventos:lista_eventos' %}" class="nav-link">Explorar</a>
             <a href="create-event.html" class="nav-link">Criar</a>
         </nav>
 

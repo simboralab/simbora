@@ -8,7 +8,7 @@
 
           <nav class="nav-menu">
               <a href="#" class="nav-link">Categorias</a>
-              <a href="#" class="nav-link">Quem somos</a>
+              <a href="{% url 'quem_somos' %}" class="nav-link">Quem somos</a>
               <a href="#" class="nav-link">Contato</a>
               
               {% if user.is_authenticated %}
