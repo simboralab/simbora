@@ -11,8 +11,8 @@
         </div>
 
         <nav class="header-nav">
-            <a href=""{% url 'sucesso' %}" class="nav-link">Início</a>
-            <a href=""{% url 'eventos:lista_eventos' %}" class="nav-link">Explorar</a>
+            <a href="{% url 'sucesso' %}" class="nav-link">Início</a>
+            <a href="{% url 'eventos:lista_eventos' %}" class="nav-link">Explorar</a>
             <a href="create-event.html" class="nav-link">Criar</a>
         </nav>
 
@@ -39,7 +39,7 @@
                 <div class="dropdown-divider"></div>
                 <ul class="dropdown-menu">
                     <li>
-                        <a href="edit-profile.html" class="dropdown-item">
+                        <a href="{% url 'edit_profile' %}" class="dropdown-item">
                             <span class="material-symbols-rounded">person</span>
                             <span>Meu perfil</span>
                         </a>
@@ -72,7 +72,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="dropdown-item logout">
+                        <a href="{% url 'logout' %}" class="dropdown-item logout">
                             <span class="material-symbols-rounded">logout</span>
                             <span>Sair</span>
                         </a>
