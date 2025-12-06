@@ -1,0 +1,334 @@
+:root {
+  /* Cores principais - Paleta Simbora */
+  --azul-principal: #004AAD;
+  --verde-limao: #CCEE52;
+  --laranja: #FA7625;
+  --amarelo: #FFD639;
+  
+  /* Cores de suporte */
+  --branco: #FFFFFF;
+  --cinza-claro: #F5F7FA;
+  --cinza-medio: #A0AEC0;
+  --cinza-escuro: #4A5568;
+  --texto-principal: #2D3748;
+  
+  /* Tipografia - Roboto Condensed + Poppins */
+  --font-heading: 'Roboto Condensed', sans-serif;
+  --font-body: 'Poppins', sans-serif;
+  --font-family: var(--font-body); /* Fallback padrão */
+  --font-size-base: 16px;
+  --font-size-small: 14px;
+  --font-size-title: 32px;
+  --font-size-subtitle: 18px;
+
+}
+
+.nav-quem-somos {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  max-width: 1280px;
+  margin: 6px auto 5px auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+.nav-quem-somos .nav-logo img {
+  height: clamp(28px, 6.5vw, 70px);
+  width: auto;
+  display: block;
+  object-fit: contain;
+  /* pequeno ajuste para separar do bloco de links */
+  margin-right: 8px;
+}
+.nav-quem-somos .nav-logo { display: flex; align-items: center; }
+.nav-quem-somos .nav-links {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+}
+.nav-quem-somos .nav-links a {
+  position: relative;
+  color: var(--branco);
+  text-decoration: none;
+  padding: 12px 0 18px 0;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  transition: color 240ms ease;
+}
+.nav-quem-somos .nav-links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  bottom: 2px;
+  background: var(--laranja);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 300ms cubic-bezier(.22,1,.36,1);
+}
+.nav-quem-somos .nav-links a::before {
+  /* pequeno ponto indicador */
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--laranja);
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+.nav-quem-somos .nav-links a:hover::after,
+.nav-quem-somos .nav-links a:hover::before {
+  transform: scaleX(1);
+  opacity: 1;
+}
+.nav-quem-somos .nav-links a.ativo::after,
+.nav-quem-somos .nav-links a.ativo::before {
+  transform: scaleX(1);
+  opacity: 1;
+}
+
+/* Quem Somos - estilos específicos */
+.quem-somos-secao {
+  max-width: 1200px;
+  margin: 24px auto;
+  padding: clamp(40px, 6vw, 100px) 28px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(249,251,255,0.98));
+  border-radius: 14px;
+  box-shadow: 0 18px 48px rgba(13,38,76,0.06);
+}
+.quem-somos-secao h1 {
+  font-family: var(--font-heading);
+	margin: 0 0 32px 0;
+}
+.quem-somos-secao .descricao {
+  font-family: var(--font-body);
+	color: #555;
+	margin-bottom: 30px;
+}
+
+/* Seção sobre nós: bloco de texto separado acima das fotos */
+.sobre-nos {
+  max-width: 980px;
+  margin-bottom: 120px;
+  color: var(--texto-principal);
+}
+.sobre-nos h1 { margin-bottom: 8px; }
+.sobre-nos .descricao { font-size: 1.05rem; line-height: 1.5; }
+
+/* Bloco de subtítulo e links das equipes */
+.equipes-bloco {
+  max-width: 980px;
+  margin: 0 auto 32px;
+  padding: 16px 20px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(249,251,255,0.98));
+  border: 1px solid rgba(0,74,173,0.06);
+  box-shadow: 0 8px 24px rgba(13,38,76,0.06);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.equipes-bloco h2 {
+  font-family: var(--font-heading);
+  font-size: calc(var(--font-size-subtitle) + 2px);
+  color: var(--texto-principal);
+  margin: 0;
+}
+.links-equipes {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.links-equipes a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: var(--font-size-small);
+  color: var(--azul-principal);
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,74,173,0.08);
+  background: transparent;
+  transition: transform 200ms ease, background-color 200ms ease, box-shadow 200ms ease;
+  font-weight: 600;
+}
+.links-equipes a:hover,
+.links-equipes a:focus {
+  background: rgba(0, 74, 173, 0.06);
+  color: var(--laranja);
+  outline: none;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 720px) {
+  .equipes-bloco { flex-direction: column; align-items: flex-start; }
+  .equipes-bloco h2 { margin-bottom: 8px; }
+}
+
+/* estado ativo do link da equipe */
+.links-equipes a.ativo-equipe {
+  background: linear-gradient(90deg, rgba(250,118,37,0.12), rgba(204,238,82,0.08));
+  border-color: var(--laranja);
+  color: var(--laranja);
+  font-weight: 800;
+  box-shadow: 0 10px 24px rgba(250,118,37,0.08);
+}
+
+/* esconder membros filtrados (usar transição mais suave se preferir) */
+.membro-equipe.escondido {
+  display: none !important;
+}
+
+@media (max-width: 720px) {
+  .nav-quem-somos { padding: 0 12px; }
+  .nav-quem-somos .nav-links { gap: 14px; }
+  .nav-quem-somos .nav-links a { padding-bottom: 14px; font-size: 0.95rem; }
+  .nav-quem-somos .nav-logo img { height: 28px; }
+}
+
+.grade-equipe {
+	display: flex;
+	gap: 30px;
+	/* alinhar ao início e controlar espaçamento pelas gaps e padding lateral */
+	justify-content: flex-start;
+	flex-wrap: wrap;
+	box-sizing: border-box;
+	max-width: 1200px; /* largura máxima da grade para manter colunas legíveis */
+ 	margin: 0 auto; /* centraliza a grade dentro do container */
+ 	padding: 0 40px; /* espaçamento das laterais solicitado */
+}
+
+/* garantir espaçamento inferior para que o footer não fique colado */
+.grade-equipe { margin-bottom: 56px; }
+.membro-equipe {
+	width: calc(25% - 22.5px);
+	min-width: 220px;
+}
+.membro-equipe .envoltura-foto {
+	position: relative;
+	overflow: hidden;
+	border-radius: 3px;
+	background: #f2f2f2;
+	perspective: 1000px; /* permite efeito 3D para as rotações em Y */
+}
+.membro-equipe .foto {
+	display: block;
+	width: 100%;
+	height: 320px;
+	object-fit: cover;
+	filter: grayscale(100%);
+	transition: filter 350ms ease, transform 350ms ease;
+	transform-origin: center center;
+}
+.membro-equipe .sobreposicao-gif {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	opacity: 0;
+	transition: opacity 300ms ease;
+	pointer-events: none;
+	transform-origin: left center; 
+	backface-visibility: hidden;
+	transform-style: preserve-3d;
+}
+
+/* Hover / focus effects */
+.membro-equipe:hover .foto,
+.membro-equipe:focus-within .foto,
+.envoltura-foto:focus .foto {
+	filter: none;
+	transform: scale(1.02);
+}
+.membro-equipe.mostrando .sobreposicao-gif,
+.membro-equipe:hover .sobreposicao-gif,
+.membro-equipe:focus-within .sobreposicao-gif {
+	opacity: 1;
+}
+
+/* Animação de rotação 3D (da esquerda para a direita) aplicada ao GIF quando visível */
+@keyframes girarY {
+	from {
+		transform: rotateY(-90deg);
+		opacity: 0;
+	}
+	to {
+		transform: rotateY(0deg);
+		opacity: 1;
+	}
+}
+
+.membro-equipe.mostrando .sobreposicao-gif,
+.membro-equipe:hover .sobreposicao-gif,
+.membro-equipe:focus-within .sobreposicao-gif {
+	will-change: transform, opacity;
+	transform-origin: left center;
+	/* rotação da esquerda para a direita ao aparecer */
+	animation: girarY 1000ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.membro-equipe .informacoes {
+	padding: 12px 6px;
+	position: relative;
+}
+.membro-equipe h3 {
+	margin: 0 0 6px 0;
+	font-size: 1.05rem;
+}
+.membro-equipe p { margin: 0; color: #444; }
+
+/* Link do LinkedIn */
+.membro-equipe .linkedin-link {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	margin-top: 8px;
+	padding: 6px;
+	border-radius: 4px;
+	transition: background-color 200ms ease, transform 200ms ease;
+	text-decoration: none;
+	color: #0077b5; /* Cor oficial do LinkedIn */
+}
+
+.membro-equipe .linkedin-link:hover,
+.membro-equipe .linkedin-link:focus {
+	background-color: rgba(0, 119, 181, 0.1);
+	transform: translateY(-2px);
+	outline: none;
+}
+
+.membro-equipe .linkedin-icon {
+	width: 20px;
+	height: 20px;
+	fill: #0077b5;
+	transition: fill 200ms ease, transform 200ms ease;
+}
+
+.membro-equipe .linkedin-link:hover .linkedin-icon,
+.membro-equipe .linkedin-link:focus .linkedin-icon {
+	fill: #005885; /* Cor mais escura no hover */
+	transform: scale(1.1);
+}
+
+
+/* Responsive */
+@media (max-width: 900px) {
+	.membro-equipe { width: calc(50% - 15px); }
+}
+@media (max-width: 520px) {
+	.membro-equipe { width: 100%; }
+	.membro-equipe .foto { height: 260px; }
+}
+

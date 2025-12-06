@@ -7,10 +7,10 @@
     
     <title>Simbora | {% block title %}{% endblock title %}</title>
     
-    {% include "global/partials/font_links.html" %}
+    {% include "core/partials/font_links.html" %}
     
-        <link rel="stylesheet" href="{% static 'global/css/style.css' %}">
-        <link rel="stylesheet" href="{% static 'global/css/principal.css' %}">
+    <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'core/css/principal.css' %}">
         
     {% block extra_head %}
     {% endblock extra_head %}
@@ -22,8 +22,8 @@
     {% endblock content %}
 
     {% block extra_js %}
-    
-        <script src="{% static 'global/js/validation.js' %}"></script>
+        <script src="{% static 'core/js/validation.js' %}"></script>
+        <script src="{% static 'core/js/principal.js' %}"></script>
     {% endblock extra_js %}
 
 </body>

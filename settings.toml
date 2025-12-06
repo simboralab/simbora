@@ -27,7 +27,7 @@ allowed_hosts = ["127.0.0.1", "localhost"]  # Valores padrão para testes locais
 
 [testing]
 # Configurações para testes
-debug = true
+debug = false
 allowed_hosts = ["testserver"]
 # Para testes, usar console backend (não envia emails reais)
 email_backend = "django.core.mail.backends.console.EmailBackend"

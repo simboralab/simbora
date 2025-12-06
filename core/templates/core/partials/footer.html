@@ -3,14 +3,14 @@
     <div class="footer-container">
       <div class="footer-content">
         <div class="footer-logo-section">
-          <img src="{% static 'global/img/logo/marca_verde.png' %}" alt="Simbora" class="footer-logo-img">
+          <img src="{% static 'core/img/logo/marca_verde.png' %}" alt="Simbora" class="footer-logo-img">
           <p>Conectando pessoas aos melhores rolês da cidade.</p>
         </div>
         <div class="footer-nav">
           <h4>Explorar</h4>
-          <a href="index.html">Início</a>
+          <a href="{% url 'home' %}">Início</a>
           <a href="#">Buscar Eventos</a>
-          <a href="create-event.html">Criar Evento</a>
+          <a href="#">Criar Evento</a>
         </div>
         <div class="footer-nav">
           <h4>Suporte</h4>
@@ -31,3 +31,4 @@
       </div>
     </div>
 </footer>
+
