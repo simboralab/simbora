@@ -308,16 +308,39 @@ class Eventos(models.Model):
                 })
         
         # TODO: Validar que minimo_participantes <= maximo_participantes
+        if (self.minimo_participantes is not None and 
+            self.maximo_participantes is not None):
+            if self.minimo_participantes > self.maximo_participantes:
+                raise ValidationError({
+                    'minimo_participantes': 'O número mínimo de participantes não pode ser maior que o máximo.'
+                })
 
         # TODO: Validar que data_encontro (se informada) não é posterior ao início
+        if self.data_encontro and self.data_inicio:
+            if self.data_encontro > self.data_inicio:
+                raise ValidationError({
+                    'data_encontro': 'A data do encontro não pode ser posterior à data de início do evento.'
+                })
         
         # TODO: Validar que eventos ativos não podem ser criados no passado
+        if self.status == 'ATIVO' and self.data_inicio:
+            if self.data_inicio < timezone.now():
+                raise ValidationError({
+                    'data_inicio': 'Eventos ativos não podem ter data de início no passado.'
+                })
 
         # TODO: Eventos ativos/concluidos devem ter organizador
         # Justificativa: null=True permite histórico, mas evento novo precisa de organizador
+        if self.status in ['ATIVO', 'FINALIZADO']:
+            if self.organizador is None:
+                raise ValidationError({
+                    'organizador': 'Eventos ativos ou finalizados devem ter um organizador definido.'
+                })
         
         # TODO: Eventos devem ter endereço OU local_encontro
         # Justificativa: Participantes precisam saber onde ir
+        if self.endereco is None and not self.local_encontro:
+            raise ValidationError('O evento deve ter um endereço definido ou um local de encontro informado.')
 
    
     
