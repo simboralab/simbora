@@ -1,0 +1,568 @@
+/* =============================================
+   CRIAR EVENTO - ESTILOS ESPECÍFICOS
+   ============================================= */
+
+body.has-header {
+  display: block;
+  align-items: normal;
+  justify-content: normal;
+  min-height: auto;
+  padding-top: 0;
+  background-color: var(--cinza-claro);
+  overflow-x: hidden;
+}
+
+/* Container main específico para create-event - quando há header antes */
+.main-header ~ main.container {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: transparent;
+  padding: 40px var(--spacing-md);
+  max-width: 1000px;
+  margin: 0 auto;
+  position: static;
+  overflow: visible;
+}
+
+/* Ajuste do container após header */
+.main-header + main.container {
+  margin-top: 0;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+/* Wrapper do Formulário */
+.form-wrapper-create {
+  background: var(--branco);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Títulos - específicos para create-event */
+.form-wrapper-create h1 {
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--azul-principal);
+  margin-bottom: 32px;
+  text-align: center;
+  letter-spacing: -0.03em;
+}
+
+.form-wrapper-create h2 {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--texto-principal);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Seções do formulário - específico para create-event */
+.form-wrapper-create .form-section {
+  margin-bottom: 32px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--cinza-claro);
+  width: 100%;
+  height: auto;
+  display: block;
+  background: transparent;
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 0;
+  overflow: visible;
+}
+
+.form-wrapper-create .form-section.no-border {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 20px;
+}
+
+/* Grupos de campos */
+.form-wrapper-create .form-group {
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.form-wrapper-create label {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--texto-principal);
+  margin-bottom: 8px;
+}
+
+/* Layout de colunas */
+.date-time,
+.address-group {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+}
+
+.date-time .form-group,
+.address-group .form-group {
+  flex: 1;
+}
+
+.flex-2 {
+  flex: 2;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+/* Inputs com ícones (Reutilizando e adaptando estilos do style.css) */
+.form-wrapper-create .input-group {
+  display: flex;
+  align-items: center;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 16px;
+  gap: 12px;
+  transition: all var(--transition);
+  width: 100%;
+}
+
+.form-wrapper-create .input-group:focus-within {
+  border-color: var(--azul-principal);
+  background: var(--branco);
+  box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.1);
+}
+
+.form-wrapper-create .input-group .icon {
+  color: var(--cinza-medio);
+  font-size: 22px;
+  flex-shrink: 0;
+  transition: color var(--transition);
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.form-wrapper-create .input-group:focus-within .icon {
+  color: var(--azul-principal);
+  font-variation-settings: "FILL" 1;
+}
+
+.form-wrapper-create .input-group input,
+.form-wrapper-create .input-group select {
+  border: none;
+  outline: none;
+  background: transparent;
+  flex: 1;
+  font-size: 1rem;
+  color: var(--texto-principal);
+  font-family: var(--font-body);
+  font-weight: 400;
+  width: 100%;
+}
+
+.form-wrapper-create .input-group input::placeholder {
+  color: var(--cinza-medio);
+}
+
+/* Estilização específica para Select */
+.form-wrapper-create .input-group select {
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 20px;
+}
+
+/* Textarea */
+.form-wrapper-create .textarea-group {
+  align-items: flex-start;
+  padding: 16px;
+}
+
+.form-wrapper-create textarea {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--texto-principal);
+}
+
+/* Opcional */
+.form-wrapper-create .optional {
+  font-size: 0.85rem;
+  color: var(--cinza-medio);
+  font-weight: 400;
+  margin-left: 8px;
+  font-family: var(--font-body);
+}
+
+/* Texto de ajuda e disclaimer - movidos para style.css */
+
+/* Upload de Imagem */
+.cover-upload-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+  align-items: start;
+}
+
+.image-upload-container {
+  position: relative;
+  width: 100%;
+}
+
+.file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.file-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 50px 30px;
+  border: 2px dashed var(--cinza-medio);
+  border-radius: var(--radius-md);
+  background: var(--cinza-claro);
+  cursor: pointer;
+  transition: all var(--transition);
+  text-align: center;
+  min-height: 220px;
+}
+
+.file-label:hover {
+  border-color: var(--azul-principal);
+  background: rgba(0, 74, 173, 0.05);
+}
+
+.file-label:active {
+  transform: scale(0.98);
+}
+
+.upload-icon {
+  font-size: 48px;
+  color: var(--cinza-medio);
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  transition: color var(--transition);
+}
+
+.file-label:hover .upload-icon {
+  color: var(--azul-principal);
+  font-variation-settings: "FILL" 1;
+}
+
+.file-label-text {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--texto-principal);
+}
+
+.file-label-hint {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  color: var(--cinza-medio);
+  font-weight: 400;
+}
+
+/* Preview da Imagem */
+.image-preview {
+  position: relative;
+  width: 100%;
+  margin-top: 16px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 2px solid var(--azul-principal);
+  box-shadow: 0 4px 12px rgba(0, 74, 173, 0.15);
+}
+
+.image-preview img {
+  width: 100%;
+  height: auto;
+  display: block;
+  max-height: 400px;
+  object-fit: cover;
+}
+
+.remove-image-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid var(--laranja);
+  color: var(--laranja);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  padding: 0;
+}
+
+.remove-image-btn:hover {
+  background: var(--laranja);
+  color: var(--branco);
+  transform: scale(1.1);
+}
+
+.remove-image-btn .material-symbols-rounded {
+  font-size: 24px;
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+/* Informações da capa */
+.cover-upload-info {
+  padding: var(--spacing-sm);
+  background: rgba(0, 74, 173, 0.03);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--azul-principal);
+}
+
+.cover-upload-info .info-title {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--azul-principal);
+  margin-bottom: 10px;
+  margin-top: 0;
+}
+
+.cover-upload-info .info-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cover-upload-info .info-list li {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--texto-principal);
+  line-height: 1.5;
+  margin-bottom: 6px;
+  padding-left: 0;
+}
+
+.cover-upload-info .info-list li:last-child {
+  margin-bottom: 0;
+}
+
+.cover-upload-info .info-list li strong {
+  color: var(--azul-principal);
+  font-weight: 600;
+}
+
+/* Link do template */
+.template-link-container {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(0, 74, 173, 0.1);
+  text-align: center;
+}
+
+.template-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--azul-principal);
+  color: var(--branco);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+
+.template-link:hover {
+  background: var(--laranja);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(250, 118, 37, 0.3);
+}
+
+.template-link .material-symbols-rounded {
+  font-size: 20px;
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.template-link .material-symbols-rounded:last-child {
+  font-size: 18px;
+  margin-left: auto;
+}
+
+/* Informações da capa */
+.cover-upload-info {
+  padding: var(--spacing-sm);
+  background: rgba(0, 74, 173, 0.03);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--azul-principal);
+}
+
+.cover-upload-info .info-title {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--azul-principal);
+  margin-bottom: 10px;
+  margin-top: 0;
+}
+
+.cover-upload-info .info-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cover-upload-info .info-list li {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--texto-principal);
+  line-height: 1.5;
+  margin-bottom: 6px;
+  padding-left: 0;
+}
+
+.cover-upload-info .info-list li:last-child {
+  margin-bottom: 0;
+}
+
+.cover-upload-info .info-list li strong {
+  color: var(--azul-principal);
+  font-weight: 600;
+}
+
+/* Link do template */
+.template-link-container {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(0, 74, 173, 0.1);
+  text-align: center;
+}
+
+.template-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--azul-principal);
+  color: var(--branco);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+
+.template-link:hover {
+  background: var(--laranja);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(250, 118, 37, 0.3);
+}
+
+.template-link .material-symbols-rounded {
+  font-size: 20px;
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.template-link .material-symbols-rounded:last-child {
+  font-size: 18px;
+  margin-left: auto;
+}
+
+/* Botão de envio específico */
+.form-wrapper-create .btn-primary {
+  width: auto;
+  min-width: 280px;
+  margin: 0;
+  background-color: var(--verde-limao);
+  color: var(--azul-principal);
+  border-radius: 50px;
+  box-shadow: 0 4px 16px rgba(204, 238, 82, 0.35);
+  padding: 18px 48px;
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition);
+  display: inline-block;
+}
+
+.form-wrapper-create .btn-primary:hover {
+  background-color: var(--laranja);
+  color: var(--branco);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(250, 118, 37, 0.3);
+}
+
+/* =============================================
+   RESPONSIVIDADE
+   ============================================= */
+
+@media (max-width: 768px) {
+  .main-header ~ main.container {
+    padding: 20px var(--spacing-sm);
+  }
+
+  .form-wrapper-create {
+    padding: 24px;
+  }
+
+  .form-wrapper-create h1 {
+    font-size: 2rem;
+  }
+
+  .cover-upload-wrapper {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+  }
+
+  .date-time,
+  .address-group {
+    flex-direction: column;
+    gap: 0;
+  }
+}
+
+@media (max-width: 550px) {
+  .form-wrapper-create {
+    padding: 20px;
+    border-radius: 16px;
+  }
+
+  .form-wrapper-create h1 {
+    font-size: 1.75rem;
+  }
+
+  .form-wrapper-create h2 {
+    font-size: 1.25rem;
+  }
+}

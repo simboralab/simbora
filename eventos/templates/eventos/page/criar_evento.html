@@ -1,0 +1,320 @@
+{% extends "core/page/base_auth.html" %}
+{% load static %}
+{% block title %}Criar Evento{% endblock %}
+{% block extra_head %}
+    {{block.super}}
+    <link rel="stylesheet" href="{% static 'eventos/css/criar_eventos.css' %}">
+{% endblock extra_head %}
+{% block content %}
+    <main class="container">
+            <div class="form-wrapper-create">
+                <h1>Organizar rolê</h1>
+
+                <form>
+                    <section class="form-section">
+                        <h2>Informações gerais</h2>
+                        <div class="form-group">
+                            <label for="event-name">Nome do evento</label>
+                            <div class="input-group">
+                                <span class="material-symbols-rounded icon">celebration</span>
+                                <input type="text" id="event-name" name="event_name" placeholder="Ex: Correr na praia"
+                                    required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="category">Categoria</label>
+                            <div class="input-group">
+                                <span class="material-symbols-rounded icon">category</span>
+                                <select id="category" name="category" required>
+                                    <option value="" selected disabled>Selecione uma categoria</option>
+                                    <option value="reuniao">Reunião</option>
+                                    <option value="festa">Festa</option>
+                                    <option value="encontro">Encontro</option>
+                                    <option value="esporte">Esporte</option>
+                                    <option value="cultura">Cultura</option>
+                                    <option value="musica">Música</option>
+                                    <option value="gastronomia">Gastronomia</option>
+                                    <option value="outros">Outros</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Descrição</label>
+                            <div class="input-group textarea-group">
+                                <textarea id="description" name="description"
+                                    placeholder="Adicione mais detalhes sobre o seu evento aqui..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="whatsapp-link">Grupo do WhatsApp</label>
+                            <div class="input-group">
+                                <span class="material-symbols-rounded icon">chat</span>
+                                <input type="url" id="whatsapp-link" name="whatsapp_link" 
+                                    placeholder="https://chat.whatsapp.com/..." 
+                                    pattern="https://chat\.whatsapp\.com/.+" required>
+                            </div>
+                            <p class="field-help">Crie um grupo no WhatsApp e cole o link aqui para que os participantes possam se conectar.</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tags-input">Tags</label>
+                            <div class="tags-container">
+                                <div class="input-group">
+                                    <span class="material-symbols-rounded icon">label</span>
+                                    <input type="text" id="tags-input" name="tags_input" 
+                                        placeholder="Digite uma tag e pressione Enter" 
+                                        autocomplete="off">
+                                </div>
+                                <div class="tags-list" id="tags-list"></div>
+                                <p class="field-help">Adicione tags para ajudar outros usuários a encontrar seu evento. Ex: música, ao ar livre, gratuito</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="form-section">
+                        <h2>Data e Horário</h2>
+                        <div class="date-time">
+                            <div class="form-group">
+                                <label for="start-date">Data de Início</label>
+                                <div class="input-group">
+                                    <span class="material-symbols-rounded icon">calendar_today</span>
+                                    <input type="date" id="start-date" name="start_date" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="start-time">Hora de Início</label>
+                                <div class="input-group">
+                                    <span class="material-symbols-rounded icon">schedule</span>
+                                    <input type="time" id="start-time" name="start_time" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="date-time">
+                            <div class="form-group">
+                                <label for="end-date">Data de Término</label>
+                                <div class="input-group">
+                                    <span class="material-symbols-rounded icon">event</span>
+                                    <input type="date" id="end-date" name="end_date" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="end-time">Hora de Término</label>
+                                <div class="input-group">
+                                    <span class="material-symbols-rounded icon">schedule</span>
+                                    <input type="time" id="end-time" name="end_time" required>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="form-section">
+                        <h2>Endereço</h2>
+                        <div class="form-group">
+                            <label for="location-name">Nome do local</label>
+                            <div class="input-group">
+                                <span class="material-symbols-rounded icon">store</span>
+                                <input type="text" id="location-name" name="location_name" placeholder="Ex: Orla de Olinda"
+                                    required>
+                            </div>
+                        </div>
+
+                        <div class="address-group">
+                            <div class="form-group flex-2">
+                                <label for="address">Endereço</label>
+                                <div class="input-group">
+                                    <span class="material-symbols-rounded icon">location_on</span>
+                                    <input type="text" id="address" name="address" placeholder="Ex: Av. Paulista" required>
+                                </div>
+                            </div>
+                            <div class="form-group flex-1">
+                                <label for="number">Número</label>
+                                <div class="input-group">
+                                    <span class="material-symbols-rounded icon">home_pin</span>
+                                    <input type="number" id="number" name="number" placeholder="1000" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="address-group">
+                            <div class="form-group">
+                                <label for="cep">CEP</label>
+                                <div class="input-group">
+                                    <span class="material-symbols-rounded icon">markunread_mailbox</span>
+                                    <input type="text" id="cep" name="cep" placeholder="00000-000" pattern="\d{5}-\d{3}"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="neighborhood">Bairro</label>
+                                <div class="input-group">
+                                    <span class="material-symbols-rounded icon">map</span>
+                                    <input type="text" id="neighborhood" name="neighborhood" placeholder="Bela Vista"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="city">Cidade</label>
+                                <div class="input-group">
+                                    <span class="material-symbols-rounded icon">location_city</span>
+                                    <input type="text" id="city" name="city" placeholder="São Paulo" required>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="form-section">
+                        <h2>Ponto de encontro <span class="optional">(OPCIONAL)</span></h2>
+                        <div class="form-group">
+                            <label for="meeting-point-name">Nome do ponto de encontro</label>
+                            <div class="input-group">
+                                <span class="material-symbols-rounded icon">place</span>
+                                <input type="text" id="meeting-point-name" name="meeting_point_name" 
+                                    placeholder="Ex: Portão principal do shopping">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="meeting-point-address">Endereço do ponto de encontro</label>
+                            <div class="input-group">
+                                <span class="material-symbols-rounded icon">location_on</span>
+                                <input type="text" id="meeting-point-address" name="meeting_point_address" 
+                                    placeholder="Ex: Av. Boa Viagem, 1000 - Boa Viagem">
+                            </div>
+                        </div>
+
+                        <div class="date-time">
+                            <div class="form-group">
+                                <label for="meeting-point-date">Data do encontro</label>
+                                <div class="input-group">
+                                    <span class="material-symbols-rounded icon">calendar_today</span>
+                                    <input type="date" id="meeting-point-date" name="meeting_point_date">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="meeting-point-time">Horário do encontro</label>
+                                <div class="input-group">
+                                    <span class="material-symbols-rounded icon">schedule</span>
+                                    <input type="time" id="meeting-point-time" name="meeting_point_time">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="meeting-point-description">Descrição do ponto de encontro</label>
+                            <div class="input-group textarea-group">
+                                <textarea id="meeting-point-description" name="meeting_point_description"
+                                    placeholder="Ex: Vou estar com uma camisa amarela. Nos encontraremos no portão principal 1 hora antes do evento começar."></textarea>
+                            </div>
+                            <p class="field-help">Adicione informações que ajudem os participantes a te encontrar, como roupas que você estará usando, pontos de referência, etc.</p>
+                        </div>
+                    </section>
+
+                    <section class="form-section">
+                        <h2>Informações de membro</h2>
+                        <div class="address-group">
+                            <div class="form-group">
+                                <label for="min-people">Mínimo de pessoas</label>
+                                <div class="input-group">
+                                    <span class="material-symbols-rounded icon">group</span>
+                                    <input type="number" id="min-people" name="min_people" placeholder="2" min="1" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="max-people">Máximo de pessoas</label>
+                                <div class="input-group">
+                                    <span class="material-symbols-rounded icon">groups</span>
+                                    <input type="number" id="max-people" name="max_people" placeholder="10" min="1" required>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="form-section">
+                        <h2>Foto de divulgação <span class="optional">(OPCIONAL)</span></h2>
+                        <div class="form-group">
+                            <label for="cover-image">Imagem de capa/banner</label>
+                            <div class="cover-upload-wrapper">
+                                <div class="image-upload-container">
+                                <input type="file" id="cover-image" name="cover_image" accept="image/jpeg,image/jpg,image/png" class="file-input">
+                                <label for="cover-image" class="file-label">
+                                    <span class="material-symbols-rounded upload-icon">image</span>
+                                    <span class="file-label-text">Clique para selecionar ou arraste uma imagem</span>
+                                    <span class="file-label-hint">JPEG ou PNG</span>
+                                </label>
+                                    <div class="image-preview" id="image-preview" style="display: none;">
+                                        <img id="preview-img" src="" alt="Preview da imagem">
+                                        <button type="button" class="remove-image-btn" id="remove-image">
+                                            <span class="material-symbols-rounded">close</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="cover-upload-info">
+                                    <p class="info-title">Especificações da imagem:</p>
+                                    <ul class="info-list">
+                                        <li>A dimensão recomendada é de <strong>1600 x 838</strong></li>
+                                        <li>Formato <strong>JPEG ou PNG</strong> de no máximo <strong>2MB</strong></li>
+                                        <li>Imagens com dimensões diferentes serão redimensionadas</li>
+                                    </ul>
+                                    <div class="template-link-container">
+                                        <a href="https://www.canva.com/create/facebook-event-cover/" target="_blank" rel="noopener noreferrer" class="template-link">
+                                            <span class="material-symbols-rounded">palette</span>
+                                            <span>Criar imagem no Canva</span>
+                                            <span class="material-symbols-rounded">open_in_new</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="form-section no-border">
+                        <h2>Regras de Convivência <span class="optional">(OPCIONAL)</span></h2>
+                        <div class="form-group">
+                            <label for="rules">Regras e orientações do Host</label>
+                            <div class="input-group textarea-group">
+                                <textarea id="rules" name="rules"
+                                    placeholder="Ex: Ponto de encontro às 19:00 (1 hora antes do evento). Estarei com uma camisa amarela. O que levar: documentos com foto, protetor solar. O que não levar: bebidas alcoólicas, objetos cortantes."></textarea>
+                            </div>
+                            <div class="rules-disclaimer">
+                                <span class="material-symbols-rounded">info</span>
+                                <div>
+                                    <p class="disclaimer-text">
+                                        <strong>Importante:</strong> Estas são sugestões e regras de convivência definidas pelo Host do Rolê. 
+                                        Para detalhes oficiais do evento (ingressos, horário e política), consulte o site oficial do evento.
+                                    </p>
+                                    <p class="disclaimer-note">
+                                        Se o evento for externo à plataforma (show, corrida, festival, etc.), verifique sempre as informações oficiais no site do organizador.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="agree-terms" name="agree_terms" required>
+                        <label for="agree-terms" class="checkbox-label">
+                            Ao publicar este evento, estou de acordo com os <a href="#" target="_blank">Termos de uso</a>, 
+                            com as <a href="#" target="_blank">Diretrizes de Comunidade</a> e com as 
+                            <a href="#" target="_blank">Regras de meia-entrada</a>, bem como declaro estar ciente da 
+                            <a href="#" target="_blank">Política de Privacidade</a> e das 
+                            <a href="#" target="_blank">Obrigatoriedades Legais</a>.
+                        </label>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Criar evento</button>
+                    </div>
+                </form>
+            </div>
+    </main>
+{% endblock content %}
+
+{% block extra_js %}
+    {{block.super}}
+    <script src="{% static 'eventos/js/validation-create-event.js' %}"></script>
+    <script src="{% static 'create-event.js' %}"></script>
+{% endblock extra_js %}

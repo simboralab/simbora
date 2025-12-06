@@ -7,8 +7,5 @@ def custom_404_view(request, exception):
 def home(request):
     return render(request, 'core/page/main.html')
 
-def teste(request):
-    return render(request, 'core/page/404.html')
-
 def quem_somos_view(request):
     return render(request, 'core/page/quem-somos.html')

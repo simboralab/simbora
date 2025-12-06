@@ -335,8 +335,30 @@ class Eventos(models.Model):
         - 0: Lotado OU não aceita mais participantes
         - N: Número de vagas restantes
         """
-        # TODO: Implementar
-        pass
+
+        """
+        Retorna o número de vagas disponíveis.
+
+        Regras:
+        - Se aceita_participantes = False → retorna 0 (não há vagas abertas)
+        - Se maximo_participantes = None → vagas ilimitadas → retorna None
+        - Caso contrário → retorna (máximo - atual)
+        - Nunca retorna valor negativo (segurança extra)
+        """
+        # Se o evento não aceita inscrições, não há vagas disponíveis
+        if not self.aceita_participantes:
+            return 0
+
+        # Se não existe limite de vagas, há vagas ilimitadas
+        if self.maximo_participantes is None:
+            return None
+
+        # Quantidade de vagas restantes
+        vagas = self.maximo_participantes - self.participantes.count()
+
+        # Garantir que nunca retorne número negativo
+        return max(vagas, 0)
+
     
     @property
     def esta_lotado(self):
@@ -347,8 +369,16 @@ class Eventos(models.Model):
         - Atingiu o máximo de participantes OU
         - Não aceita mais novos participantes
         """
-        # TODO: Implementar
-        pass
+        # Se o evento está fechado para novas inscrições → está "lotado"
+        if not self.aceita_participantes:
+            return True
+
+        # Se não existe limite, nunca está lotado (desde que aceite participantes)
+        if self.maximo_participantes is None:
+            return False
+
+        # Checa se atingiu o número máximo
+        return self.participantes.count() >= self.maximo_participantes
     
     @property
     def atingiu_minimo(self):
@@ -361,7 +391,11 @@ class Eventos(models.Model):
         - None: Não tem mínimo definido (sempre confirmado)
         """
         # TODO: Implementar
-        pass
+        if self.minimo_participantes is None:
+            return None
+
+        # Verifica contagem atual
+        return self.participantes.count() >= self.minimo_participantes
     
     @property
     def status_quorum(self):
@@ -374,7 +408,19 @@ class Eventos(models.Model):
         - "Sem mínimo": Não tem mínimo definido
         """
         # TODO: Implementar
-        pass
+        if self.minimo_participantes is None:
+            return "Sem mínimo"
+
+        total = self.participantes.count()
+        minimo = self.minimo_participantes
+
+        # Já atingiu
+        if total >= minimo:
+            return "Confirmado"
+
+        # Ainda não atingiu → calcular quantos faltam
+        faltam = minimo - total
+        return f"Aguardando {faltam} pessoa" + ("s" if faltam > 1 else "")
     
     @property
     def percentual_atingido_minimo(self):
@@ -385,7 +431,14 @@ class Eventos(models.Model):
         Retorna: 0-100 (ou 100 se não tem mínimo ou já atingiu)
         """
         # TODO: Implementar
-        pass
+        if self.minimo_participantes is None:
+            return 100
+        total = self.participantes.count()
+        minimo = self.minimo_participantes
+        if total >= minimo:
+            return 100
+        percentual = (total / minimo) * 100
+        return int(percentual)
     
     @property
     def ja_iniciou(self):
@@ -396,7 +449,9 @@ class Eventos(models.Model):
         Retorna: True se evento já começou, False caso contrário
         """
         # TODO: Implementar
-        pass
+        if self.data_inicio:
+            return timezone.now() >= self.data_inicio
+        return False    
     
     @property
     def ja_terminou(self):
@@ -407,7 +462,9 @@ class Eventos(models.Model):
         Uso: Mostrar badge "Encerrado" em eventos passados
         """
         # TODO: Implementar
-        pass
+        if self.data_termino:
+            return timezone.now() >= self.data_termino
+        return False
     
     
     @property
@@ -417,5 +474,12 @@ class Eventos(models.Model):
             Útil para barras de progresso e alertas
         """
         #TODO: Implementar
-        pass
+        if self.maximo_participantes is None:
+            return 0
+        total = self.participantes.count()
+        maximo = self.maximo_participantes
+        if total >= maximo:
+            return 100
+        percentual = (total / maximo) * 100 
+        return int(percentual)
     
