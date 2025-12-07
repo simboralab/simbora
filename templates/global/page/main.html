@@ -2,6 +2,11 @@
 
 {% block title %}Página Principal{% endblock title %}
 
+<!-- ESTILOS EXTRAS -->
+{% block extra_head %}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+{% endblock extra_head %}
+
 {% block content %}
     {% include "global/partials/header.html" %}
         <!-- Conteúdo Principal -->
@@ -13,10 +18,11 @@
                 <h1 class="hero-title">Seu próximo destino começa aqui. <br /> O que vamos fazer hoje?</h1>
                 <div class="hero-search">
                     <div class="search-wrapper">
-                        <input type="text" class="search-input" placeholder="Buscar eventos, locais ou companhias...">
+                        <input type="text" id="search-input" class="search-input" placeholder="Buscar eventos, locais ou companhias...">
+                        
                         <button class="search-button">Buscar</button>
                     </div>
-                    <button class="explore-button">Explorar</button>
+                    <select id="search-select" style="width: 100%;"></select>
                 </div>
             </div>
         </section>
@@ -317,3 +323,69 @@
     </main>
     {% include "global/partials/footer.html" %}
 {% endblock content %}
+
+<!-- SCRIPTS EXTRAS -->
+{% block extra_js %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            const $select = $("#search-select");
+
+            // Select2 configurado para abrir no body (evita quebra/corte)
+            $select.select2({
+                dropdownParent: $('body'),
+                placeholder: "Buscar eventos, locais ou companhias...",
+                minimumInputLength: 2,
+                ajax: {
+                    url: "{% url 'eventos:buscar_eventos' %}",
+                    dataType: 'json',
+                    delay: 250,
+                    data: params => ({ term: params.term }),
+                    processResults: data => data
+                }
+            });
+
+            // Ao abrir o select2, copia o estilo do input
+            $select.on("select2:open", function () {
+                let searchBox = $(".select2-search__field");
+
+                // Copia classe do input principal
+                searchBox.addClass("search-input");
+
+                // Aplica o valor atual digitado no input
+                searchBox.val($("#search-input").val()).trigger("input");
+            });
+
+            // Quando digitar no input real
+            $("#search-input").on("input", function () {
+                const term = $(this).val();
+
+                // limpa seleção anterior
+                $select.val(null).trigger("change");
+
+                // abre dropdown
+                $select.select2("open");
+
+                // passa texto digitado para o campo do select2
+                $(".select2-search__field").val(term).trigger("input");
+            });
+
+            // Quando selecionar uma opção
+            $select.on("select2:select", function (e) {
+
+                // Preenche o input com o texto escolhido
+                $("#search-input").val(e.params.data.text);
+
+                // Fecha dropdown
+                $select.select2("close");
+
+                // Redireciona
+                window.location.href = "/eventos/visualizar/" + e.params.data.id + "/";
+            });
+        });
+
+    </script>
+
+{% endblock extra_js %}
