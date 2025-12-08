@@ -14,12 +14,13 @@ Modelo de Eventos - Sistema Simbora
     - on_delete: O que fazer quando objeto relacionado é deletado
 """
 
-from django.db import models
-from perfil.models import Perfil
-from core.models import Endereco
-from django.utils import timezone
 from django.core.exceptions import ValidationError
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
+from django.utils import timezone
+
+from core.models import Endereco
+from perfil.models import Perfil
 
 
 class Participacao(models.Model):
@@ -154,11 +155,21 @@ class Eventos(models.Model):
         TODO: Eventos ativos não podem ter data no passado
     """
 
+
+    CATEGORY_CHOICES =  [
+        ("TEC", "Tecnologia"),
+        ("EDU", "Educação"),
+        ("ESP", "Esporte"),
+        ("CUL", "Cultura"),
+        ("OUT", "Outros"),
+    ]
+
     STATUS_CHOICES = [
         ('ATIVO', 'Ativo'),
         ('CANCELADO', 'Cancelado'),
         ('FINALIZADO', 'Finalizado'),
     ]
+
 
     nome_evento = models.CharField(
         max_length=200,
@@ -181,6 +192,19 @@ class Eventos(models.Model):
         blank=True,
         help_text='Perfis dos participantes do evento'
     )
+
+    categoria = models.CharField(
+        max_length=3,
+        choices= CATEGORY_CHOICES,
+        default="OUT",
+    )
+
+    tags_input = models.CharField(
+        max_length=200,
+        blank=True,
+        null=True,
+        help_text='Tags para categorizar o evento'
+    )
     
     endereco = models.ForeignKey(
         Endereco, 
@@ -201,6 +225,13 @@ class Eventos(models.Model):
         blank=True, 
         null=True,
         help_text='Regras e orientações para os participantes'
+    )
+
+    nome_local = models.CharField(
+        max_length=200,
+        blank=True,
+        null=True,
+        help_text='Nome do local de encontro (se diferente do endereço do evento)'
     )
     
     status = models.CharField(
@@ -225,11 +256,18 @@ class Eventos(models.Model):
     )
     
 
-    local_encontro = models.CharField(
+    ponto_encontro = models.CharField(
         max_length=500, 
         blank=True, 
         null=True,
         help_text='Descrição do local de encontro (ponto de referência)'
+    )
+
+    ponto_endereco = models.CharField(
+        max_length=500,
+        blank=True,
+        null=True,
+        help_text='Endereço do ponto de encontro (Otimizado)'
     )
     
     grupo_whatsapp = models.URLField(

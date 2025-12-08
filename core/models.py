@@ -6,6 +6,8 @@ cep_validator = RegexValidator(
     message='Digite um CEP válido no formato 00000-000 ou 00000000.'
 )
 
+
+
 class Endereco(models.Model):
     rua = models.CharField(max_length=255)
     numero = models.CharField(max_length=10)
@@ -21,3 +23,5 @@ class Endereco(models.Model):
 
     def __str__(self):
         return f"{self.rua}, {self.numero} - {self.cidade}/{self.estado}"
+    
+

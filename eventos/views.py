@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import EventoForm
@@ -23,6 +24,7 @@ def deletar_evento(request, evento_id):
     pass    
 
 
+@login_required
 def criar_evento(request):
     if request.method == "POST":
         form = EventoForm(request.POST, request.FILES)
@@ -41,4 +43,4 @@ def criar_evento(request):
     else:
         form = EventoForm()
 
-    return render(request, "eventos/page/teste.html", {"form": form})
+    return render(request, "eventos/page/criar_evento.html", {"form": form})

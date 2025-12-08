@@ -1,154 +1,197 @@
 from django import forms
-from django.utils import timezone
+
+from core.models import Endereco
+
 from .models import Eventos
 
+
 class EventoForm(forms.ModelForm):
+
+    # CAMPOS SEPARADOS (para montar data_inicio, data_termino...)
+    start_date = forms.DateField(widget=forms.DateInput(attrs={
+        "type": "date",
+        "id": "start-date",
+        "name": "start_date",
+        "required": "required",
+        "class": "",
+    }))
+
+    start_time = forms.TimeField(widget=forms.TimeInput(attrs={
+        "type": "time",
+        "id": "start-time",
+        "name": "start_time",
+        "required": "required",
+        "class": "",
+    }))
+
+    end_date = forms.DateField(widget=forms.DateInput(attrs={
+        "type": "date",
+        "id": "end-date",
+        "name": "end_date",
+        "required": "required",
+        "class": "",
+    }))
+
+    end_time = forms.TimeField(widget=forms.TimeInput(attrs={
+        "type": "time",
+        "id": "end-time",
+        "name": "end_time",
+        "required": "required",
+        "class": "",
+    }))
+
+    meeting_point_date = forms.DateField(required=False, widget=forms.DateInput(attrs={
+        "type": "date",
+        "id": "meeting-point-date",
+        "name": "meeting_point_date",
+        "class": "",
+    }))
+
+    meeting_point_time = forms.TimeField(required=False, widget=forms.TimeInput(attrs={
+        "type": "time",
+        "id": "meeting-point-time",
+        "name": "meeting_point_time",
+        "class": "",
+    }))
 
     class Meta:
         model = Eventos
         fields = [
-            'nome_evento',
-            'descricao',
-            'regras',
-            'status',
-            'data_inicio',
-            'data_termino',
-            'data_encontro',
-            'local_encontro',
-            'endereco',
-            'grupo_whatsapp',
-            'foto',
-            'foto_url',
-            'minimo_participantes',
-            'maximo_participantes',
-            'aceita_participantes',
+            "nome_evento", 
+            "categoria", 
+            "descricao",
+            # "grupo_whatsapp",
+            "tags_input",
+            "endereco",
+            "minimo_participantes",
+            "maximo_participantes",
+            "ponto_encontro",
+            "ponto_endereco",
+            "foto",
+            "nome_local",
+            "foto_url",
+            "regras","grupo_whatsapp",
         ]
 
         widgets = {
-            'nome_evento': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Ex: Pelada de sábado no parque'
+            "nome_evento": forms.TextInput(attrs={
+                "id": "event-name",
+                "placeholder": "Ex: Correr na praia",
             }),
-            'descricao': forms.Textarea(attrs={
-                'class': 'form-control',
-                'rows': 4,
-                'placeholder': 'Descreva o evento com detalhes'
+            "categoria": forms.Select(attrs={
+                "id": "category",
+                "required": "required",
             }),
-            'regras': forms.Textarea(attrs={
-                'class': 'form-control',
-                'rows': 4,
-                'placeholder': 'Regras, critérios, observações...'
+            "descricao": forms.Textarea(attrs={
+                "id": "description",
+                "placeholder": "Adicione mais detalhes sobre o seu evento aqui...",
             }),
-            'status': forms.Select(attrs={
-                'class': 'form-control'
+            "grupo_whatsapp": forms.URLInput(attrs={
+                "id": "whatsapp-link",
+                "placeholder": "https://chat.whatsapp.com/...",
+                "pattern": "https://chat\.whatsapp\.com/.+",
+                "required": "required",
             }),
-            'data_inicio': forms.DateTimeInput(attrs={
-                'type': 'datetime-local',
-                'class': 'form-control'
+            "tags_input": forms.TextInput(attrs={
+                "id": "tags-input",
+                "placeholder": "Digite uma tag e pressione Enter",
+                "autocomplete": "off",
             }),
-            'data_termino': forms.DateTimeInput(attrs={
-                'type': 'datetime-local',
-                'class': 'form-control'
+
+            "nome_local": forms.TextInput(attrs={
+                "id": "location-name",
+                "placeholder": "Ex: Ola de Olinda",
+                "required": "required",
             }),
-            'data_encontro': forms.DateTimeInput(attrs={
-                'type': 'datetime-local',
-                'class': 'form-control'
+
+            "ponto_encontro": forms.TextInput(attrs={
+                "id": "point-name",
+                "placeholder": "Ex: Portão principal do shopping",
             }),
-            'local_encontro': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Ponto de encontro, referência...'
+            "ponto_endereco": forms.TextInput(attrs={
+                "id": "meeting-point-address",
+                "placeholder": "Ex: Av. Boa Viagem, 1000 - Boa Viagem",
             }),
-            'endereco': forms.Select(attrs={
-                'class': 'form-control'
+            "ponto_descricao": forms.Textarea(attrs={
+                "id": "meeting-point-description",
+                "placeholder": "Ex: Vou estar com uma camisa amarela...",
             }),
-            'grupo_whatsapp': forms.URLInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Link do grupo de WhatsApp'
+
+            "minimo_participantes": forms.NumberInput(attrs={
+                "id": "min-people",
+                "placeholder": "2",
+                "min": "1",
             }),
-            'foto': forms.FileInput(attrs={
-                'class': 'form-control'
+            "maximo_participantes": forms.NumberInput(attrs={
+                "id": "max-people",
+                "placeholder": "10",
+                "min": "1",
             }),
-            'foto_url': forms.URLInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'URL de imagem externa'
+
+            "foto": forms.FileInput(attrs={
+                "id": "cover-image",
+                "class": "file-input",
+                "accept": "image/jpeg,image/jpg,image/png",
             }),
-            'minimo_participantes': forms.NumberInput(attrs={
-                'class': 'form-control',
-                'min': 1
-            }),
-            'maximo_participantes': forms.NumberInput(attrs={
-                'class': 'form-control',
-                'min': 1
-            }),
-            'aceita_participantes': forms.CheckboxInput(attrs={
-                'class': 'form-check-input'
+
+            "foto_url": forms.HiddenInput(),  # caso use
+            "regras": forms.Textarea(attrs={
+                "id": "rules",
+                "placeholder": "Ex: Ponto de encontro às 19:00…",
             }),
         }
 
-    # --------------------------------------------------------------------
-    # CLEAN — validações adicionais
-    # --------------------------------------------------------------------
+    # JUNTA DATA + HORA → datetime original do model
     def clean(self):
-        cleaned_data = super().clean()
+        cleaned = super().clean()
 
-        data_inicio = cleaned_data.get('data_inicio')
-        data_termino = cleaned_data.get('data_termino')
-        data_encontro = cleaned_data.get('data_encontro')
-        status = cleaned_data.get('status')
+        from datetime import datetime
 
-        minimo = cleaned_data.get('minimo_participantes')
-        maximo = cleaned_data.get('maximo_participantes')
+        sd = cleaned.get("start_date")
+        st = cleaned.get("start_time")
+        ed = cleaned.get("end_date")
+        et = cleaned.get("end_time")
 
-        endereco = cleaned_data.get('endereco')
-        local_encontro = cleaned_data.get('local_encontro')
+        mpd = cleaned.get("meeting_point_date")
+        mpt = cleaned.get("meeting_point_time")
 
-        foto = cleaned_data.get('foto')
-        foto_url = cleaned_data.get('foto_url')
+        if sd and st:
+            cleaned["data_inicio"] = datetime.combine(sd, st)
+        if ed and et:
+            cleaned["data_termino"] = datetime.combine(ed, et)
+        if mpd and mpt:
+            cleaned["data_encontro"] = datetime.combine(mpd, mpt)
 
-        # ------------------------------------------------
-        # 1) Foto: não pode enviar arquivo e URL juntos
-        # ------------------------------------------------
-        if foto and foto_url:
-            self.add_error('foto_url', 'Escolha apenas uma opção: foto OU foto por URL.')
+        return cleaned
 
-        # ------------------------------------------------
-        # 2) Validação mínima/máxima no formulário também
-        # ------------------------------------------------
-        if minimo and maximo:
-            if minimo > maximo:
-                self.add_error('minimo_participantes', 
-                    'O mínimo de participantes não pode ser maior que o máximo.')
-
-        # ------------------------------------------------
-        # 3) Endereço ou local de encontro obrigatório
-        # ------------------------------------------------
-        if not endereco and not local_encontro:
-            raise forms.ValidationError(
-                'Informe um endereço OU um local de encontro.'
-            )
-
-        # ------------------------------------------------
-        # 4) Datas: início < término
-        # ------------------------------------------------
-        if data_inicio and data_termino:
-            if data_termino <= data_inicio:
-                self.add_error('data_termino',
-                    'A data de término deve ser posterior à data de início.')
-
-        # ------------------------------------------------
-        # 5) Data do encontro < início
-        # ------------------------------------------------
-        if data_encontro and data_inicio:
-            if data_encontro > data_inicio:
-                self.add_error('data_encontro',
-                    'A data do encontro deve ser antes do início do evento.')
-
-        # ------------------------------------------------
-        # 6) Eventos ATIVOS não podem começar no passado
-        # ------------------------------------------------
-        if status == 'ATIVO' and data_inicio:
-            if data_inicio < timezone.now():
-                self.add_error('data_inicio',
-                    'Eventos ativos não podem ter início no passado.')
-
-        return cleaned_data
+class EnderecoForm(forms.ModelForm):
+    class Meta:
+        model = Endereco
+        fields = [
+            "rua", "numero", "complemento",
+            "bairro", "cidade", "estado", "cep"
+        ]
+        
+        widgets = { 
+            "rua": forms.TextInput(attrs={
+                "id": "address",
+                "placeholder": "Ex: Av. Paulista",
+            }),
+            "numero": forms.NumberInput(attrs={
+                "id": "number",
+                "placeholder": "1000",
+            }),
+            "cep": forms.TextInput(attrs={
+                "id": "cep",
+                "placeholder": "00000-000",
+                "pattern": r"\d{5}-\d{3}",
+            }),
+            "bairro": forms.TextInput(attrs={
+                "id": "neighborhood",
+                "placeholder": "Bela Vista",
+            }),
+            "cidade": forms.TextInput(attrs={
+                "id": "city",
+                "placeholder": "São Paulo",
+            })
+        }
