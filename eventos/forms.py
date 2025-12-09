@@ -1,5 +1,5 @@
 from django import forms
-
+from django.core.exceptions import ValidationError
 from core.models import Endereco
 
 from .models import Eventos
@@ -8,7 +8,7 @@ from .models import Eventos
 class EventoForm(forms.ModelForm):
 
     # CAMPOS SEPARADOS (para montar data_inicio, data_termino...)
-    start_date = forms.DateField(widget=forms.DateInput(attrs={
+    data_inicial = forms.DateField(widget=forms.DateInput(attrs={
         "type": "date",
         "id": "start-date",
         "name": "start_date",
@@ -16,7 +16,7 @@ class EventoForm(forms.ModelForm):
         "class": "",
     }))
 
-    start_time = forms.TimeField(widget=forms.TimeInput(attrs={
+    horario_inicial = forms.TimeField(widget=forms.TimeInput(attrs={
         "type": "time",
         "id": "start-time",
         "name": "start_time",
@@ -24,7 +24,7 @@ class EventoForm(forms.ModelForm):
         "class": "",
     }))
 
-    end_date = forms.DateField(widget=forms.DateInput(attrs={
+    data_final = forms.DateField(widget=forms.DateInput(attrs={
         "type": "date",
         "id": "end-date",
         "name": "end_date",
@@ -32,7 +32,7 @@ class EventoForm(forms.ModelForm):
         "class": "",
     }))
 
-    end_time = forms.TimeField(widget=forms.TimeInput(attrs={
+    horario_final = forms.TimeField(widget=forms.TimeInput(attrs={
         "type": "time",
         "id": "end-time",
         "name": "end_time",
@@ -40,51 +40,68 @@ class EventoForm(forms.ModelForm):
         "class": "",
     }))
 
-    meeting_point_date = forms.DateField(required=False, widget=forms.DateInput(attrs={
+    data_encontro = forms.DateField(required=False, widget=forms.DateInput(attrs={
         "type": "date",
         "id": "meeting-point-date",
         "name": "meeting_point_date",
         "class": "",
     }))
 
-    meeting_point_time = forms.TimeField(required=False, widget=forms.TimeInput(attrs={
+    horario_encontro = forms.TimeField(required=False, widget=forms.TimeInput(attrs={
         "type": "time",
         "id": "meeting-point-time",
         "name": "meeting_point_time",
         "class": "",
     }))
+    
+    CATEGORY_CHOICES =  [
+            ("" , "Selecione uma categoria"),
+            ("TEC", "Tecnologia"),
+            ("EDU", "Educação"),
+            ("ESP", "Esporte"),
+            ("CUL", "Cultura"),
+            ("OUT", "Outros"),
+        ]
+        
+        
+    categoria = forms.ChoiceField(
+        choices = CATEGORY_CHOICES,
+        required=True, 
+    )
 
     class Meta:
         model = Eventos
         fields = [
-            "nome_evento", 
-            "categoria", 
+            "nome_evento",  
             "descricao",
             "tags_input",
             "minimo_participantes",
             "maximo_participantes",
             "ponto_encontro",
             "ponto_endereco",
-            "foto",
             "nome_local",
+            "foto",
             "foto_url",
             "regras",
             "grupo_whatsapp",
         ]
+        
+        
 
         widgets = {
             "nome_evento": forms.TextInput(attrs={
                 "id": "event-name",
                 "placeholder": "Ex: Correr na praia",
             }),
-            "categoria": forms.Select(attrs={
-                "id": "category",
-                "required": "required",
-            }),
+            
+          
             "descricao": forms.Textarea(attrs={
                 "id": "description",
                 "placeholder": "Adicione mais detalhes sobre o seu evento aqui...",
             }),
+            
+            "categoria" : forms.Select(attrs={'id': 'category', 'name': 'category'}),
+            
             "grupo_whatsapp": forms.URLInput(attrs={
                 "id": "whatsapp-link",
                 "placeholder": "https://chat.whatsapp.com/...",
@@ -147,10 +164,10 @@ class EventoForm(forms.ModelForm):
 
         from datetime import datetime
 
-        sd = cleaned.get("start_date")
-        st = cleaned.get("start_time")
-        ed = cleaned.get("end_date")
-        et = cleaned.get("end_time")
+        sd = cleaned.get("data_inicial")
+        st = cleaned.get("horario_inicial")
+        ed = cleaned.get("data_final")
+        et = cleaned.get("horario_final")
 
         mpd = cleaned.get("meeting_point_date")
         mpt = cleaned.get("meeting_point_time")
@@ -163,6 +180,19 @@ class EventoForm(forms.ModelForm):
             cleaned["data_encontro"] = datetime.combine(mpd, mpt)
 
         return cleaned
+    
+    def clean_categoria(self):
+        categoria = self.cleaned_data.get('categoria')
+        
+        if categoria == '':
+            return None 
+            
+        valid_values = [v[0] for v in Category_CHOICES if v[0] != '']
+        if categoria and categoria not in valid_values:
+            raise ValidationError("Seleção de gênero inválida.")
+            
+        return categoria
+
 
 class EnderecoForm(forms.ModelForm):
     class Meta:

@@ -1,9 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
+from django.db import transaction
+from django.http import HttpResponseForbidden
 
-from .forms import EventoForm
-from .models import Eventos
+from .forms import EventoForm,EnderecoForm
+from .models import Eventos, Endereco
 
 
 def lista_eventos(request):
@@ -19,13 +21,53 @@ def editar_evento(request, evento_id):
     # Lógica para editar um evento existente
     pass
 
+@login_required(login_url='signin')
 def deletar_evento(request, evento_id):
-    # Lógica para deletar um evento existente
-    pass    
+
+  
+    evento = get_object_or_404(Eventos, id=evento_id)
+    
+ 
+    if evento.criador != request.user:
+        return HttpResponseForbidden("Você não tem permissão para deletar este evento.")
+
+    if request.method == 'POST':
+        
+        with transaction.atomic():
+            evento.delete()
+
+        return redirect('visualizar_eventos')
+        
+    
+    return render(request, 'confirmar_delecao.html', {'evento': evento})
 
 
 @login_required(login_url='signin')
 def criar_evento(request):
-    form = EventoForm()
+    if request.method == 'POST':
+        evento_form = EventoForm(request.POST, request.FILES)
+        endereco_form = EnderecoForm(request.POST)
 
-    return render(request, "eventos/page/teste.html", {"form": form})
+      
+        with transaction.atomic():
+            if evento_form.is_valid() and endereco_form.is_valid():
+            
+                endereco_instance = endereco_form.save() 
+                evento_instance = evento_form.save(commit=False)
+                
+                evento_instance.endereco = endereco_instance
+                evento_instance.save()
+            
+
+                return redirect('visualizar_evento')
+
+    else:
+        evento_form = EventoForm()
+        endereco_form = EnderecoForm()
+
+    context = {
+        'evento_form': evento_form,
+        'endereco_form': endereco_form,
+    }
+    
+    return render(request, 'eventos/page/teste.html', context)
