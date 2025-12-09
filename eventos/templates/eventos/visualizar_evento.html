@@ -1,15 +1,208 @@
 {% extends "core/page/base_core.html" %}
+{% load static %}
+
 
 {% block title %}{{ evento.nome_evento }}{% endblock title %}
+{% block extra_head %}
+       {{ block.super }}
+       <link rel="stylesheet" href="{% static 'eventos/css/visualizar-evento.css' %}">
+{% endblock extra_head %}
+
 
 {% block content %}
-    
-    <h1>{{ evento.nome_evento }}</h1>
-    <p><strong>Descrição:</strong> {{ evento.descricao }}</p>
-    <p><strong>Data início:</strong> {{ evento.data_inicio|date:"d/m/Y H:i" }}</p>
-    <p><strong>Data término:</strong> {{ evento.data_termino|date:"d/m/Y H:i" }}</p>
-    <p><a href="{% url 'eventos:lista_eventos' %}">Voltar para lista</a></p>
 
-{% endblock content %}
+<div class="container">
+    {% if evento.foto %}
+    <div class="banner" style="background-image: url('{{ evento.foto.url }}');"></div>
+    {% elif evento.foto_url %}
+    <div class="banner" style="background-image: url('{{ evento.foto_url }}');"></div>
+    {% else %}
+    <div class="banner"></div>
+    {% endif %}
 
+    <div class="event-header">
+        <div class="event-status">
 
+            {% if esta_lotado %}
+                <span class="badge lotado">Lotado</span>
+            {% else %}
+                <span class="badge disponivel">Disponível</span>
+            {% endif %}
+
+            {% if evento.maximo_participantes %}
+                <span class="badge confirmados">
+                    {{ total_confirmados }}/{{ evento.maximo_participantes }} confirmados
+                </span>
+            {% endif %}
+        </div>
+
+        <h1>{{ evento.nome_evento }}</h1>
+
+        <div class="event-tags">
+            <span class="tag">{{ evento.categoria.nome|default:'Evento' }}</span>
+        </div>
+    </div>
+
+    <div class="local">
+        <div class="local-item local-host">
+            {% if evento.organizador %}
+                <img src="{{ evento.organizador.foto.url }}" class="host-avatar-small">
+                <span class="local-text">
+                    Host do Rolê<br>
+                    <span class="local-address">
+                        {{ evento.organizador.nome_social|default:evento.organizador.usuario.username }}
+                    </span>
+                </span>
+            {% else %}
+                <span class="local-text">
+                    Host removido<br>
+                </span>
+            {% endif %}
+        </div>
+
+        <div class="local-item">
+            <span class="material-symbols-rounded icon">calendar_today</span>
+            <span class="local-text">
+                {{ evento.data_inicio|date:"l, d \\d\\e F" }}<br>
+                <span class="local-time">
+                    {{ evento.data_inicio|time:"H:i" }} até {{ evento.data_termino|time:"H:i" }}
+                </span>
+            </span>
+        </div>
+
+        {% if evento.endereco %}
+        <div class="local-item">
+            <span class="material-symbols-rounded icon">location_on</span>
+            <span class="local-text">
+                <a href="https://maps.google.com/?q={{ evento.endereco.rua }} {{ evento.endereco.numero }} {{ evento.endereco.bairro }}"
+                   target="_blank"
+                   class="local-link">
+                    {{ evento.endereco.rua }}<br>
+                    <span class="local-address">{{ evento.endereco.bairro }}</span>
+                </a>
+            </span>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="sobre">
+        <h3>Sobre o Evento</h3>
+        <p class="intro">
+            {{ evento.descricao|linebreaks }}
+        </p>
+    </div>
+
+    <div class="confirma-box">
+        <h2 class="confirma-title">Vamos fazer este rolê acontecer!</h2>
+
+        <div class="confirma-content">
+            <div class="confirma-left">
+
+                {% if evento.maximo_participantes %}
+                <div class="progress-section">
+                    <div class="progress-bar">
+                        <div class="progress" id="progress-bar-fill"
+                             style="width: {{ progresso }}%;">
+                        </div>
+                    </div>
+
+                    <p class="progress-text">
+                        {{ total_confirmados }}/{{ evento.maximo_participantes }} confirmados —
+                        {% if faltam %}
+                            Faltam {{ faltam }}!
+                        {% else %}
+                            Sem limite de participantes
+                        {% endif %}
+                    </p>
+                </div>
+                {% endif %}
+
+                <div class="galera-section">
+                    <h4>Galera que vai</h4>
+
+                    <div class="pessoas">
+                        {% for p in confirmados|slice:":4" %}
+                        <div class="pessoa">
+                            <img src="{{ p.participante.foto.url }}"
+                                 alt="{{ p.participante.nome_social }}">
+                        </div>
+                        {% endfor %}
+
+                        {% if confirmados.count > 4 %}
+                        <button class="mais-btn">+{{ confirmados.count|add:"-4" }}</button>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="confirma-right" id="buttons-container">
+                <button class="btn-main">Eu vou!</button>
+
+                <button class="btn-secondary">
+                    <span class="material-symbols-rounded">share</span>
+                    Convidar amigos
+                </button>
+
+                {% if evento.grupo_whatsapp %}
+                <a href="{{ evento.grupo_whatsapp }}" target="_blank" class="btn-whatsapp">
+                    Entrar no grupo
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="info-importante">
+        <h3>Dicas e Orientações</h3>
+        <p class="disclaimer">
+            Estas regras foram definidas pelo Host do rolê.
+        </p>
+    </div>
+
+    {% if evento.endereco %}
+    <div class="local-completo">
+        <h3>Local do Evento</h3>
+
+        <div class="local-detalhes">
+            <div class="local-principal">
+                <h4>{{ evento.endereco.rua }}</h4>
+                <p>{{ evento.endereco.bairro }}</p>
+                <p>{{ evento.endereco.cidade }} - {{ evento.endereco.estado }}</p>
+                <p class="cep">CEP: {{ evento.endereco.cep }}</p>
+
+                <a href="https://maps.google.com/?q={{ evento.endereco.rua }} {{ evento.endereco.numero }}"
+                   target="_blank" class="btn-mapa">
+                    Ver no mapa
+                </a>
+            </div>
+
+            <div class="local-instrucoes">
+                <h4>Como chegar</h4>
+                <p>{{ evento.endereco.complemento|default:'Verificar no mapa' }}</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if evento.organizador %}
+    <div class="organizador">
+        <h3>Host do Rolê</h3>
+        <div class="organizador-info">
+            <div class="organizador-avatar">
+                <img src="{{ evento.organizador.foto.url }}">
+            </div>
+
+            <div class="organizador-detalhes">
+                <h4>{{ evento.organizador.nome_social|default:evento.organizador.usuario.username }}</h4>
+                <p class="organizador-desc">
+                    {{ evento.organizador.bio|default:"Host do evento" }}
+                </p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}
