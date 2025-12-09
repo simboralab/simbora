@@ -28,7 +28,7 @@ def deletar_evento(request, evento_id):
     evento = get_object_or_404(Eventos, id=evento_id)
     
  
-    if evento.criador != request.user:
+    if evento.organizador != request.user:
         return HttpResponseForbidden("Você não tem permissão para deletar este evento.")
 
     if request.method == 'POST':
