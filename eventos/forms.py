@@ -60,9 +60,7 @@ class EventoForm(forms.ModelForm):
             "nome_evento", 
             "categoria", 
             "descricao",
-            # "grupo_whatsapp",
             "tags_input",
-            "endereco",
             "minimo_participantes",
             "maximo_participantes",
             "ponto_encontro",
@@ -70,7 +68,8 @@ class EventoForm(forms.ModelForm):
             "foto",
             "nome_local",
             "foto_url",
-            "regras","grupo_whatsapp",
+            "regras",
+            "grupo_whatsapp",
         ]
 
         widgets = {
@@ -92,6 +91,7 @@ class EventoForm(forms.ModelForm):
                 "pattern": "https://chat\.whatsapp\.com/.+",
                 "required": "required",
             }),
+            
             "tags_input": forms.TextInput(attrs={
                 "id": "tags-input",
                 "placeholder": "Digite uma tag e pressione Enter",

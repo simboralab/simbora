@@ -24,23 +24,8 @@ def deletar_evento(request, evento_id):
     pass    
 
 
-@login_required
+@login_required(login_url='signin')
 def criar_evento(request):
-    if request.method == "POST":
-        form = EventoForm(request.POST, request.FILES)
-        if form.is_valid():
-            evento = form.save(commit=False)
+    form = EventoForm()
 
-            # se você quiser setar o organizador automaticamente:
-            if hasattr(request.user, "perfil"):
-                evento.organizador = request.user.perfil
-
-            evento.save()
-            form.save_m2m()
-
-            messages.success(request, "Evento criado com sucesso!")
-            return redirect("visualizar_evento")  # redireciona pra própria página para testar
-    else:
-        form = EventoForm()
-
-    return render(request, "eventos/page/criar_evento.html", {"form": form})
+    return render(request, "eventos/page/teste.html", {"form": form})

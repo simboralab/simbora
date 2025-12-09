@@ -170,12 +170,41 @@ class Eventos(models.Model):
         ('FINALIZADO', 'Finalizado'),
     ]
 
-
+    #Informações Gerais
     nome_evento = models.CharField(
         max_length=200,
         help_text='Nome do evento'
     )
 
+    categoria = models.CharField(
+        max_length=3,
+        choices= CATEGORY_CHOICES,
+        default="OUT",
+    )
+    
+    descricao = models.TextField(
+        blank=True, 
+        null=True,
+        help_text='Descrição detalhada do evento'
+    )
+    
+    tags_input = models.CharField(
+        max_length=200,
+        blank=True,
+        null=True,
+        help_text='Tags para categorizar o evento'
+    )
+    
+    #Data e Horário
+    data_inicio = models.DateTimeField(
+        help_text='Data e hora de início do evento'
+    )
+    
+    data_termino = models.DateTimeField(
+        help_text='Data e hora de término do evento'
+    )
+    
+    
     organizador = models.ForeignKey(
         Perfil, 
         on_delete=models.SET_NULL,
@@ -192,19 +221,6 @@ class Eventos(models.Model):
         blank=True,
         help_text='Perfis dos participantes do evento'
     )
-
-    categoria = models.CharField(
-        max_length=3,
-        choices= CATEGORY_CHOICES,
-        default="OUT",
-    )
-
-    tags_input = models.CharField(
-        max_length=200,
-        blank=True,
-        null=True,
-        help_text='Tags para categorizar o evento'
-    )
     
     endereco = models.ForeignKey(
         Endereco, 
@@ -215,11 +231,13 @@ class Eventos(models.Model):
         help_text='Endereço onde o evento acontecerá'
     )
     
-    descricao = models.TextField(
+    grupo_whatsapp = models.URLField(
+        max_length=500,
         blank=True, 
         null=True,
-        help_text='Descrição detalhada do evento'
+        help_text='Link do grupo do WhatsApp para o evento'
     )
+   
     
     regras = models.TextField(
         blank=True, 
@@ -241,13 +259,6 @@ class Eventos(models.Model):
         help_text='Status atual do evento'
     )
     
-    data_inicio = models.DateTimeField(
-        help_text='Data e hora de início do evento'
-    )
-    
-    data_termino = models.DateTimeField(
-        help_text='Data e hora de término do evento'
-    )
     
     data_encontro = models.DateTimeField(
         blank=True,
@@ -270,12 +281,6 @@ class Eventos(models.Model):
         help_text='Endereço do ponto de encontro (Otimizado)'
     )
     
-    grupo_whatsapp = models.URLField(
-        max_length=500,
-        blank=True, 
-        null=True,
-        help_text='Link do grupo do WhatsApp para o evento'
-    )
     
     foto = models.ImageField(
         upload_to='images/eventos/',
