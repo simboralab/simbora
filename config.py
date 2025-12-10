@@ -15,6 +15,7 @@ settings = Dynaconf(
     env_switcher='SIMBORA_ENV',
     load_dotenv=True,
     dotenv_path=BASE_DIR / '.env',
+    validate_only_current_env=True,
     # Validações automáticas
     validators=[
         Validator(
