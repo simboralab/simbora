@@ -10,6 +10,7 @@ jobs:
       SIMBORA_ENV: testing
       SIMBORA_SECRET_KEY: ${{ secrets.SIMBORA_SECRET_KEY }}
       SIMBORA_FIELD_ENCRYPTION_KEY: ${{ secrets.SIMBORA_FIELD_ENCRYPTION_KEY }}
+      SIMBORA_SIMBORA_PASSWORD: ""
     steps:
       - uses: actions/checkout@v5
       - name: Install uv
