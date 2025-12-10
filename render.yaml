@@ -1,0 +1,28 @@
+databases:
+  - name: appdb
+    plan: free
+    databaseName: appdb
+    user: appuser
+
+services:
+  - type: web
+    plan: free
+    name: webapp
+    runtime: python
+    buildCommand: 'curl -LsSf https://astral.sh/uv/install.sh | sh && export PATH="$HOME/.cargo/bin:$PATH" && uv sync && uv run python manage.py collectstatic --no-input && uv run python manage.py migrate'
+    startCommand: 'python -m gunicorn simbora_app.asgi:application -k uvicorn.workers.UvicornWorker'
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: appdb
+          property: connectionString
+      - key: SIMBORA_ENV
+        value: production
+      - key: SIMBORA_SECRET_KEY
+        generateValue: true
+      - key: SIMBORA_FIELD_ENCRYPTION_KEY
+        generateValue: true
+      # IMPORTANTE: Adicione manualmente no dashboard do Render:
+      # SIMBORA_SIMBORA_PASSWORD = sua-senha-de-aplicativo-gmail
+      - key: WEB_CONCURRENCY
+        value: 4
