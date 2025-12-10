@@ -15,12 +15,12 @@
         rel="stylesheet">
 
     <!-- Estilos gerais do Simbora -->
-    <link rel="stylesheet" href={% static "core/css/style.css" %}>
+    <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
     <!-- Material Symbols Rounded -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <!-- Estilos específicos da página -->
-    <link rel="stylesheet" href="{% static "eventos/css/criar_eventos.css" %}">
+    <link rel="stylesheet" href="{% static 'eventos/css/criar_eventos.css' %}">
 </head>
 
 <body class="has-header">
@@ -59,9 +59,7 @@
                         <label for="whatsapp-link">Grupo do WhatsApp</label>
                         <div class="input-group">
                             <span class="material-symbols-rounded icon">chat</span>
-                            <input type="url" id="whatsapp-link" name="whatsapp_link" 
-                                placeholder="https://chat.whatsapp.com/..." 
-                                pattern="https://chat\.whatsapp\.com/.+" required>
+                            {{evento_form.grupo_whatsapp}}
                         </div>
                         <p class="field-help">Crie um grupo no WhatsApp e cole o link aqui para que os participantes possam se conectar.</p>
                     </div>
@@ -71,9 +69,7 @@
                         <div class="tags-container">
                             <div class="input-group">
                                 <span class="material-symbols-rounded icon">label</span>
-                                <input type="text" id="tags-input" name="tags_input" 
-                                    placeholder="Digite uma tag e pressione Enter" 
-                                    autocomplete="off">
+                                {{evento_form.tags_input}}
                             </div>
                             <div class="tags-list" id="tags-list"></div>
                             <p class="field-help">Adicione tags para ajudar outros usuários a encontrar seu evento. Ex: música, ao ar livre, gratuito</p>
@@ -88,14 +84,14 @@
                             <label for="start-date">Data de Início</label>
                             <div class="input-group">
                                 <span class="material-symbols-rounded icon">calendar_today</span>
-                                <input type="date" id="start-date" name="start_date" required>
+                                {{evento_form.data_inicial}}
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="start-time">Hora de Início</label>
                             <div class="input-group">
                                 <span class="material-symbols-rounded icon">schedule</span>
-                                <input type="time" id="start-time" name="start_time" required>
+                                {{evento_form.horario_inicial}}
                             </div>
                         </div>
                     </div>
@@ -105,14 +101,14 @@
                             <label for="end-date">Data de Término</label>
                             <div class="input-group">
                                 <span class="material-symbols-rounded icon">event</span>
-                                <input type="date" id="end-date" name="end_date" required>
+                                {{evento_form.data_final}}
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="end-time">Hora de Término</label>
                             <div class="input-group">
                                 <span class="material-symbols-rounded icon">schedule</span>
-                                <input type="time" id="end-time" name="end_time" required>
+                                {{evento_form.horario_final}}
                             </div>
                         </div>
                     </div>
@@ -124,8 +120,7 @@
                         <label for="location-name">Nome do local</label>
                         <div class="input-group">
                             <span class="material-symbols-rounded icon">store</span>
-                            <input type="text" id="location-name" name="location_name" placeholder="Ex: Orla de Olinda"
-                                required>
+                            {{endereco_form.rua}}
                         </div>
                     </div>
 
@@ -319,39 +314,7 @@
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="main-footer">
-        <div class="footer-container">
-            <div class="footer-content">
-                <div class="footer-logo-section">
-                    <img src="static/img/logo/marca_azul.png" alt="Simbora" class="footer-logo-img">
-                    <p>Conectando pessoas aos melhores rolês da cidade.</p>
-                </div>
-                <div class="footer-nav">
-                    <h4>Explorar</h4>
-                    <a href="index.html">Início</a>
-                    <a href="#">Buscar Eventos</a>
-                    <a href="create-event.html">Criar Evento</a>
-                </div>
-                <div class="footer-nav">
-                    <h4>Suporte</h4>
-                    <a href="#">Central de Ajuda</a>
-                    <a href="#">Termos de Uso</a>
-                    <a href="#">Privacidade</a>
-                </div>
-                <div class="footer-social">
-                    <h4>Siga a gente</h4>
-                    <div class="social-icons">
-                        <a href="#" aria-label="Instagram"><span class="material-symbols-rounded">photo_camera</span></a>
-                        <a href="#" aria-label="Twitter"><span class="material-symbols-rounded">alternate_email</span></a>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 Simbora App. Todos os direitos reservados.</p>
-            </div>
-        </div>
-    </footer>
+
 
     <!-- JavaScript -->
     <script src="static/js/principal.js"></script>

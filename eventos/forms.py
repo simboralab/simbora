@@ -204,8 +204,10 @@ class EnderecoForm(forms.ModelForm):
         
         widgets = { 
             "rua": forms.TextInput(attrs={
-                "id": "address",
-                "placeholder": "Ex: Av. Paulista",
+                "id": "location-name",
+                "placeholder": "Ex: Orla. Olinda",
+                "name": "location-name",
+                "required": "required"
             }),
             "numero": forms.NumberInput(attrs={
                 "id": "number",
