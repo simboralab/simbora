@@ -84,6 +84,7 @@ class EventoForm(forms.ModelForm):
             "foto_url",
             "regras",
             "grupo_whatsapp",
+            "ponto_descricao",
         ]
         
         
@@ -125,10 +126,12 @@ class EventoForm(forms.ModelForm):
                 "id": "point-name",
                 "placeholder": "Ex: Portão principal do shopping",
             }),
+            
             "ponto_endereco": forms.TextInput(attrs={
                 "id": "meeting-point-address",
                 "placeholder": "Ex: Av. Boa Viagem, 1000 - Boa Viagem",
             }),
+            
             "ponto_descricao": forms.Textarea(attrs={
                 "id": "meeting-point-description",
                 "placeholder": "Ex: Vou estar com uma camisa amarela...",
@@ -151,7 +154,8 @@ class EventoForm(forms.ModelForm):
                 "accept": "image/jpeg,image/jpg,image/png",
             }),
 
-            "foto_url": forms.HiddenInput(),  # caso use
+            "foto_url": forms.HiddenInput(),  
+            # caso use
             "regras": forms.Textarea(attrs={
                 "id": "rules",
                 "placeholder": "Ex: Ponto de encontro às 19:00…",

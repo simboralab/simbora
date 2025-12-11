@@ -281,6 +281,12 @@ class Eventos(models.Model):
         help_text='Endereço do ponto de encontro (Otimizado)'
     )
     
+    ponto_descricao = models.TextField(
+        blank=True, 
+        null=True,
+        help_text='Ex: Vou estar com uma camisa amarela. Nos encontraremos no portão principal 1 hora antes do evento começar.'
+    )
+    
     
     foto = models.ImageField(
         upload_to='images/eventos/',

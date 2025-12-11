@@ -29,7 +29,7 @@
         <div class="form-wrapper-create">
             <h1>Organizar rolê</h1>
 
-            <form>
+            <form method = "post" action="{% url "eventos:criar_evento" %}">
                 <section class="form-section">
                     <h2>Informações gerais</h2>
                     <div class="form-group">
@@ -129,14 +129,14 @@
                             <label for="address">Endereço</label>
                             <div class="input-group">
                                 <span class="material-symbols-rounded icon">location_on</span>
-                                <input type="text" id="address" name="address" placeholder="Ex: Av. Paulista" required>
+                                {{endereco_form.nome_local}}
                             </div>
                         </div>
                         <div class="form-group flex-1">
                             <label for="number">Número</label>
                             <div class="input-group">
                                 <span class="material-symbols-rounded icon">home_pin</span>
-                                <input type="number" id="number" name="number" placeholder="1000" required>
+                                {{endereco_form.numero}}
                             </div>
                         </div>
                     </div>
@@ -146,23 +146,21 @@
                             <label for="cep">CEP</label>
                             <div class="input-group">
                                 <span class="material-symbols-rounded icon">markunread_mailbox</span>
-                                <input type="text" id="cep" name="cep" placeholder="00000-000" pattern="\d{5}-\d{3}"
-                                    required>
+                              {{endereco_form.cep}}
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="neighborhood">Bairro</label>
                             <div class="input-group">
                                 <span class="material-symbols-rounded icon">map</span>
-                                <input type="text" id="neighborhood" name="neighborhood" placeholder="Bela Vista"
-                                    required>
+                                {{endereco_form.bairro}}
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="city">Cidade</label>
                             <div class="input-group">
                                 <span class="material-symbols-rounded icon">location_city</span>
-                                <input type="text" id="city" name="city" placeholder="São Paulo" required>
+                                {{endereco_form.cidade}}
                             </div>
                         </div>
                     </div>
@@ -174,8 +172,7 @@
                         <label for="meeting-point-name">Nome do ponto de encontro</label>
                         <div class="input-group">
                             <span class="material-symbols-rounded icon">place</span>
-                            <input type="text" id="meeting-point-name" name="meeting_point_name" 
-                                placeholder="Ex: Portão principal do shopping">
+                            {{evento_form.nome_local}}
                         </div>
                     </div>
 
@@ -183,8 +180,7 @@
                         <label for="meeting-point-address">Endereço do ponto de encontro</label>
                         <div class="input-group">
                             <span class="material-symbols-rounded icon">location_on</span>
-                            <input type="text" id="meeting-point-address" name="meeting_point_address" 
-                                placeholder="Ex: Av. Boa Viagem, 1000 - Boa Viagem">
+                            {{evento_form.ponto_encontro}}
                         </div>
                     </div>
 
@@ -193,14 +189,14 @@
                             <label for="meeting-point-date">Data do encontro</label>
                             <div class="input-group">
                                 <span class="material-symbols-rounded icon">calendar_today</span>
-                                <input type="date" id="meeting-point-date" name="meeting_point_date">
+                                {{evento_form.data_encontro}}
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="meeting-point-time">Horário do encontro</label>
                             <div class="input-group">
                                 <span class="material-symbols-rounded icon">schedule</span>
-                                <input type="time" id="meeting-point-time" name="meeting_point_time">
+                                {{evento_form.horario_encontro}}
                             </div>
                         </div>
                     </div>
@@ -208,8 +204,7 @@
                     <div class="form-group">
                         <label for="meeting-point-description">Descrição do ponto de encontro</label>
                         <div class="input-group textarea-group">
-                            <textarea id="meeting-point-description" name="meeting_point_description"
-                                placeholder="Ex: Vou estar com uma camisa amarela. Nos encontraremos no portão principal 1 hora antes do evento começar."></textarea>
+                            {{evento_form.ponto_descricao}}
                         </div>
                         <p class="field-help">Adicione informações que ajudem os participantes a te encontrar, como roupas que você estará usando, pontos de referência, etc.</p>
                     </div>
@@ -222,14 +217,14 @@
                             <label for="min-people">Mínimo de pessoas</label>
                             <div class="input-group">
                                 <span class="material-symbols-rounded icon">group</span>
-                                <input type="number" id="min-people" name="min_people" placeholder="2" min="1" required>
+                                {{evento_form.minimo_participantes}}
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="max-people">Máximo de pessoas</label>
                             <div class="input-group">
                                 <span class="material-symbols-rounded icon">groups</span>
-                                <input type="number" id="max-people" name="max_people" placeholder="10" min="1" required>
+                                {{evento_form.maximo_participantes}}
                             </div>
                         </div>
                     </div>
@@ -241,7 +236,7 @@
                         <label for="cover-image">Imagem de capa/banner</label>
                         <div class="cover-upload-wrapper">
                             <div class="image-upload-container">
-                            <input type="file" id="cover-image" name="cover_image" accept="image/jpeg,image/jpg,image/png" class="file-input">
+                            {{evento_form.foto}}
                             <label for="cover-image" class="file-label">
                                 <span class="material-symbols-rounded upload-icon">image</span>
                                 <span class="file-label-text">Clique para selecionar ou arraste uma imagem</span>
@@ -278,8 +273,7 @@
                     <div class="form-group">
                         <label for="rules">Regras e orientações do Host</label>
                         <div class="input-group textarea-group">
-                            <textarea id="rules" name="rules"
-                                placeholder="Ex: Ponto de encontro às 19:00 (1 hora antes do evento). Estarei com uma camisa amarela. O que levar: documentos com foto, protetor solar. O que não levar: bebidas alcoólicas, objetos cortantes."></textarea>
+                            {{evento_form.regras}}
                         </div>
                         <div class="rules-disclaimer">
                             <span class="material-symbols-rounded">info</span>
