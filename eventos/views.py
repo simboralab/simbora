@@ -50,6 +50,7 @@ def criar_evento(request):
 
         if request.user.is_authenticated:
             evento_form.instance.organizador = request.user.perfil
+            
 
         if evento_form.is_valid() and endereco_form.is_valid():
             with transaction.atomic():
@@ -59,13 +60,14 @@ def criar_evento(request):
                 evento_instance.endereco = endereco_instance
                 evento_instance.save()
 
-                return redirect('visualizar_evento')
+                return redirect('lista_eventos')
 
     else:
         evento_form = EventoForm()
         endereco_form = EnderecoForm()
 
-    return render(request, 'eventos/page/teste.html', {
+
+    return render(request, 'eventos/page/criar_evento.html', {
         'evento_form': evento_form,
         'endereco_form': endereco_form,
     })

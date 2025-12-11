@@ -274,7 +274,7 @@ class Eventos(models.Model):
         help_text='Descrição do local de encontro (ponto de referência)'
     )
 
-    ponto_endereco = models.CharField(
+    local_encontro = models.CharField(
         max_length=500,
         blank=True,
         null=True,
@@ -388,9 +388,7 @@ class Eventos(models.Model):
         
         # TODO: Eventos devem ter endereço OU local_encontro
         # Justificativa: Participantes precisam saber onde ir
-        if self.endereco is None and not self.local_encontro:
-            raise ValidationError('O evento deve ter um endereço definido ou um local de encontro informado.')
-
+       
    
     
     @property
