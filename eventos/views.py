@@ -48,16 +48,16 @@ def criar_evento(request):
         evento_form = EventoForm(request.POST, request.FILES)
         endereco_form = EnderecoForm(request.POST)
 
-      
-        with transaction.atomic():
-            if evento_form.is_valid() and endereco_form.is_valid():
-            
+        if request.user.is_authenticated:
+            evento_form.instance.organizador = request.user.perfil
+
+        if evento_form.is_valid() and endereco_form.is_valid():
+            with transaction.atomic():
                 endereco_instance = endereco_form.save() 
-                evento_instance = evento_form.save(commit=False)
                 
+                evento_instance = evento_form.save(commit=False)
                 evento_instance.endereco = endereco_instance
                 evento_instance.save()
-            
 
                 return redirect('visualizar_evento')
 
@@ -65,9 +65,7 @@ def criar_evento(request):
         evento_form = EventoForm()
         endereco_form = EnderecoForm()
 
-    context = {
+    return render(request, 'eventos/page/teste.html', {
         'evento_form': evento_form,
         'endereco_form': endereco_form,
-    }
-    
-    return render(request, 'eventos/page/teste.html', context)
+    })

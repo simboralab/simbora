@@ -30,6 +30,7 @@
             <h1>Organizar rolê</h1>
 
             <form method = "post" action="{% url "eventos:criar_evento" %}">
+                {% csrf_token %}
                 <section class="form-section">
                     <h2>Informações gerais</h2>
                     <div class="form-group">
@@ -120,7 +121,7 @@
                         <label for="location-name">Nome do local</label>
                         <div class="input-group">
                             <span class="material-symbols-rounded icon">store</span>
-                            {{endereco_form.rua}}
+                            {{evento_form.nome_local}}
                         </div>
                     </div>
 
@@ -129,7 +130,7 @@
                             <label for="address">Endereço</label>
                             <div class="input-group">
                                 <span class="material-symbols-rounded icon">location_on</span>
-                                {{endereco_form.nome_local}}
+                                {{endereco_form.rua}}
                             </div>
                         </div>
                         <div class="form-group flex-1">
@@ -167,40 +168,6 @@
                 </section>
 
                 <section class="form-section">
-                    <h2>Ponto de encontro <span class="optional">(OPCIONAL)</span></h2>
-                    <div class="form-group">
-                        <label for="meeting-point-name">Nome do ponto de encontro</label>
-                        <div class="input-group">
-                            <span class="material-symbols-rounded icon">place</span>
-                            {{evento_form.nome_local}}
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="meeting-point-address">Endereço do ponto de encontro</label>
-                        <div class="input-group">
-                            <span class="material-symbols-rounded icon">location_on</span>
-                            {{evento_form.ponto_encontro}}
-                        </div>
-                    </div>
-
-                    <div class="date-time">
-                        <div class="form-group">
-                            <label for="meeting-point-date">Data do encontro</label>
-                            <div class="input-group">
-                                <span class="material-symbols-rounded icon">calendar_today</span>
-                                {{evento_form.data_encontro}}
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="meeting-point-time">Horário do encontro</label>
-                            <div class="input-group">
-                                <span class="material-symbols-rounded icon">schedule</span>
-                                {{evento_form.horario_encontro}}
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="form-group">
                         <label for="meeting-point-description">Descrição do ponto de encontro</label>
                         <div class="input-group textarea-group">

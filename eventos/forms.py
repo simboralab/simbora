@@ -71,21 +71,8 @@ class EventoForm(forms.ModelForm):
 
     class Meta:
         model = Eventos
-        fields = [
-            "nome_evento",  
-            "descricao",
-            "tags_input",
-            "minimo_participantes",
-            "maximo_participantes",
-            "ponto_encontro",
-            "ponto_endereco",
-            "nome_local",
-            "foto",
-            "foto_url",
-            "regras",
-            "grupo_whatsapp",
-            "ponto_descricao",
-        ]
+        fields = "__all__"
+        exclude = ['organizador']
         
         
 
@@ -167,21 +154,29 @@ class EventoForm(forms.ModelForm):
         cleaned = super().clean()
 
         from datetime import datetime
+        from django.utils import timezone
 
         sd = cleaned.get("data_inicial")
         st = cleaned.get("horario_inicial")
         ed = cleaned.get("data_final")
         et = cleaned.get("horario_final")
 
-        mpd = cleaned.get("meeting_point_date")
-        mpt = cleaned.get("meeting_point_time")
+        # meeting point
+        mpd = cleaned.get("data_encontro")
+        mpt = cleaned.get("horario_encontro")
 
+        # Sempre transformar os datetime combinados em timezone-aware
         if sd and st:
-            cleaned["data_inicio"] = datetime.combine(sd, st)
+            naive_dt = datetime.combine(sd, st)
+            cleaned["data_inicio"] = timezone.make_aware(naive_dt)
+
         if ed and et:
-            cleaned["data_termino"] = datetime.combine(ed, et)
+            naive_dt = datetime.combine(ed, et)
+            cleaned["data_termino"] = timezone.make_aware(naive_dt)
+
         if mpd and mpt:
-            cleaned["data_encontro"] = datetime.combine(mpd, mpt)
+            naive_dt = datetime.combine(mpd, mpt)
+            cleaned["data_encontro"] = timezone.make_aware(naive_dt)
 
         return cleaned
     
@@ -191,9 +186,6 @@ class EventoForm(forms.ModelForm):
         if categoria == '':
             return None 
             
-        valid_values = [v[0] for v in Category_CHOICES if v[0] != '']
-        if categoria and categoria not in valid_values:
-            raise ValidationError("Seleção de gênero inválida.")
             
         return categoria
 
