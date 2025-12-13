@@ -260,8 +260,8 @@
                 </div>
                 <div class="organizador-detalhes">
                     <h4>{{ evento.organizador.nome_completo }}</h4>
-                    {% if evento.organizador.bio %}
-                        <p class="organizador-subtitle">{{ evento.organizador.bio }}</p>
+                    {% if evento.organizador.descricao %}
+                        <p class="organizador-subtitle">{{ evento.organizador.descricao }}</p>
                     {% endif %}
                     
                     {% comment %}
@@ -290,9 +290,7 @@
                     </div>
                     {% endcomment %}
                     
-                    {% if evento.organizador.bio %}
-                        <p class="organizador-desc">{{ evento.organizador.bio }}</p>
-                    {% endif %}
+                   
                 </div>
             </div>
         </div>

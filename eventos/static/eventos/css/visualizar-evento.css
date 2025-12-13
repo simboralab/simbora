@@ -9,11 +9,14 @@ body.has-header {
 }
 
 /* Ajuste do container para não conflitar com header */
-.main-header + .container {
+/* Suporta tanto main-header quanto hero-header */
+.main-header + .container,
+.hero-header + .container {
   margin-top: 0;
 }
 
-.main-header ~ .container {
+.main-header ~ .container,
+.hero-header ~ .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0;
@@ -21,6 +24,31 @@ body.has-header {
   height: auto;
   display: block;
   background-color: var(--branco);
+}
+
+/* Garantir que o container tenha margens laterais mesmo sem header específico */
+/* Regra específica para a página de visualizar evento - alta especificidade */
+body .container {
+  max-width: 1200px !important;
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  background-color: var(--branco);
+  padding-left: 0;
+  padding-right: 0;
+  box-sizing: border-box;
+}
+
+/* Garantir especificidade maior para a página de eventos */
+body .container .event-header,
+body .container .local,
+body .container .sobre,
+body .container .confirma-box,
+body .container .info-importante,
+body .container .local-completo,
+body .container .organizador,
+body .container .compartilhar {
+  max-width: 100%;
 }
 
 .banner {
