@@ -10,13 +10,21 @@
 
     {% block extra_head %}
         <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
-        <link rel="stylesheet" href="{% static 'core/css/principal.css' %}">
+        {% if user.is_authenticated %}
+            <link rel="stylesheet" href="{% static 'core/css/main_header.css' %}">
+        {% else %}
+            <link rel="stylesheet" href="{% static 'core/css/principal.css' %}">
+        {% endif %}
     {% endblock extra_head %}
     
 
 </head>
 <body>
-    {% include "core/partials/header.html" %}
+    {% if user.is_authenticated %}
+        {% include "core/partials/header_auth.html" %}
+    {% else %}
+        {% include "core/partials/header.html" %}
+    {% endif %}
 
     {% block content %}
     {% endblock content %}
