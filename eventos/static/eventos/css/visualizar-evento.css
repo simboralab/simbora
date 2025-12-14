@@ -346,7 +346,9 @@ h1 {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.galera-section .mais-btn {
+.galera-section .mais-btn,
+.galera-section .mais-btn:link,
+.galera-section .mais-btn:visited {
   background-color: rgba(255, 255, 255, 0.2);
   color: var(--branco);
   border-radius: 50%;
@@ -364,11 +366,26 @@ h1 {
   padding: 0;
   margin: 0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  text-decoration: none;
 }
 
-.galera-section .mais-btn:hover {
+.galera-section .mais-btn:hover,
+.galera-section .mais-btn:active {
   background-color: rgba(255, 255, 255, 0.35);
   transform: scale(1.1);
+  text-decoration: none;
+  color: var(--branco);
+}
+
+/* Estilo para quando o botão não é um link (usuário não autenticado) */
+.galera-section .mais-btn:not(a) {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.galera-section .mais-btn:not(a):hover {
+  transform: none;
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 .confirma-right {

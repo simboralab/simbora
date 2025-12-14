@@ -1,8 +1,11 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
 from .models import Eventos, Participacao
+from django.contrib import messages
+from django.db.models import Q, Exists, OuterRef
+from perfil.models import Perfil
 
 def lista_eventos(request):
     eventos = Eventos.objects.all().order_by("-data_inicio")
@@ -395,3 +398,383 @@ def confirmar_presenca(request, evento_id):
             'success': False,
             'error': 'Erro ao processar solicitação. Tente novamente.'
         }, status=500)
+
+
+@login_required
+def meus_eventos(request):
+    filtro = request.GET.get('filtro', 'all')
+    user = request.user
+
+    # Correção principal: usa get_or_create para garantir que o Perfil exista
+    perfil, criado = Perfil.objects.get_or_create(
+        usuario=user,
+        defaults={
+            'nome_social': user.username,  # ou user.get_full_name() se tiver nome
+            # Adicione outros campos default se necessário (ex: bio='', foto=None)
+        }
+    )
+
+    # Se foi criado agora, você pode mostrar uma mensagem de boas-vindas
+    if criado:
+        messages.info(request, "Seu perfil foi criado automaticamente. Complete suas informações!")
+
+    # Agora todas as queries usam o 'perfil' (instância de Perfil)
+    if filtro == 'created':
+        eventos = Eventos.objects.filter(organizador=perfil)
+    elif filtro == 'enrolled':
+        # Busca eventos onde o usuário tem participação ativa (excluindo cancelados e ausentes)
+        # Usa participacoes para filtrar pelo status específico do usuário
+        participacoes_ativas = Participacao.objects.filter(
+            evento=OuterRef('pk'),
+            participante=perfil
+        ).exclude(status__in=['CANCELADO', 'AUSENTE'])
+        
+        eventos = Eventos.objects.filter(
+            Exists(participacoes_ativas)
+        ).distinct()
+    elif filtro == 'cancelled':
+        # Busca eventos onde:
+        # 1. O usuário cancelou a participação (status da participação = CANCELADO)
+        # 2. OU o usuário é organizador e o evento foi cancelado (status do evento = CANCELADO)
+        participacoes_canceladas = Participacao.objects.filter(
+            evento=OuterRef('pk'),
+            participante=perfil,
+            status='CANCELADO'
+        )
+        
+        eventos = Eventos.objects.filter(
+            Q(Exists(participacoes_canceladas)) | 
+            Q(organizador=perfil, status='CANCELADO')
+        ).distinct()
+    elif filtro == 'completed':
+        # Eventos concluídos onde o usuário é organizador ou tem participação ativa
+        participacoes_ativas = Participacao.objects.filter(
+            evento=OuterRef('pk'),
+            participante=perfil
+        ).exclude(status__in=['CANCELADO', 'AUSENTE'])
+        
+        eventos = Eventos.objects.filter(
+            Q(organizador=perfil) | 
+            Exists(participacoes_ativas),
+            status='FINALIZADO'
+        ).distinct()
+    else:  # 'all' ou qualquer outro
+        # Eventos onde o usuário é organizador ou tem participação ativa
+        participacoes_ativas = Participacao.objects.filter(
+            evento=OuterRef('pk'),
+            participante=perfil
+        ).exclude(status__in=['CANCELADO', 'AUSENTE'])
+        
+        eventos = Eventos.objects.filter(
+            Q(organizador=perfil) | 
+            Exists(participacoes_ativas)
+        ).distinct()
+
+    eventos = eventos.order_by('-data_inicio').prefetch_related('participacoes', 'organizador')
+    
+    # Adiciona informações calculadas para cada evento
+    eventos_com_info = []
+    for evento in eventos:
+        # Conta participantes ativos (excluindo cancelados e ausentes)
+        participantes_ativos = evento.participacoes.exclude(
+            status__in=['CANCELADO', 'AUSENTE']
+        ).exclude(participante__isnull=True).count()
+        
+        # Se tem organizador e ele não está na lista, conta ele também
+        if evento.organizador:
+            organizador_na_lista = evento.participacoes.filter(
+                participante=evento.organizador
+            ).exclude(status__in=['CANCELADO', 'AUSENTE']).exists()
+            if not organizador_na_lista:
+                participantes_ativos += 1
+        
+        # Verifica se o usuário está inscrito no evento (e não é o organizador)
+        usuario_inscrito = False
+        usuario_cancelado = False
+        eh_organizador = evento.organizador and evento.organizador.id == perfil.id
+        if not eh_organizador:
+            # Verifica se tem participação ativa
+            participacao_ativa = evento.participacoes.filter(
+                participante=perfil
+            ).exclude(status__in=['CANCELADO', 'AUSENTE']).first()
+            if participacao_ativa:
+                usuario_inscrito = True
+            
+            # Verifica se tem participação cancelada
+            participacao_cancelada = evento.participacoes.filter(
+                participante=perfil,
+                status='CANCELADO'
+            ).first()
+            if participacao_cancelada:
+                usuario_cancelado = True
+        
+        eventos_com_info.append({
+            'evento': evento,
+            'total_participantes': participantes_ativos,
+            'usuario_inscrito': usuario_inscrito,
+            'usuario_cancelado': usuario_cancelado,
+        })
+
+    context = {
+        'eventos_com_info': eventos_com_info,
+        'filtro_ativo': filtro,
+    }
+
+    return render(request, 'eventos/meus_eventos.html', context)
+
+
+@login_required
+def criar_evento(request):
+    """
+    View para criar um novo evento
+    Por enquanto retorna uma mensagem, pode ser expandida depois com formulário
+    """
+    # TODO: Implementar formulário de criação de evento
+    messages.info(request, "Funcionalidade de criar evento será implementada em breve.")
+    return redirect('eventos:meus_eventos')
+
+
+@login_required
+def editar_evento(request, evento_id):
+    """
+    View para editar um evento existente
+    Verifica se o usuário é o organizador antes de permitir edição
+    """
+    evento = get_object_or_404(Eventos, id=evento_id)
+    
+    # Verifica se o usuário é o organizador
+    if not request.user.is_authenticated:
+        messages.error(request, "Você precisa estar logado para editar eventos.")
+        return redirect('eventos:visualizar_evento', evento_id=evento_id)
+    
+    # Verifica se tem perfil
+    if not hasattr(request.user, 'perfil') or request.user.perfil is None:
+        messages.error(request, "Perfil não encontrado. Complete seu cadastro primeiro.")
+        return redirect('eventos:visualizar_evento', evento_id=evento_id)
+    
+    perfil = request.user.perfil
+    
+    # Verifica se é o organizador
+    if evento.organizador != perfil:
+        messages.error(request, "Você não tem permissão para editar este evento.")
+        return redirect('eventos:visualizar_evento', evento_id=evento_id)
+    
+    # TODO: Implementar formulário de edição de evento
+    messages.info(request, "Funcionalidade de editar evento será implementada em breve.")
+    return redirect('eventos:visualizar_evento', evento_id=evento_id)
+
+
+@login_required
+def participantes_evento(request, evento_id):
+    """
+    View para visualizar os participantes de um evento
+    Qualquer usuário autenticado pode ver a lista de participantes
+    """
+    evento = get_object_or_404(Eventos, id=evento_id)
+    
+    # Verifica se o usuário está autenticado
+    if not request.user.is_authenticated:
+        messages.error(request, "Você precisa estar logado para ver os participantes.")
+        return redirect('eventos:visualizar_evento', evento_id=evento_id)
+    
+    # Verifica se tem perfil
+    if not hasattr(request.user, 'perfil') or request.user.perfil is None:
+        messages.error(request, "Perfil não encontrado. Complete seu cadastro primeiro.")
+        return redirect('eventos:visualizar_evento', evento_id=evento_id)
+    
+    perfil = request.user.perfil
+    
+    # Verifica se é o organizador (para possíveis funcionalidades extras no futuro)
+    eh_organizador = evento.organizador and evento.organizador.id == perfil.id
+    
+    # Busca todas as participações ativas (excluindo cancelados e ausentes)
+    participantes = evento.participacoes.exclude(
+        status__in=['CANCELADO', 'AUSENTE']
+    ).exclude(participante__isnull=True).select_related('participante').order_by('participante__nome_social', 'participante__usuario__first_name')
+    
+    # Adiciona o organizador à lista se ele não estiver nas participações
+    lista_participantes = list(participantes)
+    organizador_na_lista = False
+    if evento.organizador:
+        organizador_na_lista = participantes.filter(participante=evento.organizador).exists()
+        if not organizador_na_lista:
+            # Cria um objeto virtual para o organizador
+            class ParticipacaoVirtual:
+                def __init__(self, participante):
+                    self.participante = participante
+                    self.status = 'CONFIRMADO'
+                    self.id = None
+                
+                def get_status_display(self):
+                    return 'Confirmado'
+            
+            organizador_participacao = ParticipacaoVirtual(evento.organizador)
+            lista_participantes.insert(0, organizador_participacao)
+    
+    # Conta total de participantes
+    total_participantes = len(lista_participantes)
+    
+    context = {
+        'evento': evento,
+        'participantes': lista_participantes,
+        'total_participantes': total_participantes,
+        'eh_organizador': eh_organizador,
+        'organizador_na_lista': organizador_na_lista,
+    }
+    
+    return render(request, 'eventos/participantes_evento.html', context)
+
+
+@login_required
+@require_http_methods(["POST"])
+def cancelar_evento(request, evento_id):
+    """
+    View para cancelar um evento
+    Apenas o organizador pode cancelar
+    Aceita requisições AJAX e retorna JSON
+    """
+    evento = get_object_or_404(Eventos, id=evento_id)
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+    
+    # Verifica se o usuário é o organizador
+    if not request.user.is_authenticated:
+        if is_ajax:
+            return JsonResponse({'success': False, 'error': 'Você precisa estar logado para cancelar eventos.'}, status=403)
+        messages.error(request, "Você precisa estar logado para cancelar eventos.")
+        return redirect('eventos:visualizar_evento', evento_id=evento_id)
+    
+    # Verifica se tem perfil
+    if not hasattr(request.user, 'perfil') or request.user.perfil is None:
+        if is_ajax:
+            return JsonResponse({'success': False, 'error': 'Perfil não encontrado. Complete seu cadastro primeiro.'}, status=400)
+        messages.error(request, "Perfil não encontrado. Complete seu cadastro primeiro.")
+        return redirect('eventos:visualizar_evento', evento_id=evento_id)
+    
+    perfil = request.user.perfil
+    
+    # Verifica se é o organizador
+    if evento.organizador != perfil:
+        if is_ajax:
+            return JsonResponse({'success': False, 'error': 'Apenas o organizador pode cancelar o evento.'}, status=403)
+        messages.error(request, "Apenas o organizador pode cancelar o evento.")
+        return redirect('eventos:visualizar_evento', evento_id=evento_id)
+    
+    # Verifica se já está cancelado
+    if evento.status == 'CANCELADO':
+        if is_ajax:
+            return JsonResponse({'success': False, 'error': 'Este evento já está cancelado.'}, status=400)
+        messages.warning(request, "Este evento já está cancelado.")
+        return redirect('eventos:visualizar_evento', evento_id=evento_id)
+    
+    # Verifica se o evento pode ser cancelado (não pode estar finalizado)
+    if evento.status == 'FINALIZADO':
+        if is_ajax:
+            return JsonResponse({'success': False, 'error': 'Não é possível cancelar um evento finalizado.'}, status=400)
+        messages.error(request, "Não é possível cancelar um evento finalizado.")
+        return redirect('eventos:visualizar_evento', evento_id=evento_id)
+    
+    # Cancela o evento
+    evento.status = 'CANCELADO'
+    evento.aceita_participantes = False
+    evento.save()
+    
+    if is_ajax:
+        return JsonResponse({
+            'success': True,
+            'message': f'O evento "{evento.nome_evento}" foi cancelado com sucesso.'
+        })
+    
+    messages.success(request, f"O evento '{evento.nome_evento}' foi cancelado com sucesso.")
+    return redirect('eventos:meus_eventos')
+
+
+@login_required
+@require_http_methods(["POST"])
+def sair_evento(request, evento_id):
+    """
+    View para que o usuário se desinscreva de um evento
+    Atualiza o status da participação para CANCELADO
+    """
+    evento = get_object_or_404(Eventos, id=evento_id)
+    
+    # Verifica se é requisição AJAX
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+    
+    # Verifica se o usuário está autenticado
+    if not request.user.is_authenticated:
+        if is_ajax:
+            return JsonResponse({
+                'success': False,
+                'error': 'Você precisa estar logado para sair de eventos.'
+            }, status=401)
+        messages.error(request, "Você precisa estar logado para sair de eventos.")
+        return redirect('eventos:visualizar_evento', evento_id=evento_id)
+    
+    # Verifica se tem perfil
+    if not hasattr(request.user, 'perfil') or request.user.perfil is None:
+        if is_ajax:
+            return JsonResponse({
+                'success': False,
+                'error': 'Perfil não encontrado. Complete seu cadastro primeiro.'
+            }, status=400)
+        messages.error(request, "Perfil não encontrado. Complete seu cadastro primeiro.")
+        return redirect('eventos:visualizar_evento', evento_id=evento_id)
+    
+    perfil = request.user.perfil
+    
+    # Verifica se é o organizador (organizador não pode sair do próprio evento)
+    if evento.organizador and evento.organizador.id == perfil.id:
+        if is_ajax:
+            return JsonResponse({
+                'success': False,
+                'error': 'Você é o organizador deste evento. Use "Cancelar Evento" se desejar cancelá-lo.'
+            }, status=400)
+        messages.error(request, "Você é o organizador deste evento. Use 'Cancelar Evento' se desejar cancelá-lo.")
+        return redirect('eventos:meus_eventos')
+    
+    # Verifica se o evento está ativo
+    if evento.status != 'ATIVO':
+        if is_ajax:
+            return JsonResponse({
+                'success': False,
+                'error': 'Você só pode sair de eventos ativos.'
+            }, status=400)
+        messages.warning(request, "Você só pode sair de eventos ativos.")
+        return redirect('eventos:meus_eventos')
+    
+    # Busca a participação do usuário
+    try:
+        participacao = Participacao.objects.get(evento=evento, participante=perfil)
+    except Participacao.DoesNotExist:
+        if is_ajax:
+            return JsonResponse({
+                'success': False,
+                'error': 'Você não está inscrito neste evento.'
+            }, status=400)
+        messages.warning(request, "Você não está inscrito neste evento.")
+        return redirect('eventos:meus_eventos')
+    
+    # Verifica se já está cancelado
+    if participacao.status == 'CANCELADO':
+        if is_ajax:
+            return JsonResponse({
+                'success': False,
+                'error': 'Você já saiu deste evento.'
+            }, status=400)
+        messages.info(request, "Você já saiu deste evento.")
+        return redirect('eventos:meus_eventos')
+    
+    # Atualiza o status para CANCELADO
+    from django.utils import timezone
+    participacao.status = 'CANCELADO'
+    participacao.data_cancelamento = timezone.now()
+    participacao.save()
+    
+    if is_ajax:
+        return JsonResponse({
+            'success': True,
+            'message': f'Você saiu do evento "{evento.nome_evento}" com sucesso.'
+        })
+    
+    messages.success(request, f"Você saiu do evento '{evento.nome_evento}' com sucesso.")
+    return redirect('eventos:meus_eventos')

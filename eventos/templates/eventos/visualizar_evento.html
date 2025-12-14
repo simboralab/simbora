@@ -114,7 +114,11 @@
                             {% endif %}
                         {% endfor %}
                         {% if participantes_para_exibicao|length > 4 %}
-                            <button class="mais-btn" onclick="mostrarGaleraCompleta()" title="Ver todos os confirmados">+{{ participantes_para_exibicao|length|add:"-4" }}</button>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'eventos:participantes_evento' evento.id %}" class="mais-btn" title="Ver todos os participantes">+{{ participantes_para_exibicao|length|add:"-4" }}</a>
+                            {% else %}
+                                <span class="mais-btn" title="Faça login para ver todos os participantes">+{{ participantes_para_exibicao|length|add:"-4" }}</span>
+                            {% endif %}
                         {% endif %}
                     </div>
                 </div>

@@ -1,0 +1,32 @@
+{% extends "core/page/base_core.html" %}
+{% load static %}
+
+{% block title %}Explorar Eventos{% endblock title %}
+
+{% block extra_head %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'eventos/css/listagem.css' %}">
+{% endblock extra_head %}
+
+{% block content %}
+    <main class="container main-content">
+        <h1 id="page-title">Explorar</h1>
+
+        <div id="filters-toolbar" class="filters-toolbar" aria-label="Filtros rápidos">
+            <!-- filtros de topo (renderizados por JS) -->
+        </div>
+
+        <section id="listagem-area" class="listagem-area">
+            <section id="listagem-grid" class="listagem-grid" aria-live="polite">
+                <!-- cartões serão renderizados por JS -->
+            </section>
+        </section>
+
+        <div id="pagination" class="listagem-pagination" aria-hidden="false"></div>
+    </main>
+{% endblock content %}
+
+{% block extra_js %}
+    {{ block.super }}
+    <script src="{% static 'eventos/js/listagem.js' %}"></script>
+{% endblock extra_js %}
