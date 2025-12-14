@@ -15,6 +15,9 @@
     {% block extra_head %}
     {% endblock extra_head %}
 
+    {% block extra_css %}
+    {% endblock extra_css %}
+
 </head>
 <body>
     
@@ -24,6 +27,7 @@
     {% block extra_js %}
         <script src="{% static 'core/js/validation.js' %}"></script>
         <script src="{% static 'core/js/principal.js' %}"></script>
+        <script src="{% static 'js/action-my-event.js' %}"></script>
     {% endblock extra_js %}
 
 </body>

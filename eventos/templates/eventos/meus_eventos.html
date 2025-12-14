@@ -1,0 +1,126 @@
+{% extends "core/page/base_core.html" %}
+
+
+{% load static %}
+
+{% block extra_head %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/events-created.css' %}">
+
+{% endblock extra_head %}
+{% block title %}Meus eventos - Simbora{% endblock title %}
+
+
+{% block content %}
+
+
+<main class="events-created-main">
+    <div>
+        <div class="page-header">
+            <div class="page-header-content">
+                <h1 class="page-title">Meus eventos</h1>
+                <p class="page-subtitle">Gerenciamento</p>
+            </div>
+            <a href="#" class="btn-create-event">
+                <span class="material-symbols-rounded">add</span>
+                Criar Evento
+            </a>
+        </div>
+        
+        <nav class="filter-tabs">
+            <div>
+                <a href="?filtro=all" class="filter-tab {% if filtro_ativo == 'all' %}active{% endif %}">Todos</a>
+                <a href="?filtro=created" class="filter-tab {% if filtro_ativo == 'created' %}active{% endif %}">Criados</a>
+                <a href="?filtro=enrolled" class="filter-tab {% if filtro_ativo == 'enrolled' %}active{% endif %}">Inscrito</a>
+                <a href="?filtro=completed" class="filter-tab {% if filtro_ativo == 'completed' %}active{% endif %}">Concluído</a>
+            </div>
+        </nav>
+        
+        <section class="events-section">
+            {% for evento in eventos %}
+            {{ evento.nome_evento }}
+
+                <article class="event-card" data-status="{{ evento.status }}" data-categories="{% if evento.organizador.usuario == request.user %}created{% else %}enrolled{% endif %}">
+                    <div class="event-badges-top">
+                        <span class="status-badge status-{{ evento.status }}">
+                            <span class="material-symbols-rounded">{% if evento.status == 'ativo' %}check_circle{% else %}task_alt{% endif %}</span>
+                            {{ evento.get_status_display|title }}  <!-- Assumindo choices com get_display -->
+                        </span>
+                        {% if evento.organizador == user %}
+                            <span class="creator-badge">
+                                <span class="material-symbols-rounded">workspace_premium</span> Host
+                            </span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="event-card-wrapper">
+                        <div class="event-image-container">
+                            <div class="event-image" style="background-image: url('{% if evento.foto %}{{ evento.foto.url }}{% elif evento.foto_url %}{{ evento.foto_url }}{% else %}https://via.placeholder.com/600x400/6366f1/ffffff?text=Sem+Imagem{% endif %}');"></div>
+                            <div class="event-tags-overlay">
+                                {% for tag in evento.tags.all %}
+                                    <span class="tag">{{ tag.nome }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="event-content-wrapper">
+                            <div class="event-header-info">
+                                <h3 class="event-name">{{ evento.nome_evento }}</h3>
+                            </div>
+                            
+                            <div class="event-meta">
+                                <div class="event-meta-row">
+                                    <div class="event-meta-item">
+                                        <span class="material-symbols-rounded">calendar_today</span>
+                                        <span>{{ evento.data|date:"D d, F - H:i" }}</span>
+                                    </div>
+                                    <div class="event-meta-item">
+                                        <span class="material-symbols-rounded">location_on</span>
+                                        <span>{{ evento.local }}</span>
+                                    </div>
+                                </div>
+                                <div class="event-meta-item participants-item">
+                                    <span class="material-symbols-rounded">group</span>
+                                    <span class="participants-count"><strong>{{ evento.participantes.count }}</strong> / <strong class="total">{{ evento.max_participantes }}</strong> Participantes</span>
+                                </div>
+                            </div>
+                            
+                            <div class="event-actions">
+                                {% if evento.organizador.usuario == request.user %}
+                                    <a href="{% url 'eventos:editar_evento' evento.pk %}" class="action-btn">
+                                        <span class="material-symbols-rounded">edit</span> Editar
+                                    </a>
+                                    <a href="{% url 'eventos:participantes_evento' evento.pk %}" class="action-btn">
+                                        <span class="material-symbols-rounded">group</span> Participantes
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'eventos:visualizar_evento' evento.pk %}" class="action-btn">
+                                        <span class="material-symbols-rounded">visibility</span> Detalhes
+                                    </a>
+                                {% endif %}
+                                <a href="#" class="action-btn">
+                                    <span class="material-symbols-rounded">star</span> Avaliar
+                                </a>
+                                {% if evento.organizador.usuario == request.user %}
+                                    <a href="{% url 'eventos:cancelar_evento' evento.pk %}" class="action-btn">
+                                        <span class="material-symbols-rounded">close</span> Cancelar
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            {% empty %}
+                <p class="no-events">Você ainda não tem eventos. <a href="{% url 'eventos:criar_evento' %}">Crie o primeiro!</a></p>
+            {% endfor %}
+        </section>
+    </div>
+</main>
+
+<!-- Footer original aqui -->
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/action-my-event.js' %}"></script>
+    <!-- JS para filtros via GET params se necessário -->
+{% endblock %}
