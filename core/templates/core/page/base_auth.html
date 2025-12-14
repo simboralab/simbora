@@ -9,22 +9,14 @@
     {% include "core/partials/font_links.html" %}
 
     {% block extra_head %}
+        <link rel="stylesheet" href="{% static 'core/css/main_header.css' %}">
         <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
-        {% if user.is_authenticated %}
-            <link rel="stylesheet" href="{% static 'core/css/main_header.css' %}">
-        {% else %}
-            <link rel="stylesheet" href="{% static 'core/css/principal.css' %}">
-        {% endif %}
     {% endblock extra_head %}
     
 
 </head>
 <body>
-    {% if user.is_authenticated %}
-        {% include "core/partials/header_auth.html" %}
-    {% else %}
-        {% include "core/partials/header.html" %}
-    {% endif %}
+    {% include "core/partials/header_auth.html" %}
 
     {% block content %}
     {% endblock content %}
@@ -36,3 +28,4 @@
     {% include "core/partials/footer.html" %}
 </body>
 </html>
+

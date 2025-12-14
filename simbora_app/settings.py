@@ -1,16 +1,28 @@
 from pathlib import Path
 import os
+import dj_database_url
 from config import settings
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Configurações do Dynaconf (com validação automática e tipagem)
-SECRET_KEY = settings.SECRET_KEY
-FIELD_ENCRYPTION_KEY = settings.FIELD_ENCRYPTION_KEY
-DEBUG = settings.DEBUG
-ALLOWED_HOSTS = settings.ALLOWED_HOSTS
 
-# Ambiente atual (útil para validação e logs)
+SECRET_KEY = settings.get('SECRET_KEY')
+FIELD_ENCRYPTION_KEY = settings.get('FIELD_ENCRYPTION_KEY')
+
+
+DEBUG = settings.get('DEBUG', False)
+
+# ALLOWED_HOSTS: Dynaconf gerencia via settings.toml
+# O Dynaconf já retorna uma lista quando configurado como lista no TOML
+# No Render, pode definir SIMBORA_ALLOWED_HOSTS via variável de ambiente
+# ou será adicionado automaticamente o RENDER_EXTERNAL_HOSTNAME abaixo
+ALLOWED_HOSTS = list(settings.get('ALLOWED_HOSTS', []))
+# Adicionar RENDER_EXTERNAL_HOSTNAME se disponível (Render define automaticamente)
+# Isso permite que o Render adicione o hostname sem precisar configurar manualmente
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME and RENDER_EXTERNAL_HOSTNAME not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
 ENVIRONMENT = settings.current_env
 
 # Application definition
@@ -29,6 +41,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Adicionado para servir static files no Render
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -61,11 +74,18 @@ WSGI_APPLICATION = 'simbora_app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# Configuração para usar PostgreSQL no Render ou SQLite localmente
+# O dj_database_url lê DATABASE_URL diretamente do ambiente (padrão do Render)
+# O Dynaconf também pode fornecer via SIMBORA_DATABASE_URL se necessário
+# Prioridade: DATABASE_URL (ambiente) > SIMBORA_DATABASE_URL (Dynaconf) > SQLite (padrão)
+database_url = os.environ.get('DATABASE_URL') or settings.get('DATABASE_URL', None)
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        # Valor padrão para desenvolvimento local (SQLite)
+        # Em produção no Render, DATABASE_URL será fornecido automaticamente
+        default=database_url or ('sqlite:///' + str(BASE_DIR / 'db.sqlite3')),
+        conn_max_age=600
+    )
 }
 
 
@@ -93,7 +113,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = settings.get('LANGUAGE_CODE', 'pt-br')
+# Usar settings.get() com valores padrão para evitar erros de acesso
+LANGUAGE_CODE = settings.get('LANGUAGE_CODE', 'pt-BR')
 
 TIME_ZONE = settings.get('TIME_ZONE', 'America/Sao_Paulo')
 
@@ -105,11 +126,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [
-    BASE_DIR / 'assets',
-]
+
+# Configuração do WhiteNoise para produção (Render)
+if not DEBUG:
+    # Enable the WhiteNoise storage backend, which compresses static files
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -119,10 +142,11 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
 EMAIL_BACKEND = settings.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
 EMAIL_HOST = settings.get('EMAIL_HOST', 'smtp.gmail.com')
 EMAIL_PORT = settings.get('EMAIL_PORT', 587)
 EMAIL_USE_TLS = settings.get('EMAIL_USE_TLS', True)
 EMAIL_HOST_USER = settings.get('EMAIL_HOST_USER', 'suporte.simbora.app@gmail.com')
-EMAIL_HOST_PASSWORD = settings.get('simbora_password', '')  
-DEFAULT_FROM_EMAIL = settings.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
+EMAIL_HOST_PASSWORD = settings.get('SIMBORA_PASSWORD', '')
+DEFAULT_FROM_EMAIL = settings.get('DEFAULT_FROM_EMAIL', 'suporte.simbora.app@gmail.com')

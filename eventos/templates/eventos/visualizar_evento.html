@@ -1,15 +1,349 @@
 {% extends "core/page/base_core.html" %}
+{% load static %}
+{% load perfil_tags %}
 
-{% block title %}{{ evento.nome_evento }}{% endblock title %}
+{% block title %}Visualizar Evento{% endblock title %}
+
+{% block extra_head %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'eventos/css/visualizar-evento.css' %}">
+    {% csrf_token %}
+    <meta name="csrf-token" content="{{ csrf_token }}">
+{% endblock extra_head %}
 
 {% block content %}
-    
-    <h1>{{ evento.nome_evento }}</h1>
-    <p><strong>Descrição:</strong> {{ evento.descricao }}</p>
-    <p><strong>Data início:</strong> {{ evento.data_inicio|date:"d/m/Y H:i" }}</p>
-    <p><strong>Data término:</strong> {{ evento.data_termino|date:"d/m/Y H:i" }}</p>
-    <p><a href="{% url 'eventos:lista_eventos' %}">Voltar para lista</a></p>
+<div class="container">
+    {% if evento.foto %}
+        <div class="banner" style="background-image: url('{{ evento.foto.url }}');"></div>
+    {% elif evento.foto_url %}
+        <div class="banner" style="background-image: url('{{ evento.foto_url }}');"></div>
+    {% else %}
+        <div class="banner"></div>
+    {% endif %}
 
+    <div class="event-header">
+        <div class="event-status">
+            {% if evento.status == 'ATIVO' %}
+                <span class="badge disponivel">Disponível</span>
+            {% elif evento.status == 'CANCELADO' %}
+                <span class="badge cancelado">Cancelado</span>
+            {% elif evento.status == 'FINALIZADO' %}
+                <span class="badge finalizado">Finalizado</span>
+            {% endif %}
+            {% if evento.maximo_participantes %}
+                <span class="badge confirmados">{{ total_confirmados }}/{{ evento.maximo_participantes }} confirmados</span>
+            {% else %}
+                <span class="badge confirmados">{{ total_confirmados }} confirmados</span>
+            {% endif %}
+        </div>
+        <h1>{{ evento.nome_evento }}</h1>
+        {% comment %}
+        <!-- Tags de categorias podem ser adicionadas quando o modelo tiver esse campo -->
+        {% if evento.categorias.all %}
+            <div class="event-tags">
+                {% for categoria in evento.categorias.all %}
+                    <span class="tag">{{ categoria.nome }}</span>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% endcomment %}
+    </div>
+
+    <div class="local">
+        {% if evento.organizador %}
+            <div class="local-item local-host">
+                {% get_avatar_url evento.organizador evento.organizador.nome_completo as avatar_url %}
+                <img src="{{ avatar_url }}" alt="{{ evento.organizador.nome_completo }}" class="host-avatar-small">
+                <span class="local-text">
+                    Host do Rolê<br>
+                    <span class="local-address">{{ evento.organizador.nome_completo }}</span>
+                </span>
+            </div>
+        {% endif %}
+        <div class="local-item">
+            <span class="material-symbols-rounded icon" aria-hidden="true">calendar_today</span>
+            <span class="local-text">
+                {{ evento.data_inicio|date:"l, d \d\e F \d\e Y"|capfirst }}<br>
+                <span class="local-time">{{ evento.data_inicio|time:"H:i" }} até {{ evento.data_termino|time:"H:i" }}</span>
+            </span>
+        </div>
+        {% if evento.endereco %}
+            <div class="local-item">
+                <span class="material-symbols-rounded icon" aria-hidden="true">location_on</span>
+                <span class="local-text">
+                    <a href="https://maps.google.com/?q={{ evento.endereco.logradouro|urlencode }}+{{ evento.endereco.cidade|urlencode }}" target="_blank" rel="noopener noreferrer" class="local-link">
+                        {{ evento.endereco.logradouro }}<br>
+                        <span class="local-address">{{ evento.endereco.bairro }}, {{ evento.endereco.cidade }} - {{ evento.endereco.estado }}</span>
+                    </a>
+                </span>
+            </div>
+        {% endif %}
+    </div>
+
+    {% if evento.descricao %}
+        <div class="sobre">
+            <h3>Sobre o Evento</h3>
+            <p class="intro">{{ evento.descricao|linebreaks }}</p>
+        </div>
+    {% endif %}
+
+    <div class="confirma-box">
+        <h2 class="confirma-title">Vamos fazer este rolê acontecer!</h2>
+        <div class="confirma-content">
+            <div class="confirma-left">
+                {% if evento.maximo_participantes %}
+                    <div class="progress-section">
+                        <div class="progress-bar">
+                            <div class="progress" id="progress-bar-fill"></div>
+                        </div>
+                        <p class="progress-text" id="confirmados-text">
+                            {{ total_confirmados }}/{{ evento.maximo_participantes }} confirmados
+                            {% if faltam and faltam > 0 %}— Faltam {{ faltam }}!{% elif esta_lotado %}— Rolê completo!{% endif %}
+                        </p>
+                    </div>
+                {% endif %}
+                <div class="galera-section">
+                    <h4>Galera que vai</h4>
+                    <div class="pessoas">
+                        {% for participacao in participantes_para_exibicao|slice:":4" %}
+                            {% if participacao.participante %}
+                                <div class="pessoa">
+                                    {% get_avatar_url participacao.participante participacao.participante.nome_completo as avatar_url %}
+                                    <img src="{{ avatar_url }}" alt="{{ participacao.participante.nome_completo }}" title="{{ participacao.participante.nome_completo }}">
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        {% if participantes_para_exibicao|length > 4 %}
+                            <button class="mais-btn" onclick="mostrarGaleraCompleta()" title="Ver todos os confirmados">+{{ participantes_para_exibicao|length|add:"-4" }}</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="confirma-right" id="buttons-container">
+                {% if user.is_authenticated %}
+                    {% if eh_organizador %}
+                        <button class="btn-main btn-confirmado" disabled>Você é o Host</button>
+                    {% elif usuario_confirmado %}
+                        <button class="btn-confirmado" id="btn-confirmar" onclick="acessarGrupoWhatsApp()">NO ROLÊ!</button>
+                    {% elif esta_lotado %}
+                        <button class="btn-main" disabled>Evento Lotado</button>
+                    {% else %}
+                        <button class="btn-main" id="btn-confirmar" type="button">Eu vou!</button>
+                    {% endif %}
+                {% else %}
+                    <a href="{% url 'signin' %}" class="btn-main">Entrar para participar</a>
+                {% endif %}
+                <button class="btn-secondary" id="btn-convidar" onclick="convidarAmigos()">
+                    <span class="material-symbols-rounded">share</span>
+                    Convidar amigos
+                </button>
+                {% comment %}Botão WhatsApp: aparece se usuário autenticado é host OU está inscrito no evento{% endcomment %}
+                {% if user.is_authenticated %}
+                    {% if evento.grupo_whatsapp %}
+                        {% if eh_organizador or usuario_confirmado %}
+                            <a href="{{ evento.grupo_whatsapp }}" id="btn-whatsapp-group" class="btn-whatsapp" target="_blank" rel="noopener noreferrer">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                                </svg>
+                                Acessar o Grupo
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação -->
+    <div id="modal-confirmacao" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="material-symbols-rounded modal-icon">celebration</span>
+                <h2>Boas-vindas ao Rolê!</h2>
+            </div>
+            <div class="modal-body">
+                <p>Você e a turma já podem conversar para combinar os detalhes do ponto de encontro, caronas e o que mais precisar!</p>
+            </div>
+            <div class="modal-actions">
+                {% if evento.grupo_whatsapp %}
+                    <a href="{{ evento.grupo_whatsapp }}" class="btn-modal-whatsapp" target="_blank" rel="noopener noreferrer">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                        </svg>
+                        Entrar no Grupo de WhatsApp
+                    </a>
+                {% endif %}
+                <button class="btn-modal-secondary" onclick="convidarAmigos()">
+                    <span class="material-symbols-rounded">share</span>
+                    Convidar Amigos
+                </button>
+                <button class="btn-modal-close" onclick="fecharModal()">Continuar na página</button>
+            </div>
+        </div>
+    </div>
+
+    {% if evento.regras %}
+        <div class="info-importante">
+            <h3>Dicas e Orientações</h3>
+            <p class="disclaimer">
+                <strong>Atenção:</strong> Estas são sugestões e regras de convivência definidas pelo Host do Rolê{% if evento.organizador %} ({{ evento.organizador.nome_completo }}){% endif %}. 
+                Para detalhes oficiais do evento (ingressos, horário e política), consulte o site oficial do evento.
+            </p>
+            <div class="info-grid">
+                {% if evento.local_encontro %}
+                    <div class="info-item">
+                        <span class="material-symbols-rounded icon">groups</span>
+                        <div>
+                            <strong>Ponto de Encontro</strong>
+                            <p>{{ evento.local_encontro }}</p>
+                        </div>
+                    </div>
+                {% endif %}
+                {% if evento.data_encontro %}
+                    <div class="info-item">
+                        <span class="material-symbols-rounded icon">schedule</span>
+                        <div>
+                            <strong>Horário do Encontro</strong>
+                            <p>{{ evento.data_encontro|date:"d/m/Y H:i" }}</p>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            {% if evento.regras %}
+                <div class="info-item" style="margin-top: var(--spacing-sm);">
+                    <span class="material-symbols-rounded icon">child_care</span>
+                    <div>
+                        <strong>Regras de convivência</strong>
+                        <p>{{ evento.regras|linebreaks }}</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {% if evento.endereco %}
+        <div class="local-completo">
+            <h3>Local do Evento</h3>
+            <div class="local-detalhes">
+                <div class="local-principal">
+                    <h4>{{ evento.endereco.logradouro }}</h4>
+                    {% if evento.endereco.numero %}
+                        <p>{{ evento.endereco.numero }}</p>
+                    {% endif %}
+                    <p>{{ evento.endereco.bairro }}, {{ evento.endereco.cidade }} - {{ evento.endereco.estado }}</p>
+                    {% if evento.endereco.cep %}
+                        <p class="cep">CEP: {{ evento.endereco.cep }}</p>
+                    {% endif %}
+                    <a href="https://maps.google.com/?q={{ evento.endereco.logradouro|urlencode }}+{{ evento.endereco.cidade|urlencode }}" target="_blank" rel="noopener noreferrer" class="btn-mapa">
+                        <span class="material-symbols-rounded">map</span>
+                        Ver no mapa
+                    </a>
+                </div>
+                {% if evento.endereco.complemento %}
+                    <div class="local-instrucoes">
+                        <h4>Como chegar</h4>
+                        <p>{{ evento.endereco.complemento }}</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+
+    {% if evento.organizador %}
+        <div class="organizador">
+            <h3>Host do Rolê</h3>
+            <div class="organizador-info">
+                <div class="organizador-avatar">
+                    {% get_avatar_url evento.organizador evento.organizador.nome_completo as avatar_url %}
+                    <img src="{{ avatar_url }}" alt="{{ evento.organizador.nome_completo }}">
+                </div>
+                <div class="organizador-detalhes">
+                    <h4>{{ evento.organizador.nome_completo }}</h4>
+                    {% if evento.organizador.descricao %}
+                        <p class="organizador-subtitle">{{ evento.organizador.descricao }}</p>
+                    {% endif %}
+                    
+                    {% comment %}
+                    <!-- Avaliação do Host - pode ser implementado no futuro -->
+                    <div class="organizador-avaliacao">
+                        <div class="avaliacao-estrelas">
+                            <div class="estrelas-preenchidas" style="width: 96%;">
+                                <span class="material-symbols-rounded">star</span>
+                                <span class="material-symbols-rounded">star</span>
+                                <span class="material-symbols-rounded">star</span>
+                                <span class="material-symbols-rounded">star</span>
+                                <span class="material-symbols-rounded">star</span>
+                            </div>
+                            <div class="estrelas-vazias">
+                                <span class="material-symbols-rounded">star</span>
+                                <span class="material-symbols-rounded">star</span>
+                                <span class="material-symbols-rounded">star</span>
+                                <span class="material-symbols-rounded">star</span>
+                                <span class="material-symbols-rounded">star</span>
+                            </div>
+                        </div>
+                        <div class="avaliacao-info">
+                            <span class="avaliacao-media">4.8</span>
+                            <span class="avaliacao-total">(127 avaliações)</span>
+                        </div>
+                    </div>
+                    {% endcomment %}
+                    
+                   
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="compartilhar">
+        <h3>Compartilhe este rolê</h3>
+        <p>Convide amigos que ainda não estão no app para fazer parte dessa experiência!</p>
+        <div class="share-buttons">
+            <a href="https://wa.me/?text={{ evento.nome_evento|urlencode }}%20-%20{{ request.build_absolute_uri|urlencode }}" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               class="share-btn share-whatsapp">
+                <span class="material-symbols-rounded">chat</span>
+                WhatsApp
+            </a>
+            <a href="#" 
+               onclick="compartilharFacebook(); return false;"
+               class="share-btn share-facebook">
+                <span class="material-symbols-rounded">share</span>
+                Facebook
+            </a>
+            <button class="share-btn share-link" onclick="copiarLink()">
+                <span class="material-symbols-rounded">link</span>
+                Copiar Link
+            </button>
+        </div>
+    </div>
+
+</div>
 {% endblock content %}
 
-
+{% block extra_js %}
+    {{ block.super }}
+    <script>
+        // Variáveis globais para o JavaScript - DEFINIR ANTES DO SCRIPT
+        window.EVENTO_ID = {{ evento.id }};
+        window.CONFIRMAR_PRESENCA_URL = "{% url 'eventos:confirmar_presenca' evento.id %}";
+        window.USUARIO_CONFIRMADO = {{ usuario_confirmado|yesno:"true,false" }};
+        window.EH_ORGANIZADOR = {{ eh_organizador|yesno:"true,false" }};
+        window.TOTAL_CONFIRMADOS = {{ total_confirmados }};
+        window.MAXIMO_PARTICIPANTES = {{ evento.maximo_participantes|default:"null" }};
+        window.GRUPO_WHATSAPP = {% if evento.grupo_whatsapp %}"{{ evento.grupo_whatsapp }}"{% else %}null{% endif %};
+        
+        console.log('Variáveis globais definidas:', {
+            EVENTO_ID: window.EVENTO_ID,
+            CONFIRMAR_PRESENCA_URL: window.CONFIRMAR_PRESENCA_URL,
+            USUARIO_CONFIRMADO: window.USUARIO_CONFIRMADO,
+            EH_ORGANIZADOR: window.EH_ORGANIZADOR,
+            TOTAL_CONFIRMADOS: window.TOTAL_CONFIRMADOS,
+            MAXIMO_PARTICIPANTES: window.MAXIMO_PARTICIPANTES,
+            GRUPO_WHATSAPP: window.GRUPO_WHATSAPP
+        });
+    </script>
+    <script src="{% static 'eventos/js/visualizar-evento.js' %}"></script>
+{% endblock extra_js %}

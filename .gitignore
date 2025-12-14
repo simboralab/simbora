@@ -98,6 +98,7 @@ target/
 
 # Static e media (caso venham a existir)
 media/
+staticfiles/
 
 # Local settings (adicional)
 settings_local.py

@@ -13,7 +13,7 @@ from .forms import CadastroCompletoForm, LoginForm, PerfilForm
 
 def signup_view(request):
     if request.user.is_authenticated:
-        return redirect('sucesso') 
+        return redirect('home') 
 
     if request.method == 'POST':
         cadastro_form = CadastroCompletoForm(request.POST) 
@@ -28,7 +28,7 @@ def signup_view(request):
                 )
 
             login(request, usuario)
-            return redirect('sucesso')
+            return redirect('home')
     else:
         cadastro_form = CadastroCompletoForm() 
 
@@ -40,14 +40,14 @@ def signup_view(request):
 
 def signin_view(request):
     if request.user.is_authenticated:
-        return redirect('sucesso') 
+        return redirect('home') 
 
     if request.method == 'POST':
         login_form = LoginForm(request, data = request.POST) 
         if login_form.is_valid():
             usuario = login_form.get_user()
             login(request, usuario)
-            return redirect('sucesso')
+            return redirect('home')
     else:
         login_form = LoginForm()        
     context = {
