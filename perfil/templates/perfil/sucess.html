@@ -4,5 +4,5 @@
 
 {% if user.is_authenticated %}
     <p>Bem-vindo, {{ user.nome_completo }}!</p>
-    <a href="{% url 'password_change' %}">Alterar senha</a>
+    <a href="{% url 'perfil:password_change' %}">Alterar senha</a>
 {% endif %}
