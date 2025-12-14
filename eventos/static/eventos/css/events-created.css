@@ -799,3 +799,83 @@ body.has-header {
         min-width: unset;
     }
 }
+
+/* Estilos específicos para o modal de cancelar evento */
+#modal-cancelar-evento .modal-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+/* Botão "Cancelar evento" - Ação primária, vermelho */
+#modal-cancelar-evento #btn-confirmar-cancelar.btn-modal-whatsapp {
+    flex: 0 1 auto;
+    padding: 10px 20px !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    min-width: 130px !important;
+    max-width: 180px !important;
+    width: auto !important;
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3) !important;
+}
+
+#modal-cancelar-evento #btn-confirmar-cancelar.btn-modal-whatsapp:hover {
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4) !important;
+    transform: translateY(-1px);
+}
+
+/* Botão "Não cancelar" - Estilo de botão completo */
+#modal-cancelar-evento .btn-modal-close {
+    flex: 0 1 auto;
+    background-color: var(--branco) !important;
+    border: 2px solid var(--cinza-medio) !important;
+    color: var(--cinza-escuro) !important;
+    padding: 10px 20px !important;
+    border-radius: var(--radius-md) !important;
+    font-family: var(--font-body) !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    cursor: pointer;
+    transition: all var(--transition);
+    text-decoration: none !important;
+    margin-top: 0 !important;
+    min-width: 130px !important;
+    max-width: 180px !important;
+    width: auto !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+#modal-cancelar-evento .btn-modal-close .material-symbols-rounded {
+    font-size: 18px;
+    font-variation-settings: 'FILL' 0, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+}
+
+#modal-cancelar-evento .btn-modal-close:hover {
+    background-color: var(--cinza-claro) !important;
+    border-color: var(--azul-principal) !important;
+    color: var(--azul-principal) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-decoration: none !important;
+}
+
+/* Responsividade para o modal de cancelar evento */
+@media (max-width: 480px) {
+    #modal-cancelar-evento .modal-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    #modal-cancelar-evento #btn-confirmar-cancelar,
+    #modal-cancelar-evento .btn-modal-close {
+        width: 100%;
+        min-width: unset;
+    }
+}

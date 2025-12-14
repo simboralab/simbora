@@ -44,7 +44,7 @@
                 <article class="event-card" data-status="{% if evento.status == 'ATIVO' %}active{% elif evento.status == 'FINALIZADO' %}completed{% elif evento.status == 'CANCELADO' %}cancelled{% else %}active{% endif %}" data-categories="{% if evento.organizador and evento.organizador.usuario == request.user %}created{% else %}enrolled{% endif %}">
                     <div class="event-badges-top">
                         <span class="status-badge {% if evento.status == 'ATIVO' %}status-active{% elif evento.status == 'FINALIZADO' %}status-completed{% elif evento.status == 'CANCELADO' %}status-cancelled{% else %}status-active{% endif %}">
-                            <span class="material-symbols-rounded">{% if evento.status == 'ATIVO' %}check_circle{% else %}task_alt{% endif %}</span>
+                            <span class="material-symbols-rounded">{% if evento.status == 'ATIVO' %}check_circle{% elif evento.status == 'CANCELADO' %}event_busy{% else %}task_alt{% endif %}</span>
                             {{ evento.get_status_display|title }}
                         </span>
                         {% if evento.organizador and evento.organizador.usuario == request.user %}
@@ -58,7 +58,7 @@
                             </span>
                         {% elif item.usuario_cancelado %}
                             <span class="participation-badge withdrawn">
-                                <span class="material-symbols-rounded">event_busy</span>
+                                <span class="material-symbols-rounded">person_off</span>
                                 Cancelado
                             </span>
                         {% endif %}
@@ -136,12 +136,9 @@
                                     {% endif %}
                                 {% endif %}
                                 {% if evento.organizador and evento.organizador.usuario == request.user and evento.status != 'FINALIZADO' and evento.status != 'CANCELADO' %}
-                                    <form method="post" action="{% url 'eventos:cancelar_evento' evento.pk %}" style="display: inline;">
-                                        {% csrf_token %}
-                                        <button type="submit" class="action-btn" onclick="return confirm('Tem certeza que deseja cancelar este evento?');">
-                                            <span class="material-symbols-rounded">close</span> Cancelar
-                                        </button>
-                                    </form>
+                                    <button type="button" class="action-btn btn-cancelar-evento" data-event-id="{{ evento.pk }}" data-event-name="{{ evento.nome_evento }}">
+                                        <span class="material-symbols-rounded">close</span> Cancelar
+                                    </button>
                                 {% endif %}
                             </div>
                         </div>
@@ -173,6 +170,29 @@
             <button class="btn-modal-whatsapp" id="btn-confirmar-sair" style="background-color: var(--laranja);">
                 <span class="material-symbols-rounded">check</span>
                 Sair do evento
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmação para Cancelar Evento -->
+<div id="modal-cancelar-evento" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="material-symbols-rounded modal-icon" style="color: #dc3545;">warning</span>
+            <h2>Confirmar Cancelamento do Evento</h2>
+        </div>
+        <div class="modal-body">
+            <p id="modal-cancelar-mensagem">Tem certeza que deseja cancelar este evento? Esta ação não pode ser desfeita e todos os participantes serão notificados.</p>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-modal-close" onclick="fecharModalCancelar()">
+                <span class="material-symbols-rounded">close</span>
+                Não cancelar
+            </button>
+            <button class="btn-modal-whatsapp" id="btn-confirmar-cancelar" style="background-color: #dc3545;">
+                <span class="material-symbols-rounded">check</span>
+                Sim, cancelar evento
             </button>
         </div>
     </div>
@@ -457,6 +477,170 @@
         setTimeout(function() {
             inicializarBotoesSair();
             inicializarBotaoConfirmarSair();
+        }, 500);
+        
+        // ========== MODAL DE CANCELAR EVENTO ==========
+        
+        // Variáveis globais para o modal de cancelar evento
+        window.eventoIdParaCancelar = null;
+        window.eventoNomeParaCancelar = null;
+        
+        // Função para abrir modal de cancelar evento
+        window.abrirModalCancelar = function(eventId, eventName) {
+            window.eventoIdParaCancelar = eventId;
+            window.eventoNomeParaCancelar = eventName;
+            
+            // Atualiza a mensagem do modal com o nome do evento
+            const mensagem = document.getElementById('modal-cancelar-mensagem');
+            if (mensagem) {
+                mensagem.textContent = `Tem certeza que deseja cancelar o evento "${eventName}"? Esta ação não pode ser desfeita e todos os participantes serão notificados.`;
+            }
+            
+            setTimeout(function() {
+                const modal = document.getElementById('modal-cancelar-evento');
+                if (modal) {
+                    modal.style.display = 'flex';
+                    modal.style.visibility = 'visible';
+                    modal.style.opacity = '1';
+                    modal.classList.add('show');
+                }
+            }, 50);
+        };
+        
+        // Função para fechar modal de cancelar evento
+        window.fecharModalCancelar = function() {
+            const modal = document.getElementById('modal-cancelar-evento');
+            if (modal) {
+                modal.style.display = 'none';
+                modal.style.visibility = 'hidden';
+                modal.style.opacity = '0';
+                modal.classList.remove('show');
+            }
+            window.eventoIdParaCancelar = null;
+            window.eventoNomeParaCancelar = null;
+        };
+        
+        // Fechar modal ao clicar fora
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('modal-cancelar-evento');
+            if (modal && event.target === modal) {
+                window.fecharModalCancelar();
+            }
+        });
+        
+        // Função para inicializar botões de cancelar evento
+        function inicializarBotoesCancelar() {
+            const botoesCancelar = document.querySelectorAll('.btn-cancelar-evento');
+            botoesCancelar.forEach((btn) => {
+                // Remove listener anterior se existir
+                const newBtn = btn.cloneNode(true);
+                btn.parentNode.replaceChild(newBtn, btn);
+                
+                newBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const eventId = this.getAttribute('data-event-id');
+                    const eventName = this.getAttribute('data-event-name');
+                    if (window.abrirModalCancelar) {
+                        window.abrirModalCancelar(eventId, eventName);
+                    }
+                });
+            });
+        }
+        
+        // Função para inicializar botão de confirmar cancelamento
+        function inicializarBotaoConfirmarCancelar() {
+            const btnConfirmarCancelar = document.getElementById('btn-confirmar-cancelar');
+            if (btnConfirmarCancelar) {
+                // Remove listener anterior se existir
+                const newBtn = btnConfirmarCancelar.cloneNode(true);
+                btnConfirmarCancelar.parentNode.replaceChild(newBtn, btnConfirmarCancelar);
+                
+                newBtn.addEventListener('click', function() {
+                    if (!window.eventoIdParaCancelar) {
+                        console.error('Evento ID não definido!');
+                        return;
+                    }
+                    
+                    // Obter CSRF token
+                    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
+                                     document.cookie.match(/csrftoken=([^;]+)/)?.[1];
+                    
+                    if (!csrftoken) {
+                        alert('Erro: Token de segurança não encontrado. Recarregue a página.');
+                        return;
+                    }
+                    
+                    // Fazer requisição AJAX
+                    fetch(`/eventos/cancelar/${window.eventoIdParaCancelar}/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrftoken,
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        credentials: 'same-origin',
+                        body: JSON.stringify({})
+                    })
+                    .then(async response => {
+                        const responseText = await response.text();
+                        let data;
+                        try {
+                            data = JSON.parse(responseText);
+                        } catch (e) {
+                            // Se não for JSON, pode ser um redirect HTML
+                            if (response.ok) {
+                                data = { success: true, message: 'Evento cancelado com sucesso!' };
+                            } else {
+                                data = { success: false, error: 'Resposta inválida do servidor' };
+                            }
+                        }
+                        
+                        if (!response.ok && !data.success) {
+                            throw new Error(data.error || data.message || 'Erro ao cancelar o evento');
+                        }
+                        return data;
+                    })
+                    .then(data => {
+                        console.log('Sucesso ao cancelar evento:', data);
+                        // Fechar modal
+                        window.fecharModalCancelar();
+                        
+                        // Mostrar notificação de sucesso
+                        if (typeof showNotification === 'function') {
+                            showNotification('Evento cancelado com sucesso!', 'success');
+                        } else {
+                            alert('Evento cancelado com sucesso!');
+                        }
+                        
+                        // Recarregar a página após um pequeno delay
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
+                    })
+                    .catch(error => {
+                        console.error('Erro ao cancelar evento:', error);
+                        alert('Erro ao cancelar evento: ' + error.message);
+                    });
+                });
+            }
+        }
+        
+        // Inicializar botões de cancelar evento
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                inicializarBotoesCancelar();
+                inicializarBotaoConfirmarCancelar();
+            });
+        } else {
+            inicializarBotoesCancelar();
+            inicializarBotaoConfirmarCancelar();
+        }
+        
+        // Também tenta após um pequeno delay para garantir
+        setTimeout(function() {
+            inicializarBotoesCancelar();
+            inicializarBotaoConfirmarCancelar();
         }, 500);
     </script>
     <!-- JS para filtros via GET params se necessário -->

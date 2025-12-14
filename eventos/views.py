@@ -433,7 +433,9 @@ def meus_eventos(request):
             Exists(participacoes_ativas)
         ).distinct()
     elif filtro == 'cancelled':
-        # Busca eventos onde o usuário cancelou a participação
+        # Busca eventos onde:
+        # 1. O usuário cancelou a participação (status da participação = CANCELADO)
+        # 2. OU o usuário é organizador e o evento foi cancelado (status do evento = CANCELADO)
         participacoes_canceladas = Participacao.objects.filter(
             evento=OuterRef('pk'),
             participante=perfil,
@@ -441,7 +443,8 @@ def meus_eventos(request):
         )
         
         eventos = Eventos.objects.filter(
-            Exists(participacoes_canceladas)
+            Q(Exists(participacoes_canceladas)) | 
+            Q(organizador=perfil, status='CANCELADO')
         ).distinct()
     elif filtro == 'completed':
         # Eventos concluídos onde o usuário é organizador ou tem participação ativa
@@ -607,16 +610,22 @@ def cancelar_evento(request, evento_id):
     """
     View para cancelar um evento
     Apenas o organizador pode cancelar
+    Aceita requisições AJAX e retorna JSON
     """
     evento = get_object_or_404(Eventos, id=evento_id)
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
     
     # Verifica se o usuário é o organizador
     if not request.user.is_authenticated:
+        if is_ajax:
+            return JsonResponse({'success': False, 'error': 'Você precisa estar logado para cancelar eventos.'}, status=403)
         messages.error(request, "Você precisa estar logado para cancelar eventos.")
         return redirect('eventos:visualizar_evento', evento_id=evento_id)
     
     # Verifica se tem perfil
     if not hasattr(request.user, 'perfil') or request.user.perfil is None:
+        if is_ajax:
+            return JsonResponse({'success': False, 'error': 'Perfil não encontrado. Complete seu cadastro primeiro.'}, status=400)
         messages.error(request, "Perfil não encontrado. Complete seu cadastro primeiro.")
         return redirect('eventos:visualizar_evento', evento_id=evento_id)
     
@@ -624,18 +633,35 @@ def cancelar_evento(request, evento_id):
     
     # Verifica se é o organizador
     if evento.organizador != perfil:
+        if is_ajax:
+            return JsonResponse({'success': False, 'error': 'Apenas o organizador pode cancelar o evento.'}, status=403)
         messages.error(request, "Apenas o organizador pode cancelar o evento.")
         return redirect('eventos:visualizar_evento', evento_id=evento_id)
     
     # Verifica se já está cancelado
     if evento.status == 'CANCELADO':
+        if is_ajax:
+            return JsonResponse({'success': False, 'error': 'Este evento já está cancelado.'}, status=400)
         messages.warning(request, "Este evento já está cancelado.")
+        return redirect('eventos:visualizar_evento', evento_id=evento_id)
+    
+    # Verifica se o evento pode ser cancelado (não pode estar finalizado)
+    if evento.status == 'FINALIZADO':
+        if is_ajax:
+            return JsonResponse({'success': False, 'error': 'Não é possível cancelar um evento finalizado.'}, status=400)
+        messages.error(request, "Não é possível cancelar um evento finalizado.")
         return redirect('eventos:visualizar_evento', evento_id=evento_id)
     
     # Cancela o evento
     evento.status = 'CANCELADO'
     evento.aceita_participantes = False
     evento.save()
+    
+    if is_ajax:
+        return JsonResponse({
+            'success': True,
+            'message': f'O evento "{evento.nome_evento}" foi cancelado com sucesso.'
+        })
     
     messages.success(request, f"O evento '{evento.nome_evento}' foi cancelado com sucesso.")
     return redirect('eventos:meus_eventos')
