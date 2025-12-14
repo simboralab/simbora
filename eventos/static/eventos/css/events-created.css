@@ -113,6 +113,21 @@ body.has-header {
     text-decoration: none !important;
 }
 
+/* Botão Criar Evento desabilitado */
+.btn-create-event.disabled {
+    background-color: var(--cinza-medio);
+    color: var(--branco);
+    cursor: not-allowed;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.btn-create-event.disabled:hover {
+    background-color: var(--cinza-medio);
+    transform: none;
+    box-shadow: none;
+}
+
 /* ABAS DE FILTRO */
 
 .filter-tabs {
@@ -471,6 +486,21 @@ body.has-header {
 
 .action-btn:disabled:hover {
     background-color: var(--cinza-medio);
+}
+
+/* Botões de ação desabilitados */
+.action-btn.disabled {
+    background-color: var(--cinza-medio);
+    color: var(--branco);
+    cursor: not-allowed;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.action-btn.disabled:hover {
+    background-color: var(--cinza-medio);
+    transform: none;
+    box-shadow: none;
 }
 
 .action-btn .material-symbols-rounded {

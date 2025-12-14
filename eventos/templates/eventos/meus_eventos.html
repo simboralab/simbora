@@ -22,10 +22,17 @@
                 <h1 class="page-title">Meus eventos</h1>
                 <p class="page-subtitle">Gerenciamento</p>
             </div>
-            <a href="{% url 'eventos:criar_evento' %}" class="btn-create-event">
-                <span class="material-symbols-rounded">add</span>
-                Criar Evento
-            </a>
+            {% if eh_beta_teste %}
+                <a href="/admin/eventos/eventos/add/" class="btn-create-event">
+                    <span class="material-symbols-rounded">add</span>
+                    Criar Evento
+                </a>
+            {% else %}
+                <a href="#" class="btn-create-event disabled">
+                    <span class="material-symbols-rounded">add</span>
+                    Criar Evento
+                </a>
+            {% endif %}
         </div>
         
         <nav class="filter-tabs">
@@ -102,29 +109,34 @@
                             </div>
                             
                             <div class="event-actions">
+                                {% if evento.status != 'CANCELADO' %}
+                                    <a href="{% url 'eventos:visualizar_evento' evento.pk %}" class="action-btn">
+                                        <span class="material-symbols-rounded">visibility</span> Detalhes
+                                    </a>
+                                {% endif %}
+                                
                                 {% if evento.organizador and evento.organizador.usuario == request.user %}
-                                    {% if evento.status != 'FINALIZADO' %}
-                                        <a href="{% url 'eventos:editar_evento' evento.pk %}" class="action-btn">
-                                            <span class="material-symbols-rounded">edit</span> Editar
-                                        </a>
-                                    {% else %}
-                                        <a href="{% url 'eventos:visualizar_evento' evento.pk %}" class="action-btn">
-                                            <span class="material-symbols-rounded">visibility</span> Detalhes
-                                        </a>
+                                    {% if evento.status != 'FINALIZADO' and evento.status != 'CANCELADO' %}
+                                        {% if eh_beta_teste and evento.organizador and evento.organizador.usuario == user %}
+                                            <a href="/admin/eventos/eventos/{{ evento.pk }}/change/" class="action-btn">
+                                                <span class="material-symbols-rounded">edit</span> Editar
+                                            </a>
+                                        {% else %}
+                                            <a href="#" class="action-btn disabled">
+                                                <span class="material-symbols-rounded">edit</span> Editar
+                                            </a>
+                                        {% endif %}
+                                    {% elif evento.status == 'FINALIZADO' %}
                                         <a href="#" class="action-btn">
                                             <span class="material-symbols-rounded">bar_chart</span> Estatísticas
                                         </a>
                                     {% endif %}
-                                {% else %}
-                                    <a href="{% url 'eventos:visualizar_evento' evento.pk %}" class="action-btn">
-                                        <span class="material-symbols-rounded">visibility</span> Detalhes
-                                    </a>
                                 {% endif %}
                                 <a href="{% url 'eventos:participantes_evento' evento.pk %}?from=meus_eventos{% if filtro_ativo and filtro_ativo != 'all' %}&filtro={{ filtro_ativo }}{% endif %}" class="action-btn">
                                     <span class="material-symbols-rounded">group</span> Participantes
                                 </a>
                                 {% if evento.status == 'FINALIZADO' %}
-                                    <a href="#" class="action-btn">
+                                    <a href="#" class="action-btn disabled">
                                         <span class="material-symbols-rounded">star</span> Avaliar
                                     </a>
                                 {% endif %}
