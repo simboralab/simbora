@@ -125,7 +125,7 @@ function validateEmail(email) {
 function validatePassword(password) {
   // validação de senha (esta passando apenas números, senha igual nome e sequencias - se possível, adicionar validação forte com alfanumérico, letramaiúscula e caractere especial)
   const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
   return passwordRegex.test(password);
 }
 
