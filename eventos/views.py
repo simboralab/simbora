@@ -420,9 +420,11 @@ def meus_eventos(request):
 
     # Agora todas as queries usam o 'perfil' (instância de Perfil)
     if filtro == 'created':
-        eventos = Eventos.objects.filter(organizador=perfil)
+        # Eventos criados pelo usuário, excluindo cancelados (que vão para aba cancelado)
+        eventos = Eventos.objects.filter(organizador=perfil).exclude(status='CANCELADO')
     elif filtro == 'enrolled':
         # Busca eventos onde o usuário tem participação ativa (excluindo cancelados e ausentes)
+        # Exclui eventos cancelados (mesmo que o usuário esteja inscrito)
         # Usa participacoes para filtrar pelo status específico do usuário
         participacoes_ativas = Participacao.objects.filter(
             evento=OuterRef('pk'),
@@ -431,20 +433,28 @@ def meus_eventos(request):
         
         eventos = Eventos.objects.filter(
             Exists(participacoes_ativas)
-        ).distinct()
+        ).exclude(status='CANCELADO').distinct()
     elif filtro == 'cancelled':
         # Busca eventos onde:
         # 1. O usuário cancelou a participação (status da participação = CANCELADO)
         # 2. OU o usuário é organizador e o evento foi cancelado (status do evento = CANCELADO)
+        # 3. OU o usuário está inscrito/confirmado mas o evento foi cancelado (status do evento = CANCELADO)
         participacoes_canceladas = Participacao.objects.filter(
             evento=OuterRef('pk'),
             participante=perfil,
             status='CANCELADO'
         )
         
+        # Participações ativas (INSCRITO ou CONFIRMADO)
+        participacoes_ativas = Participacao.objects.filter(
+            evento=OuterRef('pk'),
+            participante=perfil
+        ).exclude(status__in=['CANCELADO', 'AUSENTE'])
+        
         eventos = Eventos.objects.filter(
             Q(Exists(participacoes_canceladas)) | 
-            Q(organizador=perfil, status='CANCELADO')
+            Q(organizador=perfil, status='CANCELADO') |
+            Q(Exists(participacoes_ativas), status='CANCELADO')
         ).distinct()
     elif filtro == 'completed':
         # Eventos concluídos onde o usuário é organizador ou tem participação ativa
@@ -460,6 +470,7 @@ def meus_eventos(request):
         ).distinct()
     else:  # 'all' ou qualquer outro
         # Eventos onde o usuário é organizador ou tem participação ativa
+        # Exclui eventos cancelados da lista geral
         participacoes_ativas = Participacao.objects.filter(
             evento=OuterRef('pk'),
             participante=perfil
@@ -468,7 +479,7 @@ def meus_eventos(request):
         eventos = Eventos.objects.filter(
             Q(organizador=perfil) | 
             Exists(participacoes_ativas)
-        ).distinct()
+        ).exclude(status='CANCELADO').distinct()
 
     eventos = eventos.order_by('-data_inicio').prefetch_related('participacoes', 'organizador')
     
@@ -515,9 +526,15 @@ def meus_eventos(request):
             'usuario_cancelado': usuario_cancelado,
         })
 
+    # Verifica se o usuário é staff e está no grupo "Beta Teste"
+    eh_beta_teste = False
+    if user.is_staff:
+        eh_beta_teste = user.groups.filter(name='Beta Teste').exists()
+    
     context = {
         'eventos_com_info': eventos_com_info,
         'filtro_ativo': filtro,
+        'eh_beta_teste': eh_beta_teste,
     }
 
     return render(request, 'eventos/meus_eventos.html', context)
