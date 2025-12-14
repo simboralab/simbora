@@ -68,7 +68,7 @@ class Perfil(models.Model):
         help_text='Digite um CPF válido (com ou sem pontuação).'
     )
 
-    foto_perfil = models.ImageField(upload_to='fotos_perfil/', blank=True, null=True) 
+    foto_perfil = models.ImageField(upload_to='fotos_perfil/', default="fotos_perfil/default.jpg", blank=True, null=True) 
 
     imagem_url = models.URLField(blank=True, null=True) # PEGA IMAGEM HOSPEDADA NA NET
 
@@ -145,11 +145,16 @@ class Perfil(models.Model):
             idade -= 1
         return idade
     
-    def __str__(self):
-        """Retorna uma representação legível do perfil"""
+    @property
+    def nome_completo(self):
+        """Retorna o nome completo do perfil: nome_social ou usuario.nome_completo"""
         if self.nome_social:
             return self.nome_social
         elif self.usuario:
             return self.usuario.nome_completo or self.usuario.email
         return f"Perfil #{self.id}"
+    
+    def __str__(self):
+        """Retorna uma representação legível do perfil"""
+        return self.nome_completo
 

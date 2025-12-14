@@ -7,6 +7,7 @@
           </a>
 
           <nav class="nav-menu">
+            <a href="{% url 'eventos:lista_eventos' %}" class="nav-link">Eventos</a>
               <a href="#" class="nav-link">Categorias</a>
               <a href="{% url 'quem_somos' %}" class="nav-link">Quem somos</a>
               <a href="#" class="nav-link">Contato</a>
@@ -52,7 +53,7 @@
                           <div class="dropdown-divider"></div>
                           <ul class="dropdown-menu">
                               <li>
-                                  <a href="#" class="dropdown-item">
+                                  <a href="{% url 'edit_profile' %}" class="dropdown-item">
                                       <span class="material-symbols-rounded">person</span>
                                       <span>Meu perfil</span>
                                   </a>

@@ -7,7 +7,7 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
-from .models import Usuario
+from .models import Usuario, Perfil
 
 GENERO_CHOICES = [
     ('', 'Selecione seu gênero'), 
@@ -126,3 +126,23 @@ class LoginForm(AuthenticationForm):
         self.fields['username'].widget.attrs.update({'placeholder': 'Digite seu e-mail', 'id': 'id_email_login'})
         self.fields['password'].label = 'Senha'
         self.fields['password'].widget.attrs.update({'placeholder': 'Digite sua senha', 'id': 'id_senha_login'})
+
+
+
+class PerfilForm(forms.ModelForm):
+    class Meta:
+        model = Perfil
+        fields = [
+            'nome_social',
+            'descricao',
+            'genero',
+            'is_pcd',
+            'neurodiversidade',
+            'foto_perfil',
+        ]
+
+        widgets = {
+            'nome_social': forms.TextInput(attrs={'placeholder': 'Informe seu nome social'}),
+            'descricao': forms.Textarea(attrs={'placeholder': 'Fale mais sobre você...'}),
+            'genero': forms.Select(),
+        }
