@@ -140,7 +140,7 @@
                         <button class="btn-main" id="btn-confirmar" type="button">Eu vou!</button>
                     {% endif %}
                 {% else %}
-                    <a href="{% url 'signin' %}" class="btn-main">Entrar para participar</a>
+                    <a href="{% url 'perfil:signin' %}" class="btn-main">Entrar para participar</a>
                 {% endif %}
                 <button class="btn-secondary" id="btn-convidar" onclick="convidarAmigos()">
                     <span class="material-symbols-rounded">share</span>

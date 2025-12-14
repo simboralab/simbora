@@ -51,7 +51,7 @@
                                 </a>
                             </li>
                               <li>
-                                  <a href="{% url 'edit_profile' %}" class="dropdown-item">
+                                  <a href="{% url 'perfil:edit_profile' %}" class="dropdown-item">
                                       <span class="material-symbols-rounded">person</span>
                                       <span>Meu perfil</span>
                                   </a>
@@ -72,7 +72,7 @@
                                   </a>
                               </li>
                               <li>
-                                  <a href="{% url 'logout' %}" class="dropdown-item logout">
+                                  <a href="{% url 'perfil:logout' %}" class="dropdown-item logout">
                                       <span class="material-symbols-rounded">logout</span>
                                       <span>Sair</span>
                                   </a>
@@ -83,11 +83,11 @@
               {% else %}
                   <!-- Botões de autenticação para usuários não logados -->
                   <div class="auth-buttons">
-                      <a href="{% url 'signin' %}" class="btn-login">
+                      <a href="{% url 'perfil:signin' %}" class="btn-login">
                           <span class="material-symbols-rounded">login</span>
                           Entrar
                       </a>
-                      <a href="{% url 'signup' %}" class="btn-signup">
+                      <a href="{% url 'perfil:signup' %}" class="btn-signup">
                           <span class="material-symbols-rounded">person_add</span>
                           Criar conta  
                       </a>

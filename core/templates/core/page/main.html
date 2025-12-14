@@ -91,6 +91,11 @@
                                                     <span class="material-symbols-rounded" style="font-size: 18px; color: #ffffff !important;">settings</span>
                                                     Gerenciar Evento
                                                 </a>
+                                            {% elif item.usuario_confirmado %}
+                                                <a href="{% url 'eventos:visualizar_evento' evento.id %}" class="btn-event-confirmed" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 12px 24px; background: #FA7625; color: #ffffff !important; border: none; border-radius: 50px; font-weight: 600; font-size: 0.9375rem; cursor: pointer; text-decoration: none !important; box-shadow: 0 2px 8px rgba(250, 118, 37, 0.3); transition: all 0.3s ease; position: relative; z-index: 10;">
+                                                    <span class="material-symbols-rounded" style="font-size: 20px; color: #ffffff !important;">check_circle</span>
+                                                    Você está no rolê!
+                                                </a>
                                             {% else %}
                                                 <button type="button" class="btn-event-join" data-event-id="{{ evento.id }}" data-event-url="{% url 'eventos:visualizar_evento' evento.id %}" {% if evento.grupo_whatsapp %}data-whatsapp-url="{{ evento.grupo_whatsapp }}"{% endif %}>
                                                     <span class="material-symbols-rounded">group_add</span>
@@ -248,7 +253,7 @@
                         Confirmar Participação
                     </button>
                 {% else %}
-                    <a href="{% url 'signin' %}" class="btn-modal-primary">
+                    <a href="{% url 'perfil:signin' %}" class="btn-modal-primary">
                         <span class="material-symbols-rounded">login</span>
                         Fazer Login / Criar Conta
                     </a>
