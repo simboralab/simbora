@@ -20,7 +20,13 @@
 
             <div class="profile-photo">
                 <label for="id_foto" style="cursor: pointer;">
-                    <img src="{{ perfil.foto_perfil.url }}" alt="Foto do perfil">
+                    {% if perfil.foto_perfil and perfil.foto_perfil.name %}
+                        <img src="{{ perfil.foto_perfil.url }}" alt="Foto do perfil">
+                    {% elif perfil.imagem_url %}
+                        <img src="{{ perfil.imagem_url }}" alt="Foto do perfil">
+                    {% else %}
+                        <img src="https://ui-avatars.com/api/?name={{ user.first_name|default:user.email }}&background=CCEE52&color=004AAD&size=128" alt="Foto do perfil">
+                    {% endif %}
                 </label>
                 <input type="file" name="foto_perfil" id="id_foto" accept="image/*" class="hidden">
                 <label for="id_foto" class="btn-alter-foto">
