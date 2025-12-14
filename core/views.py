@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.utils import timezone
 from datetime import timedelta
-from eventos.models import Eventos
+from eventos.models import Eventos, Participacao
 from perfil.models import Perfil
 
 # Create your views here.
@@ -90,18 +90,30 @@ def home(request):
         
         # Verifica se o usuário logado é o organizador do evento
         usuario_eh_organizador = False
+        usuario_confirmado = False
         if request.user.is_authenticated:
             try:
                 perfil_usuario = Perfil.objects.get(usuario=request.user)
                 usuario_eh_organizador = evento.organizador and evento.organizador.id == perfil_usuario.id
+                
+                # Verifica se o usuário está inscrito no evento (e não é o organizador)
+                if not usuario_eh_organizador:
+                    participacao_ativa = Participacao.objects.filter(
+                        evento=evento,
+                        participante=perfil_usuario
+                    ).exclude(status__in=['CANCELADO', 'AUSENTE']).first()
+                    if participacao_ativa:
+                        usuario_confirmado = True
             except Perfil.DoesNotExist:
                 usuario_eh_organizador = False
+                usuario_confirmado = False
         
         eventos_com_info.append({
             'evento': evento,
             'total_participantes': total_participantes,
             'participantes_para_exibicao': participantes_para_exibicao,
             'usuario_eh_organizador': usuario_eh_organizador,
+            'usuario_confirmado': usuario_confirmado,
         })
     
     # Busca os 5 últimos perfis criados

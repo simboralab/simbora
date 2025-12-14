@@ -5,11 +5,11 @@
 {% block content %}
 <h1>Logado</h1>
 
-<input type="submit" value="Sair" onclick="window.location.href='{% url 'logout' %}'"/>
+<input type="submit" value="Sair" onclick="window.location.href='{% url 'perfil:logout' %}'"/>
 
 {% if user.is_authenticated %}
     <p>Bem-vindo, {{ nome_completo }}!</p>
-    <a href="{% url 'password_change' %}">Alterar senha</a>
+    <a href="{% url 'perfil:password_change' %}">Alterar senha</a>
 {% endif %}
 {% endblock content %}
 

@@ -1,4 +1,4 @@
-
+    
 // Função para inicializar o menu mobile toggle
 function initMobileMenu() {
     const menuToggle = document.querySelector('.menu-toggle');
@@ -90,21 +90,21 @@ setTimeout(function() {
         initMobileMenu();
     }
 }, 500);
-    
+
     // MENU DROPDOWN DO PERFIL
     function initProfileMenu() {
-        const profileTrigger = document.getElementById('profile-trigger');
-        const profileMenu = document.getElementById('profile-menu');
+    const profileTrigger = document.getElementById('profile-trigger');
+    const profileMenu = document.getElementById('profile-menu');
+    
+    if (profileTrigger && profileMenu) {
+        // Toggle dropdown ao clicar no perfil
+        profileTrigger.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            profileMenu.classList.toggle('active');
+            profileTrigger.classList.toggle('active');
+        });
         
-        if (profileTrigger && profileMenu) {
-            // Toggle dropdown ao clicar no perfil
-            profileTrigger.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                profileMenu.classList.toggle('active');
-                profileTrigger.classList.toggle('active');
-            });
-            
             // Fechar dropdown ao clicar fora (com verificação para não interferir com modal)
             document.addEventListener('click', function closeProfileMenu(e) {
                 const modal = document.getElementById('modal-bora');
@@ -116,16 +116,16 @@ setTimeout(function() {
                 }
                 
                 // Não fechar se o clique foi no trigger ou no menu
-                if (!profileMenu.contains(e.target) && !profileTrigger.contains(e.target)) {
-                    profileMenu.classList.remove('active');
-                    profileTrigger.classList.remove('active');
-                }
-            });
-            
-            // Prevenir que cliques dentro do dropdown o fechem
-            profileMenu.addEventListener('click', function(e) {
-                e.stopPropagation();
-            });
+            if (!profileMenu.contains(e.target) && !profileTrigger.contains(e.target)) {
+                profileMenu.classList.remove('active');
+                profileTrigger.classList.remove('active');
+            }
+        });
+        
+        // Prevenir que cliques dentro do dropdown o fechem
+        profileMenu.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
             
             return true;
         }
