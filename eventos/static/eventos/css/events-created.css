@@ -1,4 +1,25 @@
 
+/* Reset de text-decoration para links dentro da página de eventos */
+.events-created-main a {
+    text-decoration: none;
+}
+
+.events-created-main a:hover {
+    text-decoration: none;
+}
+
+.events-created-main a:visited {
+    text-decoration: none;
+}
+
+.events-created-main a:link {
+    text-decoration: none;
+}
+
+.events-created-main a:active {
+    text-decoration: none;
+}
+
 /* Ajuste para o body com header */
 body {
     background: #f5f7f8;
@@ -64,7 +85,7 @@ body.has-header {
     font-family: var(--font-body);
     font-size: var(--font-size-small);
     font-weight: 700;
-    text-decoration: none;
+    text-decoration: none !important;
     transition: all var(--transition);
     text-transform: uppercase;
 }
@@ -77,6 +98,19 @@ body.has-header {
     background-color: #e86618;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(250, 118, 37, 0.3);
+    text-decoration: none !important;
+}
+
+.btn-create-event:visited {
+    text-decoration: none !important;
+}
+
+.btn-create-event:link {
+    text-decoration: none !important;
+}
+
+.btn-create-event:active {
+    text-decoration: none !important;
 }
 
 /* ABAS DE FILTRO */
@@ -107,15 +141,26 @@ body.has-header {
     transition: all var(--transition);
     color: rgba(0, 74, 173, 0.7);
     font-size: 14px;
+    text-decoration: none !important;
 }
 
 .filter-tab.active {
     color: var(--azul-principal);
     border-bottom: 3px solid var(--laranja);
+    text-decoration: none !important;
 }
 
 .filter-tab:hover {
     color: var(--azul-principal);
+    text-decoration: none !important;
+}
+
+.filter-tab:visited {
+    text-decoration: none !important;
+}
+
+.filter-tab:link {
+    text-decoration: none !important;
 }
 
 /* SEÇÃO DE EVENTOS */
@@ -124,6 +169,26 @@ body.has-header {
     display: grid;
     grid-template-columns: 1fr;
     gap: 24px;
+}
+
+.no-events {
+    text-align: center;
+    padding: var(--spacing-xl);
+    color: var(--cinza-escuro);
+    font-family: var(--font-body);
+    font-size: var(--font-size-base);
+}
+
+.no-events a {
+    color: var(--laranja);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all var(--transition);
+}
+
+.no-events a:hover {
+    text-decoration: underline;
+    color: #e86618;
 }
 
 /*  CARDS DE EVENTO - LAYOUT HORIZONTAL */
@@ -377,10 +442,24 @@ body.has-header {
     background-color: var(--azul-principal);
     color: var(--branco);
     text-transform: none;
+    text-decoration: none !important;
 }
 
 .action-btn:hover {
     background-color: #003d8f;
+    text-decoration: none !important;
+}
+
+.action-btn:visited {
+    text-decoration: none !important;
+}
+
+.action-btn:link {
+    text-decoration: none !important;
+}
+
+.action-btn:active {
+    text-decoration: none !important;
 }
 
 .action-btn:disabled {
@@ -639,4 +718,84 @@ body.has-header {
 .participation-badge.absent {
     background-color: #9E9E9E;
     color: var(--branco);
+}
+
+/* Estilos específicos para o modal de sair do evento - Melhor UX */
+#modal-sair-evento .modal-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+/* Botão "Sair" - Ação primária, mas menos destacada e menor */
+#modal-sair-evento #btn-confirmar-sair.btn-modal-whatsapp {
+    flex: 0 1 auto;
+    padding: 10px 20px !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    min-width: 130px !important;
+    max-width: 180px !important;
+    width: auto !important;
+    box-shadow: 0 2px 8px rgba(250, 118, 37, 0.3) !important;
+}
+
+#modal-sair-evento #btn-confirmar-sair.btn-modal-whatsapp:hover {
+    box-shadow: 0 4px 12px rgba(250, 118, 37, 0.4) !important;
+    transform: translateY(-1px);
+}
+
+/* Botão "Cancelar" - Estilo de botão completo, vermelho com ícone X */
+#modal-sair-evento .btn-modal-close {
+    flex: 0 1 auto;
+    background-color: var(--branco) !important;
+    border: 2px solid #dc3545 !important;
+    color: #dc3545 !important;
+    padding: 10px 20px !important;
+    border-radius: var(--radius-md) !important;
+    font-family: var(--font-body) !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    cursor: pointer;
+    transition: all var(--transition);
+    text-decoration: none !important;
+    margin-top: 0 !important;
+    min-width: 130px !important;
+    max-width: 180px !important;
+    width: auto !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+#modal-sair-evento .btn-modal-close .material-symbols-rounded {
+    font-size: 18px;
+    font-variation-settings: 'FILL' 0, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+}
+
+#modal-sair-evento .btn-modal-close:hover {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: var(--branco) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+    text-decoration: none !important;
+}
+
+/* Responsividade para o modal */
+@media (max-width: 480px) {
+    #modal-sair-evento .modal-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    #modal-sair-evento #btn-confirmar-sair,
+    #modal-sair-evento .btn-modal-close {
+        width: 100%;
+        min-width: unset;
+    }
 }
