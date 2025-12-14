@@ -590,18 +590,39 @@ def participantes_evento(request, evento_id):
     # Busca todas as participações ativas (excluindo cancelados e ausentes)
     participantes = evento.participacoes.exclude(
         status__in=['CANCELADO', 'AUSENTE']
-    ).exclude(participante__isnull=True).select_related('participante')
+    ).exclude(participante__isnull=True).select_related('participante').order_by('participante__nome_social', 'participante__usuario__first_name')
+    
+    # Adiciona o organizador à lista se ele não estiver nas participações
+    lista_participantes = list(participantes)
+    organizador_na_lista = False
+    if evento.organizador:
+        organizador_na_lista = participantes.filter(participante=evento.organizador).exists()
+        if not organizador_na_lista:
+            # Cria um objeto virtual para o organizador
+            class ParticipacaoVirtual:
+                def __init__(self, participante):
+                    self.participante = participante
+                    self.status = 'CONFIRMADO'
+                    self.id = None
+                
+                def get_status_display(self):
+                    return 'Confirmado'
+            
+            organizador_participacao = ParticipacaoVirtual(evento.organizador)
+            lista_participantes.insert(0, organizador_participacao)
+    
+    # Conta total de participantes
+    total_participantes = len(lista_participantes)
     
     context = {
         'evento': evento,
-        'participantes': participantes,
+        'participantes': lista_participantes,
+        'total_participantes': total_participantes,
         'eh_organizador': eh_organizador,
+        'organizador_na_lista': organizador_na_lista,
     }
     
-    # TODO: Criar template para listar participantes
-    # Por enquanto redireciona para visualizar evento
-    messages.info(request, "Página de participantes será implementada em breve.")
-    return redirect('eventos:visualizar_evento', evento_id=evento_id)
+    return render(request, 'eventos/participantes_evento.html', context)
 
 
 @login_required

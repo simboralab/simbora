@@ -120,7 +120,7 @@
                                         <span class="material-symbols-rounded">visibility</span> Detalhes
                                     </a>
                                 {% endif %}
-                                <a href="{% url 'eventos:participantes_evento' evento.pk %}" class="action-btn">
+                                <a href="{% url 'eventos:participantes_evento' evento.pk %}?from=meus_eventos{% if filtro_ativo and filtro_ativo != 'all' %}&filtro={{ filtro_ativo }}{% endif %}" class="action-btn">
                                     <span class="material-symbols-rounded">group</span> Participantes
                                 </a>
                                 {% if evento.status == 'FINALIZADO' %}
