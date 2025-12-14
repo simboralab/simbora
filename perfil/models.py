@@ -48,6 +48,15 @@ class Usuario(AbstractUser):
 
     objects = CustomUserManager()
 
+    def save(self, *args, **kwargs):
+        """
+        Garante que o username seja sempre preenchido com o email se estiver vazio
+        Isso evita problemas no Django Admin e em outras partes do sistema
+        """
+        if not self.username:
+            self.username = self.email
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.nome_completo or self.email
     
