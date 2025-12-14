@@ -1,4 +1,3 @@
-from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
@@ -87,24 +86,29 @@ def edit_profile_view(request):
         form = PerfilForm(request.POST, request.FILES, instance=perfil)
 
         # Endereço também será atualizado manualmente:
-        cidade = request.POST.get("cidade")
-        estado = request.POST.get("estado")
+        cidade = request.POST.get("cidade", "").strip()
+        estado = request.POST.get("estado", "").strip()
 
         if form.is_valid():
             perfil = form.save()
 
-            # Atualizar endereço
-            if endereco:
-                endereco.cidade = cidade
-                endereco.estado = estado
-                endereco.save()
-            else:
-                # cria caso não exista
-                novo_endereco = Endereco.objects.create(cidade=cidade, estado=estado)
-                perfil.endereco = novo_endereco
-                perfil.save()
+            # Atualizar endereço apenas se cidade e estado estiverem preenchidos
+            if cidade and estado:
+                if endereco:
+                    # Atualiza apenas cidade e estado
+                    endereco.cidade = cidade
+                    endereco.estado = estado
+                    endereco.save()
+                else:
+                    # Cria novo endereço apenas com cidade e estado
+                    novo_endereco = Endereco.objects.create(
+                        cidade=cidade,
+                        estado=estado
+                    )
+                    perfil.endereco = novo_endereco
+                    perfil.save()
 
-            return redirect("edit_profile")
+            return redirect(reverse("edit_profile") + "?saved=1")
 
     else:
         form = PerfilForm(instance=perfil)

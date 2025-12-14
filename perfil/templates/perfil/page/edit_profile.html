@@ -99,3 +99,25 @@
     </div>
 
 {% endblock content %}
+
+{% block extra_js %}
+    {{ block.super }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar se o perfil foi salvo com sucesso
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('saved') === '1') {
+                // Aguardar um pouco para garantir que showNotification está carregado
+                setTimeout(function() {
+                    if (typeof showNotification === 'function') {
+                        showNotification('Perfil atualizado com sucesso!', 'success');
+                        // Limpar o parâmetro da URL sem recarregar a página
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    } else {
+                        console.warn('showNotification não está disponível');
+                    }
+                }, 100);
+            }
+        });
+    </script>
+{% endblock extra_js %}
