@@ -23,8 +23,11 @@
 
 body {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
 /* =============================================
@@ -33,11 +36,16 @@ body {
 
 .container {
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
+  height: auto;
   display: flex;
   background: var(--branco);
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  top: 0;
 }
 
 /* =============================================
@@ -47,13 +55,15 @@ body {
 .image-section {
   position: relative;
   width: 50%;
-  height: 100%;
+  min-height: 100vh;
+  height: auto;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--azul-principal);
   transition: transform var(--transition-slow);
+  flex-shrink: 0;
 }
 
 .bg-image {
@@ -151,24 +161,30 @@ body {
 
 .form-section {
   width: 50%;
-  height: 100%;
+  min-height: 100vh;
+  height: auto;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 60px 40px;
+  padding: 60px 40px 40px 40px;
   background: #f5f7fa;
   overflow-y: auto;
   transition: transform var(--transition-slow);
+  box-sizing: border-box;
+  flex-shrink: 0;
+  scroll-padding-top: 20px;
 }
 
 .form-wrapper {
   width: 100%;
   max-width: 640px;
   background: var(--branco);
-  padding: 40px 48px;
+  padding: 48px 40px 32px 40px;
   border-radius: 24px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
   box-sizing: border-box;
+  margin: 0 auto;
+  min-height: fit-content;
 }
 
 /* =============================================
@@ -231,7 +247,7 @@ form {
 
 /* Espaçamento para campos individuais (não em row-inputs) */
 .form-card form > .input-container:not(.row-inputs .input-container) {
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 /* GARANTIA DE RESPONSIVIDADE: Base Desktop para campos lado a lado */
@@ -363,7 +379,8 @@ footer a:hover {
    ============================================= */
 
 .form-switch {
-  margin-top: 1rem;
+  margin-top: 20px;
+  margin-bottom: 8px;
   text-align: center;
 }
 
@@ -400,6 +417,68 @@ footer a:hover {
    RESPONSIVIDADE ESPECÍFICA DA AUTENTICAÇÃO
    (Mobile-First para Form-Rows, Desktop-First para Container)
    ============================================= */
+
+/* Media query para telas grandes (desktop) - otimizações de espaço */
+@media (min-width: 1351px) {
+  body {
+    padding-top: 0;
+  }
+
+  .container {
+    overflow-y: auto;
+    padding-top: 0;
+  }
+
+  .form-section {
+    padding: 60px 40px 40px 40px;
+    align-items: flex-start;
+    padding-top: 60px;
+    padding-bottom: 40px;
+  }
+
+  .form-wrapper {
+    padding: 40px 36px 28px 36px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .form-card h1 {
+    font-size: 32px;
+    margin-bottom: 6px;
+  }
+
+  .form-card p {
+    font-size: 15px;
+    margin-bottom: 18px;
+  }
+
+  .form-card form > .input-container:not(.row-inputs .input-container) {
+    margin-bottom: 12px;
+  }
+
+  .form-card .row-inputs {
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  /* Reduzir espaçamento do checkbox em telas grandes */
+  .checkbox-container {
+    margin: 14px 0 !important;
+    padding: 0 2px;
+  }
+
+  /* Reduzir espaçamento do botão em telas grandes */
+  .btn-primary {
+    margin: 18px auto 0 !important;
+    padding: 16px 40px;
+    font-size: 15px;
+  }
+
+  .form-switch {
+    margin-top: 14px;
+    margin-bottom: 4px;
+  }
+}
 
 @media (max-width: 1200px) {
   .hero-text h2 {

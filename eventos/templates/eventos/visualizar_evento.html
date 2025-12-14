@@ -1,4 +1,4 @@
-{% extends "core/page/base_core.html" %}
+{% extends "core/page/base.html" %}
 {% load static %}
 {% load perfil_tags %}
 
@@ -12,6 +12,7 @@
 {% endblock extra_head %}
 
 {% block content %}
+{% include "core/partials/header.html" %}
 <div class="container">
     {% if evento.foto %}
         <div class="banner" style="background-image: url('{{ evento.foto.url }}');"></div>
@@ -140,7 +141,7 @@
                         <button class="btn-main" id="btn-confirmar" type="button">Eu vou!</button>
                     {% endif %}
                 {% else %}
-                    <a href="{% url 'signin' %}" class="btn-main">Entrar para participar</a>
+                    <a href="{% url 'perfil:signin' %}" class="btn-main">Entrar para participar</a>
                 {% endif %}
                 <button class="btn-secondary" id="btn-convidar" onclick="convidarAmigos()">
                     <span class="material-symbols-rounded">share</span>
@@ -326,6 +327,7 @@
     </div>
 
 </div>
+{% include "core/partials/footer.html" %}
 {% endblock content %}
 
 {% block extra_js %}
@@ -351,4 +353,49 @@
         });
     </script>
     <script src="{% static 'eventos/js/visualizar-evento.js' %}"></script>
+    <script>
+        // Função para inicializar o menu do perfil
+        function forceInitProfileMenu() {
+            const trigger = document.getElementById('profile-trigger');
+            const menu = document.getElementById('profile-menu');
+            
+            if (trigger && menu) {
+                // Remove todos os listeners anteriores
+                const newTrigger = trigger.cloneNode(true);
+                trigger.parentNode.replaceChild(newTrigger, trigger);
+                
+                const newTriggerEl = document.getElementById('profile-trigger');
+                const menuEl = document.getElementById('profile-menu');
+                
+                // Adiciona listener direto
+                newTriggerEl.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    menuEl.classList.toggle('active');
+                    newTriggerEl.classList.toggle('active');
+                };
+                
+                // Fechar ao clicar fora
+                setTimeout(function() {
+                    document.addEventListener('click', function(e) {
+                        if (!menuEl.contains(e.target) && !newTriggerEl.contains(e.target)) {
+                            menuEl.classList.remove('active');
+                            newTriggerEl.classList.remove('active');
+                        }
+                    });
+                }, 50);
+                
+                return true;
+            }
+            return false;
+        }
+        
+        // Tenta inicializar o menu do perfil
+        if (!forceInitProfileMenu()) {
+            setTimeout(forceInitProfileMenu, 200);
+            window.addEventListener('load', function() {
+                setTimeout(forceInitProfileMenu, 100);
+            });
+        }
+    </script>
 {% endblock extra_js %}

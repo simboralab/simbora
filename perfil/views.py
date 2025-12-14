@@ -163,7 +163,7 @@ def edit_profile_view(request):
                             raise
 
                 logger.info(f"edit_profile_view: Redirecionando após atualização bem-sucedida - Usuário: {user_email}")
-                return redirect(reverse("edit_profile") + "?saved=1")
+                return redirect(reverse("perfil:edit_profile") + "?saved=1")
             except Exception as e:
                 logger.error(f"edit_profile_view: Erro ao salvar perfil - Usuário: {user_email}, Perfil ID: {perfil.id}, Erro: {str(e)}", exc_info=True)
                 raise

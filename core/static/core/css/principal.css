@@ -762,6 +762,40 @@ body {
   font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 20;
 }
 
+/* Botão "Você está no rolê!" - quando usuário já está inscrito */
+.btn-event-confirmed {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: var(--laranja);
+  color: var(--branco);
+  border: none;
+  border-radius: 50px;
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  margin-top: 12px;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(250, 118, 37, 0.3);
+}
+
+.btn-event-confirmed:hover {
+  background: var(--verde-limao);
+  color: var(--azul-principal);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(204, 238, 82, 0.4);
+}
+
+.btn-event-confirmed .material-symbols-rounded {
+  font-size: 20px;
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 20;
+}
+
 /* Botão Gerenciar Evento (para organizadores) */
 .event-card-link .btn-event-manage,
 .event-card-link .btn-event-manage:link,
