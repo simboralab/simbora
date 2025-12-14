@@ -1,0 +1,123 @@
+{% extends "core/page/base_core.html" %}
+
+{% block title %}Editar Perfil{% endblock title %}
+
+{% load static %}
+{% block extra_head %}
+       {{ block.super }}
+       <link rel="stylesheet" href="{% static 'perfil/css/edit_profile.css' %}">
+{% endblock extra_head %}
+
+{% block content %}
+    <div class="container">
+
+        <header class="header">
+            <h1>Editar Perfil</h1>
+        </header>
+
+        <form class="form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="profile-photo">
+                <label for="id_foto" style="cursor: pointer;">
+                    <img src="{{ perfil.foto_perfil.url }}" alt="Foto do perfil">
+                </label>
+                <input type="file" name="foto_perfil" id="id_foto" accept="image/*" class="hidden">
+                <label for="id_foto" class="btn-alter-foto">
+                    Alterar foto
+                </label>
+            </div>
+
+            <h2 class="section-title">Informações Pessoais</h2>
+
+            <label>
+                Nome Social
+                <input type="text" id="nome" name="nome_social" value="{{ perfil.nome_social|default:'' }}">
+            </label>
+
+            <label>
+                Cidade
+                <input type="text" name="cidade" value="{{ endereco.cidade|default:'' }}">
+            </label>
+
+            <label>
+                Estado
+                <select name="estado" id="estado">
+                    <option value="">-- Selecione o Estado --</option>
+                    {% for uf in ufs %}
+                        <option value="{{ uf }}" {% if endereco.estado == uf %}selected{% endif %}>{{ uf }}</option>
+                    {% endfor %}
+                </select>
+
+            </label>
+
+            <label class="full-width">
+                Descrição (Bio)
+                <textarea name="descricao">{{ perfil.descricao|default:'' }}</textarea>
+            </label>
+
+            <h2 class="section-title">Identidade e Acessibilidade</h2>
+
+            <label>
+                Gênero
+                <select name="genero">
+                    <option value="">-- Selecione seu Gênero --</option>
+                    {% for key, label in form.genero.field.choices %}
+                        <option value="{{ key }}" {% if perfil.genero == key %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+
+            <div class="toggle-box">
+                <label class="toggle">
+                    <input type="checkbox" name="is_pcd" {% if perfil.is_pcd %}checked{% endif %}>
+                    <span class="slider"></span>
+                </label>
+                <div class="toggle-text">
+                    <strong>Sou uma pessoa com deficiência (PCD)</strong>
+                    <p>Sinalize para que possamos sugerir eventos e locais acessíveis para você.</p>
+                </div>
+            </div>
+
+            <div class="toggle-box">
+                <label class="toggle">
+                    <input type="checkbox" name="neurodiversidade" {% if perfil.neurodiversidade %}checked{% endif %}>
+                    <span class="slider"></span>
+                </label>
+                <div class="toggle-text">
+                    <strong>Me identifico como neurodivergente</strong>
+                    <p>Ajude a construir uma comunidade mais empática e a encontrar pessoas que te entendem.</p>
+                </div>
+            </div>
+
+            <div class="button">
+                <button type="submit" class="btn-submit" value="enviar">Salvar Alterações</button>
+            </div>
+
+        </form>
+
+    </div>
+
+{% endblock content %}
+
+{% block extra_js %}
+    {{ block.super }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar se o perfil foi salvo com sucesso
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('saved') === '1') {
+                // Aguardar um pouco para garantir que showNotification está carregado
+                setTimeout(function() {
+                    if (typeof showNotification === 'function') {
+                        showNotification('Perfil atualizado com sucesso!', 'success');
+                        // Limpar o parâmetro da URL sem recarregar a página
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    } else {
+                        console.warn('showNotification não está disponível');
+                    }
+                }, 100);
+            }
+        });
+    </script>
+{% endblock extra_js %}

@@ -1,12 +1,13 @@
-from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.shortcuts import redirect, render
 from django.urls import reverse
+from core.models import Endereco
 
 from perfil.models import Perfil
 
-from .forms import CadastroCompletoForm, LoginForm
+from .forms import CadastroCompletoForm, LoginForm, PerfilForm
 
 
 def signup_view(request):
@@ -70,3 +71,53 @@ def logout_view(request):
     logout(request)
     return redirect('home')
 
+
+@login_required
+def edit_profile_view(request):
+
+    perfil = request.user.perfil  # pega o perfil do usuário logado
+    endereco = perfil.endereco if perfil.endereco else None
+    ufs = [
+    "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG",
+    "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"
+    ]
+
+    if request.method == "POST":
+        form = PerfilForm(request.POST, request.FILES, instance=perfil)
+
+        # Endereço também será atualizado manualmente:
+        cidade = request.POST.get("cidade", "").strip()
+        estado = request.POST.get("estado", "").strip()
+
+        if form.is_valid():
+            perfil = form.save()
+
+            # Atualizar endereço apenas se cidade e estado estiverem preenchidos
+            if cidade and estado:
+                if endereco:
+                    # Atualiza apenas cidade e estado
+                    endereco.cidade = cidade
+                    endereco.estado = estado
+                    endereco.save()
+                else:
+                    # Cria novo endereço apenas com cidade e estado
+                    novo_endereco = Endereco.objects.create(
+                        cidade=cidade,
+                        estado=estado
+                    )
+                    perfil.endereco = novo_endereco
+                    perfil.save()
+
+            return redirect(reverse("edit_profile") + "?saved=1")
+
+    else:
+        form = PerfilForm(instance=perfil)
+
+    context = {
+        "form": form,
+        "perfil": perfil,
+        "endereco": endereco,
+        "ufs": ufs,
+    }
+
+    return render(request, "perfil/page/edit_profile.html", context)

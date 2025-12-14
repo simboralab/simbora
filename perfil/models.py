@@ -68,7 +68,7 @@ class Perfil(models.Model):
         help_text='Digite um CPF válido (com ou sem pontuação).'
     )
 
-    foto_perfil = models.ImageField(upload_to='fotos_perfil/', blank=True, null=True) 
+    foto_perfil = models.ImageField(upload_to='fotos_perfil/', default="fotos_perfil/default.jpg", blank=True, null=True) 
 
     imagem_url = models.URLField(blank=True, null=True) # PEGA IMAGEM HOSPEDADA NA NET
 
