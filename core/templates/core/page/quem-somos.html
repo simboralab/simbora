@@ -178,7 +178,7 @@
 
             <article class="membro-equipe" data-equipe="front-end">
                 <div class="envoltura-foto" tabindex="0" aria-label="Matheus Victor">
-                    <img class="foto" src="{% static 'core/img/logo/quem-somos/matheus.jpeg' %}" alt="Matheus Victor">
+                    <img class="foto" src="{% static 'core/img/quem-somos/matheus.jpeg' %}" alt="Matheus Victor">
                     <img class="sobreposicao-gif" data-gif="https://i.gifer.com/aL.gif" alt="Animação Matheus Victor" aria-hidden="true">
                 </div>
                 <div class="informacoes">
@@ -386,7 +386,7 @@
 
             <article class="membro-equipe" data-equipe="design">
                 <div class="envoltura-foto" tabindex="0" aria-label="Silas Mickael">
-                    <img class="foto" src={% static 'core/img/logo/quem-somos/silas.jpeg' %} alt="Silas Mickael">
+                    <img class="foto" src="{% static 'core/img/quem-somos/silas.jpeg' %}" alt="Silas Mickael">
                     <img class="sobreposicao-gif" data-gif="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExaXhjOHhta3Y0dmFlN3V6OGF5bXpzampoc3JoNHd2dmRyNjQ1dTdvcyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/7NMG9vPM5kTpC/giphy.gif" alt="Animação Silas Mickael" aria-hidden="true">
                 </div>
                 <div class="informacoes">
@@ -508,4 +508,52 @@
 {% block extra_js %}
     {{ block.super }}
     <script src="{% static 'core/js/quem-somos.js' %}"></script>
+    <script>
+        // Função para inicializar o menu do perfil
+        function forceInitProfileMenu() {
+            const trigger = document.getElementById('profile-trigger');
+            const menu = document.getElementById('profile-menu');
+            
+            if (trigger && menu) {
+                // Remove todos os listeners anteriores
+                const newTrigger = trigger.cloneNode(true);
+                trigger.parentNode.replaceChild(newTrigger, trigger);
+                
+                const newTriggerEl = document.getElementById('profile-trigger');
+                const menuEl = document.getElementById('profile-menu');
+                
+                // Adiciona listener direto
+                newTriggerEl.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    menuEl.classList.toggle('active');
+                    newTriggerEl.classList.toggle('active');
+                };
+                
+                // Fechar ao clicar fora
+                setTimeout(function() {
+                    document.addEventListener('click', function(e) {
+                        if (!menuEl.contains(e.target) && !newTriggerEl.contains(e.target)) {
+                            const modal = document.getElementById('modal-bora');
+                            if (!modal || modal.style.display !== 'flex') {
+                                menuEl.classList.remove('active');
+                                newTriggerEl.classList.remove('active');
+                            }
+                        }
+                    });
+                }, 50);
+                
+                return true;
+            }
+            return false;
+        }
+        
+        // Tenta inicializar o menu do perfil
+        if (!forceInitProfileMenu()) {
+            setTimeout(forceInitProfileMenu, 200);
+            window.addEventListener('load', function() {
+                setTimeout(forceInitProfileMenu, 100);
+            });
+        }
+    </script>
 {% endblock extra_js %}

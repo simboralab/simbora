@@ -6,13 +6,125 @@ from .models import Eventos, Participacao
 from django.contrib import messages
 from django.db.models import Q, Exists, OuterRef
 from perfil.models import Perfil
+from django.utils import timezone
+
+def finalizar_eventos_vencidos():
+    """
+    Atualiza automaticamente o status dos eventos para FINALIZADO
+    quando a data atual for maior que a data_termino do evento.
+    """
+    agora = timezone.now()
+    
+    # Busca eventos ATIVOS cuja data_termino já passou
+    eventos_vencidos = Eventos.objects.filter(
+        status='ATIVO',
+        data_termino__lt=agora
+    )
+    
+    # Atualiza o status para FINALIZADO
+    eventos_atualizados = eventos_vencidos.update(status='FINALIZADO')
+    
+    return eventos_atualizados
 
 def lista_eventos(request):
-    eventos = Eventos.objects.all().order_by("-data_inicio")
-    return render(request, "eventos/lista_eventos.html", {"eventos": eventos})
+    # Atualiza automaticamente eventos vencidos para FINALIZADO
+    finalizar_eventos_vencidos()
+    eventos = Eventos.objects.filter(status='ATIVO').order_by("-data_inicio")
+    
+    # Filtro por categoria
+    categoria = request.GET.get('categoria', '')
+    if categoria:
+        eventos = eventos.filter(categoria=categoria)
+    
+    # Filtro por cidade
+    cidade = request.GET.get('cidade', '')
+    if cidade:
+        eventos = eventos.filter(endereco__cidade__iexact=cidade)
+    
+    # Busca textual - busca no título, descrição e endereço
+    busca_texto = request.GET.get('busca', '').strip()
+    if busca_texto:
+        eventos = eventos.filter(
+            Q(nome_evento__icontains=busca_texto) |
+            Q(descricao__icontains=busca_texto) |
+            Q(endereco__nome_do_local__icontains=busca_texto) |
+            Q(endereco__rua__icontains=busca_texto) |
+            Q(endereco__bairro__icontains=busca_texto) |
+            Q(endereco__cidade__icontains=busca_texto)
+        )
+    
+    # Busca todas as categorias disponíveis para o filtro
+    categorias_disponiveis = Eventos.CATEGORIA_CHOICES
+    
+    # Busca todas as cidades disponíveis (de eventos ativos com endereço)
+    # Usa a query base antes dos filtros para mostrar todas as cidades possíveis
+    cidades_disponiveis = Eventos.objects.filter(
+        status='ATIVO',
+        endereco__isnull=False
+    ).exclude(
+        endereco__cidade__isnull=True
+    ).exclude(
+        endereco__cidade=''
+    ).values_list('endereco__cidade', flat=True).distinct().order_by('endereco__cidade')
+    
+    # Prefetch participantes e endereço para otimizar queries
+    eventos = eventos.prefetch_related(
+        'participacoes__participante',
+        'organizador',
+        'endereco'
+    )
+    
+    # Conta participantes ativos e busca fotos para cada evento
+    eventos_com_info = []
+    for evento in eventos:
+        # Busca participantes ativos (excluindo cancelados e ausentes)
+        participantes_ativos_qs = evento.participacoes.exclude(
+            status__in=['CANCELADO', 'AUSENTE']
+        ).exclude(participante__isnull=True).select_related('participante')
+        
+        # Lista de participantes para exibição (incluindo organizador se necessário)
+        participantes_para_exibicao = list(participantes_ativos_qs)
+        
+        # Verifica se organizador está na lista
+        organizador_na_lista = False
+        if evento.organizador:
+            organizador_na_lista = any(
+                p.participante and p.participante.id == evento.organizador.id 
+                for p in participantes_para_exibicao
+            )
+            if not organizador_na_lista:
+                # Cria participação virtual para organizador
+                class ParticipacaoVirtual:
+                    def __init__(self, participante):
+                        self.participante = participante
+                        self.status = 'CONFIRMADO'
+                
+                organizador_participacao = ParticipacaoVirtual(evento.organizador)
+                participantes_para_exibicao.insert(0, organizador_participacao)
+        
+        total_participantes = len(participantes_para_exibicao)
+        
+        eventos_com_info.append({
+            'evento': evento,
+            'total_participantes': total_participantes,
+            'participantes_para_exibicao': participantes_para_exibicao,
+        })
+    
+    context = {
+        'eventos_com_info': eventos_com_info,
+        'categorias_disponiveis': categorias_disponiveis,
+        'categoria_filtrada': categoria,
+        'cidades_disponiveis': cidades_disponiveis,
+        'cidade_filtrada': cidade,
+        'busca_texto': busca_texto,
+    }
+    
+    return render(request, "eventos/lista_eventos.html", context)
 
 
 def visualizar_evento(request, evento_id):
+    # Atualiza automaticamente eventos vencidos para FINALIZADO
+    finalizar_eventos_vencidos()
     evento = get_object_or_404(Eventos, id=evento_id)
 
     # Verifica se o usuário autenticado é o organizador
@@ -402,6 +514,8 @@ def confirmar_presenca(request, evento_id):
 
 @login_required
 def meus_eventos(request):
+    # Atualiza automaticamente eventos vencidos para FINALIZADO
+    finalizar_eventos_vencidos()
     filtro = request.GET.get('filtro', 'all')
     user = request.user
 

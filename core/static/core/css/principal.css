@@ -22,7 +22,7 @@ body {
   top: 0;
   z-index: 50;
   background: var(--azul-principal);
-  padding: 12px 16px;
+  padding: 1px 1px;
   box-shadow: var(--shadow-md);
 }
 
@@ -153,17 +153,37 @@ body {
   border: none;
   color: var(--branco);
   cursor: pointer;
-  padding: 8px;
+  padding: 10px;
+  z-index: 10001;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.menu-toggle:hover,
+.menu-toggle:active {
+  transform: scale(1.1);
+  opacity: 0.9;
+}
+
+.menu-toggle.active {
+  transform: rotate(90deg);
 }
 
 .menu-toggle .material-symbols-rounded {
-  font-size: 24px;
+  font-size: 28px;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  pointer-events: none;
 }
 
 /* Perfil do usuário no hero-header */
 .hero-header .header-profile {
   position: relative;
   margin-left: 20px;
+  z-index: 1001; /* Garante que está acima de outros elementos */
 }
 
 .hero-header .profile-info {
@@ -174,6 +194,13 @@ body {
   padding: 8px 12px;
   border-radius: 12px;
   transition: all var(--transition);
+  pointer-events: auto !important;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  position: relative;
+  z-index: 1002;
 }
 
 .hero-header .profile-info:hover {
@@ -626,6 +653,8 @@ body {
   overflow: hidden;
   box-shadow: var(--shadow-md);
   transition: all var(--transition);
+  display: flex;
+  flex-direction: column;
 }
 
 .event-card:hover {
@@ -645,6 +674,9 @@ body {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  flex: 1;
+  min-height: 0;
+  justify-content: space-between;
 }
 
 .event-title {
@@ -715,7 +747,7 @@ body {
   font-weight: 600;
   cursor: pointer;
   transition: all var(--transition);
-  margin-top: 12px;
+  margin-top: 0;
 }
 
 .btn-event-join:hover {
@@ -730,10 +762,68 @@ body {
   font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 20;
 }
 
+/* Botão Gerenciar Evento (para organizadores) */
+.event-card-link .btn-event-manage,
+.event-card-link .btn-event-manage:link,
+.event-card-link .btn-event-manage:visited,
+.event-card-link .btn-event-manage:hover,
+.event-card-link .btn-event-manage:active,
+.event-action-wrapper .btn-event-manage,
+.event-action-wrapper .btn-event-manage:link,
+.event-action-wrapper .btn-event-manage:visited,
+.event-action-wrapper .btn-event-manage:hover,
+.event-action-wrapper .btn-event-manage:active,
+.btn-event-manage,
+.btn-event-manage:link,
+.btn-event-manage:visited,
+.btn-event-manage:hover,
+.btn-event-manage:active {
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  padding: 8px 16px !important;
+  background: #004AAD !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 50px !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  text-decoration: none !important;
+  box-shadow: 0 2px 8px rgba(0, 74, 173, 0.2) !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  outline: none !important;
+}
+
+.event-card-link .btn-event-manage:hover,
+.event-action-wrapper .btn-event-manage:hover,
+.btn-event-manage:hover {
+  background: #003d8f !important;
+  color: #ffffff !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 16px rgba(0, 74, 173, 0.4) !important;
+  text-decoration: none !important;
+}
+
+.event-card-link .btn-event-manage .material-symbols-rounded,
+.event-action-wrapper .btn-event-manage .material-symbols-rounded,
+.btn-event-manage .material-symbols-rounded {
+  font-size: 18px !important;
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 20 !important;
+  color: #ffffff !important;
+}
+
 /* Event Action Wrapper & Dropdown */
 .event-action-wrapper {
   position: relative;
   width: 100%;
+  margin-top: auto;
+  padding-top: 12px;
 }
 
 .event-action-menu {
@@ -1360,30 +1450,63 @@ body {
 /* Mobile */
 @media (max-width: 768px) {
   .nav-menu {
-    display: none;
+    display: none !important;
   }
 
   .hero-header .nav-menu.active {
-    display: flex;
+    display: flex !important;
     flex-direction: column;
-    position: absolute;
-    top: 100%;
+    position: fixed;
+    top: 70px;
     left: 0;
     right: 0;
-    background: rgba(0, 74, 173, 0.95);
-    padding: 16px;
-    gap: 10px;
-    border-radius: 0 0 12px 12px;
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
-    z-index: 40;
+    width: 100%;
+    background: rgba(0, 74, 173, 0.98);
+    backdrop-filter: blur(10px);
+    padding: 20px 16px;
+    gap: 12px;
+    border-radius: 0;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+    z-index: 9999;
+    max-height: calc(100vh - 70px);
+    overflow-y: auto;
   }
 
   .menu-toggle {
-    display: flex;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  .hero-header .header-container {
+    position: relative;
   }
 
+  /* Esconde auth-buttons no header, mas mostra no menu mobile */
   .auth-buttons {
     display: none;
+  }
+  
+  /* Mostra auth-buttons quando o menu mobile está ativo */
+  .hero-header .nav-menu.active .auth-buttons {
+    display: flex !important;
+    flex-direction: column;
+    width: 100%;
+    gap: 12px;
+    margin-left: 0;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .hero-header .nav-menu.active .auth-buttons .btn-login,
+  .hero-header .nav-menu.active .auth-buttons .btn-signup {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 20px;
+    font-size: 15px;
   }
 
   /* Perfil no mobile */
@@ -1496,4 +1619,232 @@ body {
     right: 16px;
     left: 16px;
   }
+}
+
+/* Modal de Confirmação */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal[style*="display: flex"],
+.modal.show,
+.modal[style*="flex"] {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+  position: relative;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.modal-icon {
+  font-size: 64px;
+  color: #CCEE52;
+  margin-bottom: 16px;
+  animation: bounce 0.6s ease;
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.modal-header h2 {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 1.8rem;
+  color: #004AAD;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.modal-body {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.modal-body p {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 1rem;
+  color: #333333;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.btn-modal-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 24px;
+  background-color: #004AAD;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(0, 74, 173, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  width: 100%;
+}
+
+.btn-modal-primary:hover {
+  background-color: #003d8f;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 74, 173, 0.4);
+}
+
+.btn-modal-primary .material-symbols-rounded {
+  font-size: 24px;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.btn-modal-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 24px;
+  background-color: transparent;
+  color: #004AAD;
+  border: 2px solid #004AAD;
+  border-radius: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  width: 100%;
+}
+
+.btn-modal-secondary:hover {
+  background-color: #004AAD;
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+.btn-modal-secondary .material-symbols-rounded {
+  font-size: 20px;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Botão WhatsApp no Modal */
+.btn-modal-whatsapp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 24px;
+  background-color: #25D366;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  width: 100%;
+}
+
+.btn-modal-whatsapp:hover {
+  background-color: #20BA5A;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
+}
+
+.btn-modal-whatsapp svg {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+/* Botão Fechar/Continuar no Modal */
+.btn-modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background-color: transparent;
+  color: #004AAD;
+  border: none;
+  border-radius: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  width: 100%;
+}
+
+.btn-modal-close:hover {
+  background-color: rgba(0, 74, 173, 0.05);
+  color: #004AAD;
 }

@@ -1,4 +1,4 @@
-{% extends "core/page/base_core.html" %}
+{% extends "core/page/base.html" %}
 {% load static %}
 {% load perfil_tags %}
 
@@ -6,276 +6,11 @@
 
 {% block extra_head %}
     {{ block.super }}
-    <link rel="stylesheet" href="{% static 'eventos/css/visualizar-evento.css' %}">
-    <style>
-        .participantes-page {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 24px;
-        }
-        
-        .participantes-header {
-            background: linear-gradient(135deg, rgba(0, 74, 173, 0.05) 0%, rgba(250, 118, 37, 0.05) 100%);
-            border-radius: var(--radius-md);
-            padding: 32px;
-            margin-bottom: 32px;
-            border: 1px solid rgba(0, 74, 173, 0.1);
-        }
-        
-        .participantes-header-top {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-        
-        .participantes-header-title-section {
-            flex: 1;
-            min-width: 0;
-        }
-        
-        .participantes-header .breadcrumb {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 12px;
-            font-family: var(--font-body);
-            font-size: 0.875rem;
-            color: var(--cinza-escuro);
-        }
-        
-        .participantes-header .breadcrumb a {
-            color: var(--azul-principal);
-            text-decoration: none;
-            transition: color var(--transition);
-        }
-        
-        .participantes-header .breadcrumb a:hover {
-            color: var(--laranja);
-        }
-        
-        .participantes-header .breadcrumb .material-symbols-rounded {
-            font-size: 16px;
-        }
-        
-        .participantes-header h1 {
-            font-family: var(--font-heading);
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--azul-principal);
-            margin: 0 0 8px 0;
-            letter-spacing: -0.02em;
-        }
-        
-        .participantes-header .evento-nome-header {
-            font-family: var(--font-body);
-            font-size: 1rem;
-            color: var(--cinza-escuro);
-            margin: 0;
-            font-weight: 500;
-        }
-        
-        .participantes-header .evento-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 20px;
-            background-color: var(--laranja);
-            color: var(--branco);
-            text-decoration: none;
-            font-family: var(--font-body);
-            font-weight: 600;
-            font-size: 0.9375rem;
-            border-radius: 50px;
-            border: 2px solid var(--laranja);
-            transition: all var(--transition);
-            box-shadow: 0 2px 8px rgba(250, 118, 37, 0.3);
-            white-space: nowrap;
-        }
-        
-        .participantes-header .evento-link:hover {
-            background-color: var(--verde-limao);
-            border-color: var(--verde-limao);
-            color: var(--azul-principal);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(204, 238, 82, 0.4);
-        }
-        
-        .participantes-header .evento-link .material-symbols-rounded {
-            font-size: 20px;
-            font-variation-settings: 'FILL' 0, 'wght' 600, 'GRAD' 0, 'opsz' 24;
-        }
-        
-        .participantes-stats {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 24px;
-            padding: 16px;
-            background-color: rgba(0, 74, 173, 0.05);
-            border-radius: var(--radius-md);
-        }
-        
-        .participantes-stats .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-family: var(--font-body);
-            color: var(--azul-principal);
-        }
-        
-        .participantes-stats .stat-item .material-symbols-rounded {
-            font-size: 20px;
-        }
-        
-        .participantes-stats .stat-number {
-            font-weight: 700;
-            color: var(--laranja);
-        }
-        
-        .participantes-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-        }
-        
-        .participante-card {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 20px;
-            background-color: var(--branco);
-            border-radius: var(--radius-md);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            transition: all var(--transition);
-        }
-        
-        .participante-card:hover {
-            box-shadow: 0 4px 12px rgba(0, 74, 173, 0.15);
-            transform: translateY(-2px);
-        }
-        
-        .participante-avatar {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            object-fit: cover;
-            flex-shrink: 0;
-            border: 3px solid var(--azul-principal);
-        }
-        
-        .participante-info {
-            flex: 1;
-            min-width: 0;
-        }
-        
-        .participante-nome {
-            font-family: var(--font-body);
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--azul-principal);
-            margin: 0 0 4px 0;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .participante-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            font-family: var(--font-body);
-        }
-        
-        .badge-organizador {
-            background-color: rgba(204, 238, 82, 0.3);
-            color: var(--azul-principal);
-        }
-        
-        .badge-status {
-            background-color: rgba(67, 176, 42, 0.15);
-            color: #43B02A;
-        }
-        
-        .no-participantes {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--cinza-escuro);
-            font-family: var(--font-body);
-        }
-        
-        .no-participantes .material-symbols-rounded {
-            font-size: 64px;
-            color: var(--cinza-medio);
-            margin-bottom: 16px;
-        }
-        
-        .no-participantes h3 {
-            font-family: var(--font-heading);
-            font-size: 1.5rem;
-            color: var(--azul-principal);
-            margin-bottom: 8px;
-        }
-        
-        @media (max-width: 768px) {
-            .participantes-page {
-                padding: 16px;
-            }
-            
-            .participantes-header {
-                padding: 24px 20px;
-            }
-            
-            .participantes-header-top {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .participantes-header h1 {
-                font-size: 26px;
-            }
-            
-            .participantes-header .evento-link {
-                width: auto;
-                min-width: 140px;
-                align-self: flex-start;
-            }
-            
-            .participantes-list {
-                grid-template-columns: 1fr;
-            }
-            
-            .participantes-stats {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .participantes-header {
-                padding: 20px 16px;
-            }
-            
-            .participantes-header h1 {
-                font-size: 24px;
-            }
-            
-            .participantes-header .evento-link {
-                padding: 10px 18px;
-                font-size: 0.875rem;
-                min-width: 120px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'eventos/css/participantes.css' %}">
 {% endblock extra_head %}
 
 {% block content %}
+    {% include "core/partials/header.html" %}
 <div class="participantes-page">
     <div class="participantes-header">
         <div class="participantes-header-top">
@@ -361,4 +96,57 @@
         </div>
     {% endif %}
 </div>
+    {% include "core/partials/footer.html" %}
 {% endblock content %}
+
+{% block extra_js %}
+    {{ block.super }}
+    <script>
+        // Função para inicializar o menu do perfil
+        function forceInitProfileMenu() {
+            const trigger = document.getElementById('profile-trigger');
+            const menu = document.getElementById('profile-menu');
+            
+            if (trigger && menu) {
+                // Remove todos os listeners anteriores
+                const newTrigger = trigger.cloneNode(true);
+                trigger.parentNode.replaceChild(newTrigger, trigger);
+                
+                const newTriggerEl = document.getElementById('profile-trigger');
+                const menuEl = document.getElementById('profile-menu');
+                
+                // Adiciona listener direto
+                newTriggerEl.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    menuEl.classList.toggle('active');
+                    newTriggerEl.classList.toggle('active');
+                };
+                
+                // Fechar ao clicar fora
+                setTimeout(function() {
+                    document.addEventListener('click', function(e) {
+                        if (!menuEl.contains(e.target) && !newTriggerEl.contains(e.target)) {
+                            const modal = document.getElementById('modal-bora');
+                            if (!modal || modal.style.display !== 'flex') {
+                                menuEl.classList.remove('active');
+                                newTriggerEl.classList.remove('active');
+                            }
+                        }
+                    });
+                }, 50);
+                
+                return true;
+            }
+            return false;
+        }
+        
+        // Tenta inicializar o menu do perfil
+        if (!forceInitProfileMenu()) {
+            setTimeout(forceInitProfileMenu, 200);
+            window.addEventListener('load', function() {
+                setTimeout(forceInitProfileMenu, 100);
+            });
+        }
+    </script>
+{% endblock extra_js %}

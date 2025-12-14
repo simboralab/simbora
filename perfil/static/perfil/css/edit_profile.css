@@ -1,3 +1,36 @@
+:root {
+    --radius-pill: 50px;
+}
+
+body.has-header {
+    display: block;
+    align-items: normal;
+    justify-content: normal;
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-body);
+    background: var(--cinza-claro);
+    color: var(--texto-principal);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Estilo específico para container quando vem depois de main-header ou hero-header */
+.main-header ~ .container,
+.hero-header ~ .container {
+    width: 90%;
+    max-width: 1000px;
+    margin: 60px auto 40px auto;
+    background: var(--branco);
+    padding: 40px;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+    height: auto;
+    display: block;
+    position: static;
+    overflow: visible;
+}
+
 /* Header interno da página */
 .header {
     text-align: center;
@@ -69,19 +102,22 @@ h1 {
 }
 
 /* Sections */
-.section-title {
-    margin-top: 0;
-    margin-bottom: 20px;
-    font-family: var(--font-heading);
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--azul-principal);
-    border-bottom: 2px solid var(--cinza-claro);
-    padding-bottom: 10px;
+.main-header ~ .container .section-title,
+.hero-header ~ .container .section-title {
+    margin-top: 0 !important;
+    margin-bottom: 20px !important;
+    font-family: var(--font-heading) !important;
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: var(--azul-principal) !important;
+    border-bottom: 2px solid var(--cinza-claro) !important;
+    padding: 0 0 10px 0 !important;
+    text-align: left !important;
     grid-column: 1 / -1; /* Ocupa toda a largura */
 }
 
-.section-title:first-of-type {
+.main-header ~ .container .section-title:first-of-type,
+.hero-header ~ .container .section-title:first-of-type {
     margin-top: 0;
 }
 
@@ -136,7 +172,7 @@ textarea {
     gap: 20px;
 }
 
-.row>label {
+.row > label {
     flex: 1;
 }
 
@@ -188,11 +224,11 @@ textarea {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-input:checked+.slider {
+input:checked + .slider {
     background: var(--verde-limao);
 }
 
-input:checked+.slider:before {
+input:checked + .slider:before {
     transform: translateX(22px);
 }
 
@@ -261,8 +297,9 @@ input:checked+.slider:before {
     }
 }
 
-@media (max-width: 580px) {
-    .main-header ~ .container {
+@media (max-width: 600px) {
+    .main-header ~ .container,
+    .hero-header ~ .container {
         width: 95%;
         padding: 20px;
         margin: 20px auto;

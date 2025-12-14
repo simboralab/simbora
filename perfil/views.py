@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.shortcuts import redirect, render
 from django.urls import reverse
+from django.contrib import messages
 from core.models import Endereco
 
 from perfil.models import Perfil
@@ -181,3 +182,35 @@ def edit_profile_view(request):
     }
 
     return render(request, "perfil/page/edit_profile.html", context)
+
+
+@login_required
+def listar_usuarios(request):
+    """
+    View para listar todos os usuários/perfis do Simbora
+    Acessível apenas para usuários logados
+    """
+    # Verifica se o usuário está autenticado
+    if not request.user.is_authenticated:
+        messages.error(request, "Você precisa estar logado para ver os usuários.")
+        return redirect('signin')
+    
+    # Verifica se tem perfil
+    if not hasattr(request.user, 'perfil') or request.user.perfil is None:
+        messages.error(request, "Perfil não encontrado. Complete seu cadastro primeiro.")
+        return redirect('home')
+    
+    # Busca todos os perfis que têm usuário associado, ordenados por nome
+    perfis = Perfil.objects.filter(
+        usuario__isnull=False
+    ).select_related('usuario').order_by('nome_social', 'usuario__first_name', 'usuario__last_name')
+    
+    # Conta total de perfis
+    total_usuarios = perfis.count()
+    
+    context = {
+        'perfis': perfis,
+        'total_usuarios': total_usuarios,
+    }
+    
+    return render(request, 'perfil/page/rede.html', context)

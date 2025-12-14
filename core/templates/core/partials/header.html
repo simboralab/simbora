@@ -7,8 +7,10 @@
           </a>
 
           <nav class="nav-menu">
-            <a href="{% url 'eventos:lista_eventos' %}" class="nav-link">Eventos</a>
-              <a href="#" class="nav-link">Categorias</a>
+              <a href="{% url 'eventos:lista_eventos' %}" class="nav-link">Explorar</a>
+              {% if user.is_authenticated %}
+                  <a href="/rede/" class="nav-link">Quem está por aqui</a>
+              {% endif %}
               <a href="{% url 'quem_somos' %}" class="nav-link">Quem somos</a>
               <a href="#" class="nav-link">Contato</a>
               
@@ -17,13 +19,8 @@
                   {% get_user_perfil as perfil %}
                   <div class="header-profile">
                       <div class="profile-info" id="profile-trigger">
-                          {% if perfil and perfil.foto_perfil %}
-                              <img src="{{ perfil.foto_perfil.url }}" alt="Perfil" class="profile-avatar">
-                          {% elif perfil and perfil.imagem_url %}
-                              <img src="{{ perfil.imagem_url }}" alt="Perfil" class="profile-avatar">
-                          {% else %}
-                              <img src="https://ui-avatars.com/api/?name={{ user.first_name|default:user.email }}&background=CCEE52&color=004AAD&size=128" alt="Perfil" class="profile-avatar">
-                          {% endif %}
+                          {% get_avatar_url perfil user.first_name|default:user.email as avatar_url %}
+                          <img src="{{ avatar_url }}" alt="Perfil" class="profile-avatar">
                           <div class="profile-details">
                               <span class="profile-name">{{ user.first_name|default:user.email|truncatechars:15 }}</span>
                               {% if perfil and perfil.nome_social %}
@@ -36,13 +33,8 @@
                       <!-- Menu Dropdown -->
                       <div class="profile-dropdown" id="profile-menu">
                           <div class="dropdown-header">
-                              {% if perfil and perfil.foto_perfil %}
-                                  <img src="{{ perfil.foto_perfil.url }}" alt="{{ user.first_name|default:user.email }}" class="dropdown-avatar">
-                              {% elif perfil and perfil.imagem_url %}
-                                  <img src="{{ perfil.imagem_url }}" alt="{{ user.first_name|default:user.email }}" class="dropdown-avatar">
-                              {% else %}
-                                  <img src="https://ui-avatars.com/api/?name={{ user.first_name|default:user.email }}&background=CCEE52&color=004AAD&size=128" alt="{{ user.first_name|default:user.email }}" class="dropdown-avatar">
-                              {% endif %}
+                              {% get_avatar_url perfil user.first_name|default:user.email as dropdown_avatar_url %}
+                              <img src="{{ dropdown_avatar_url }}" alt="{{ user.first_name|default:user.email }}" class="dropdown-avatar">
                               <div class="dropdown-user-info">
                                   <span class="dropdown-name">{{ user.first_name|default:user.email }}</span>
                                   {% if perfil and perfil.nome_social %}
@@ -52,23 +44,17 @@
                           </div>
                           <div class="dropdown-divider"></div>
                           <ul class="dropdown-menu">
+                            <li>
+                                <a href="{% url 'eventos:meus_eventos' %}" class="dropdown-item">
+                                    <span class="material-symbols-rounded">event</span>
+                                    <span>Meus eventos</span>
+                                </a>
+                            </li>
                               <li>
                                   <a href="{% url 'edit_profile' %}" class="dropdown-item">
                                       <span class="material-symbols-rounded">person</span>
                                       <span>Meu perfil</span>
                                   </a>
-                              </li>
-                              <li>
-                                  <a href="{% url 'eventos:meus_eventos' %}" class="dropdown-item">
-                                      <span class="material-symbols-rounded">event</span>
-                                      <span>Meus eventos</span>
-                                  </a>
-                              </li>
-                              <li>
-                                  <span class="dropdown-item disabled">
-                                      <span class="material-symbols-rounded">bookmark</span>
-                                      <span>Eventos salvos</span>
-                                  </span>
                               </li>
                               <li>
                                   <span class="dropdown-item disabled">
@@ -109,9 +95,61 @@
               {% endif %}
           </nav>
           
-          <button class="menu-toggle" aria-label="Abrir menu">
+          <button class="menu-toggle" aria-label="Abrir menu" type="button" id="mobile-menu-toggle">
               <span class="material-symbols-rounded">menu</span>
           </button>
 
         </div>
 </header>
+
+<script>
+// Script inline para garantir que o menu toggle funcione
+(function() {
+    function initMenuToggle() {
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navMenu = document.querySelector('.nav-menu');
+        
+        if (!menuToggle || !navMenu) {
+            return false;
+        }
+        
+        function toggleMenu(e) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            navMenu.classList.toggle('active');
+            menuToggle.classList.toggle('active');
+            console.log('Menu toggle:', navMenu.classList.contains('active') ? 'aberto' : 'fechado');
+        }
+        
+        // Remove listeners anteriores
+        const newToggle = menuToggle.cloneNode(true);
+        menuToggle.parentNode.replaceChild(newToggle, menuToggle);
+        
+        const newNavMenu = document.querySelector('.nav-menu');
+        const newMenuToggle = document.querySelector('.menu-toggle');
+        
+        // Adiciona listeners
+        newMenuToggle.onclick = toggleMenu;
+        newMenuToggle.addEventListener('click', toggleMenu, true);
+        newMenuToggle.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            toggleMenu(e);
+        }, true);
+        
+        return true;
+    }
+    
+    // Tenta inicializar imediatamente
+    if (!initMenuToggle()) {
+        // Tenta quando o DOM estiver pronto
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initMenuToggle);
+        } else {
+            setTimeout(initMenuToggle, 100);
+        }
+    }
+})();
+</script>
