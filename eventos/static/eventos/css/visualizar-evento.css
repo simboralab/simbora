@@ -791,6 +791,9 @@ h1 {
 
 .local-principal {
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
 }
 
 .local-principal h4 {
@@ -805,8 +808,9 @@ h1 {
   font-family: var(--font-body);
   font-weight: 400;
   color: var(--texto-principal);
-  margin-bottom: 4px;
+  margin-bottom: 0;
   font-size: 0.95rem;
+  line-height: 1.6;
 }
 
 .local-principal .cep {
@@ -844,8 +848,9 @@ h1 {
 .btn-mapa {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  padding: 10px 20px;
+  padding: 12px 24px;
   background-color: var(--azul-principal);
   color: var(--branco);
   border-radius: 25px;
@@ -853,8 +858,11 @@ h1 {
   font-weight: 600;
   font-size: 0.95rem;
   text-decoration: none;
-  margin-top: var(--spacing-xs);
+  margin-top: var(--spacing-md);
   transition: all var(--transition);
+  width: fit-content;
+  align-self: flex-start;
+  box-shadow: 0 2px 8px rgba(0, 74, 173, 0.2);
 }
 
 .btn-mapa:hover {

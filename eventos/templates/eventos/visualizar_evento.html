@@ -72,8 +72,12 @@
                 <span class="material-symbols-rounded icon" aria-hidden="true">location_on</span>
                 <span class="local-text">
                     <a href="https://maps.google.com/?q={{ evento.endereco.logradouro|urlencode }}+{{ evento.endereco.cidade|urlencode }}" target="_blank" rel="noopener noreferrer" class="local-link">
-                        {{ evento.endereco.logradouro }}<br>
-                        <span class="local-address">{{ evento.endereco.bairro }}, {{ evento.endereco.cidade }} - {{ evento.endereco.estado }}</span>
+                        {% if evento.endereco.nome_do_local %}
+                            {{ evento.endereco.nome_do_local }}, {{ evento.endereco.cidade }} - {{ evento.endereco.estado }}
+                        {% else %}
+                            {{ evento.endereco.logradouro }}<br>
+                            <span class="local-address">{{ evento.endereco.bairro }}, {{ evento.endereco.cidade }} - {{ evento.endereco.estado }}</span>
+                        {% endif %}
                     </a>
                 </span>
             </div>
@@ -164,7 +168,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <span class="material-symbols-rounded modal-icon">celebration</span>
-                <h2>Boas-vindas ao Rolê!</h2>
+                <h2>Presença Confirmada!</h2>
             </div>
             <div class="modal-body">
                 <p>Você e a turma já podem conversar para combinar os detalhes do ponto de encontro, caronas e o que mais precisar!</p>
@@ -231,18 +235,15 @@
             <h3>Local do Evento</h3>
             <div class="local-detalhes">
                 <div class="local-principal">
-                    <h4>{{ evento.endereco.logradouro }}</h4>
-                    {% if evento.endereco.numero %}
-                        <p>{{ evento.endereco.numero }}</p>
+                    {% if evento.endereco.nome_do_local %}
+                        <p>{{ evento.endereco.nome_do_local }}</p>
                     {% endif %}
-                    <p>{{ evento.endereco.bairro }}, {{ evento.endereco.cidade }} - {{ evento.endereco.estado }}</p>
-                    {% if evento.endereco.cep %}
-                        <p class="cep">CEP: {{ evento.endereco.cep }}</p>
+                    {% if evento.endereco.logradouro or evento.endereco.numero or evento.endereco.bairro or evento.endereco.cidade or evento.endereco.estado or evento.endereco.cep %}
+                        <p>{{ evento.endereco.logradouro }}, {{ evento.endereco.numero }}, {{ evento.endereco.bairro }}. {{ evento.endereco.cidade }} - {{ evento.endereco.estado }}.</p>
+                        <p>CEP: {{ evento.endereco.cep }}</p>
                     {% endif %}
-                    <a href="https://maps.google.com/?q={{ evento.endereco.logradouro|urlencode }}+{{ evento.endereco.cidade|urlencode }}" target="_blank" rel="noopener noreferrer" class="btn-mapa">
-                        <span class="material-symbols-rounded">map</span>
-                        Ver no mapa
-                    </a>
+                
+                   
                 </div>
                 {% if evento.endereco.complemento %}
                     <div class="local-instrucoes">

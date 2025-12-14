@@ -56,22 +56,16 @@
                 <div class="dropdown-divider"></div>
                 <ul class="dropdown-menu">
                     <li>
-                        <a href="{% url 'edit_profile' %}" class="dropdown-item">
-                            <span class="material-symbols-rounded">person</span>
-                            <span>Meu perfil</span>
-                        </a>
-                    </li>
-                    <li>
                         <a href="{% url 'eventos:meus_eventos' %}" class="dropdown-item">
                             <span class="material-symbols-rounded">event</span>
                             <span>Meus eventos</span>
                         </a>
                     </li>
                     <li>
-                        <span class="dropdown-item disabled">
-                            <span class="material-symbols-rounded">bookmark</span>
-                            <span>Eventos salvos</span>
-                        </span>
+                        <a href="{% url 'edit_profile' %}" class="dropdown-item">
+                            <span class="material-symbols-rounded">person</span>
+                            <span>Meu perfil</span>
+                        </a>
                     </li>
                     <li>
                         <span class="dropdown-item disabled">

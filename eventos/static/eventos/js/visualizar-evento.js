@@ -312,11 +312,81 @@ window.onclick = function(event) {
   }
 }
 
-function copiarLink() {
+function copiarLink(event) {
   const url = window.location.href;
+  
+  // Função auxiliar para mostrar notificação
+  const mostrarNotificacao = () => {
+    // Verifica se showNotification está disponível (de principal.js)
+    if (typeof window.showNotification === 'function') {
+      window.showNotification('Link copiado para a área de transferência!', 'success');
+    } else if (typeof showNotification === 'function') {
+      showNotification('Link copiado para a área de transferência!', 'success');
+    } else {
+      // Fallback: cria notificação simples se a função não estiver disponível
+      // Adiciona animações CSS se não existirem
+      if (!document.getElementById('notification-animations')) {
+        const style = document.createElement('style');
+        style.id = 'notification-animations';
+        style.textContent = `
+          @keyframes slideInRight {
+            from {
+              transform: translateX(400px);
+              opacity: 0;
+            }
+            to {
+              transform: translateX(0);
+              opacity: 1;
+            }
+          }
+          @keyframes slideOutRight {
+            from {
+              transform: translateX(0);
+              opacity: 1;
+            }
+            to {
+              transform: translateX(400px);
+              opacity: 0;
+            }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+      
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--verde-limao);
+        color: var(--azul-principal);
+        padding: 16px 24px;
+        border-radius: 50px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-family: var(--font-body);
+        font-size: 0.9375rem;
+        font-weight: 600;
+        z-index: 9999;
+        animation: slideInRight 0.3s ease-out;
+      `;
+      notification.innerHTML = `
+        <span class="material-symbols-rounded">check_circle</span>
+        <span>Link copiado para a área de transferência!</span>
+      `;
+      document.body.appendChild(notification);
+      setTimeout(() => {
+        notification.style.animation = 'slideOutRight 0.3s ease-in';
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    }
+  };
+  
   navigator.clipboard.writeText(url).then(() => {
-    // Feedback visual melhorado
-    const btn = event.target.closest('.share-btn');
+    // Feedback visual melhorado no botão
+    const btn = event ? event.target.closest('.share-btn') : document.querySelector('.share-link');
     if (btn) {
       const originalText = btn.innerHTML;
       btn.innerHTML = '<span class="material-symbols-rounded">check</span> Copiado!';
@@ -328,6 +398,9 @@ function copiarLink() {
         btn.style.color = '';
       }, 2000);
     }
+    
+    // Mostra notificação no estilo do projeto
+    mostrarNotificacao();
   }).catch(() => {
     // Fallback para navegadores mais antigos
     const textArea = document.createElement('textarea');
@@ -336,7 +409,9 @@ function copiarLink() {
     textArea.select();
     document.execCommand('copy');
     document.body.removeChild(textArea);
-    alert('Link copiado para a área de transferência!');
+    
+    // Mostra notificação no estilo do projeto ao invés de alert
+    mostrarNotificacao();
   });
 }
 

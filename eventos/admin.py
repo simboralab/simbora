@@ -14,10 +14,31 @@ class ParticipacaoAdmin(admin.ModelAdmin):
 
 @admin.register(Eventos)
 class EventosAdmin(admin.ModelAdmin):
-    list_display = ['nome_evento', 'organizador', 'status', 'data_inicio', 'created_at']
-    list_filter = ['status', 'aceita_participantes', 'data_inicio']
+    list_display = ['nome_evento', 'organizador', 'status', 'categoria', 'data_inicio', 'created_at']
+    list_filter = ['status', 'categoria', 'aceita_participantes', 'data_inicio']
     search_fields = ['nome_evento', 'descricao', 'local_encontro']
     date_hierarchy = 'data_inicio'
+    
+    fieldsets = (
+        ('Informações Básicas', {
+            'fields': ('nome_evento', 'categoria', 'organizador', 'status')
+        }),
+        ('Descrição e Conteúdo', {
+            'fields': ('descricao', 'regras', 'foto', 'foto_url')
+        }),
+        ('Localização', {
+            'fields': ('endereco', 'local_encontro')
+        }),
+        ('Datas e Horários', {
+            'fields': ('data_inicio', 'data_termino', 'data_encontro')
+        }),
+        ('Participantes', {
+            'fields': ('minimo_participantes', 'maximo_participantes', 'aceita_participantes')
+        }),
+        ('Outros', {
+            'fields': ('grupo_whatsapp',)
+        }),
+    )
     
     class ParticipacaoInline(admin.TabularInline):
         model = Participacao

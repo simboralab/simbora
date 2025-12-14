@@ -1,24 +1,536 @@
-{% extends "core/page/base_core.html" %}
+{% extends "core/page/base.html" %}
+{% load static %}
+{% load perfil_tags %}
 
-{% block title %}Eventos{% endblock title %}
+{% block title %}Escolha sua próxima aventura{% endblock title %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'eventos/css/lista_eventos.css' %}">
+{% endblock extra_css %}
 
 {% block content %}
-    
-        <!-- Conteúdo Principal -->
-    <h1>Lista de eventos</h1>
+{% include "core/partials/header.html" %}
 
-    {% if eventos %}
-        <ul>
-            {% for evento in eventos %}
-                <li>
-                    <a href="{% url 'eventos:visualizar_evento' evento.id %}">
-                        {{ evento.nome_evento }} - {{ evento.data_inicio|date:"d/m/Y H:i" }}
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Não há eventos cadastrados.</p>
-    {% endif %}
+<main>
+    <!-- Seção de Filtros -->
+    <section class="filters-section">
+        <div class="filters-container">
+            <h1 class="page-title">Escolha sua próxima experiência</h1>
+            
+            <div class="filters-wrapper">
+                <div class="filter-group">
+                    <!-- Select nativo (oculto) para manter funcionalidade -->
+                    <select id="categoria-filter" class="filter-select-hidden" onchange="filtrarPorCategoria(this.value)" style="display: none;">
+                        <option value="">Todas as categorias</option>
+                        {% for valor, nome in categorias_disponiveis %}
+                        <option value="{{ valor }}" {% if categoria_filtrada == valor %}selected{% endif %}>
+                            {{ nome }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <!-- Dropdown customizado -->
+                    <div class="custom-select-wrapper">
+                        <button type="button" class="custom-select-trigger" id="custom-select-trigger" aria-haspopup="listbox" aria-expanded="false">
+                            <span class="material-symbols-rounded custom-select-icon">category</span>
+                            <span class="custom-select-value">
+                                {% if categoria_filtrada %}
+                                    {% for valor, nome in categorias_disponiveis %}
+                                        {% if categoria_filtrada == valor %}{{ nome }}{% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    Filtrar por categoria
+                                {% endif %}
+                            </span>
+                            <span class="material-symbols-rounded custom-select-arrow">expand_more</span>
+                        </button>
+                        <ul class="custom-select-dropdown" id="custom-select-dropdown" role="listbox" style="display: none;">
+                            <li role="option" class="custom-select-option {% if not categoria_filtrada %}selected{% endif %}" data-value="" onclick="selecionarCategoria('')">
+                                <span class="material-symbols-rounded option-check">check</span>
+                                <span>Todas as categorias</span>
+                            </li>
+                            {% for valor, nome in categorias_disponiveis %}
+                            <li role="option" class="custom-select-option {% if categoria_filtrada == valor %}selected{% endif %}" data-value="{{ valor }}" onclick="selecionarCategoria('{{ valor }}')">
+                                <span class="material-symbols-rounded option-check">check</span>
+                                <span>{{ nome }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <!-- Select nativo (oculto) para manter funcionalidade -->
+                    <select id="cidade-filter" class="filter-select-hidden" onchange="filtrarPorCidade(this.value)" style="display: none;">
+                        <option value="">Todas as cidades</option>
+                        {% for cidade in cidades_disponiveis %}
+                        <option value="{{ cidade }}" {% if cidade_filtrada == cidade %}selected{% endif %}>
+                            {{ cidade }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <!-- Dropdown customizado -->
+                    <div class="custom-select-wrapper">
+                        <button type="button" class="custom-select-trigger" id="custom-select-cidade-trigger" aria-haspopup="listbox" aria-expanded="false">
+                            <span class="material-symbols-rounded custom-select-icon">location_on</span>
+                            <span class="custom-select-value">
+                                {% if cidade_filtrada %}
+                                    {{ cidade_filtrada }}
+                                {% else %}
+                                    Filtrar por cidade
+                                {% endif %}
+                            </span>
+                            <span class="material-symbols-rounded custom-select-arrow">expand_more</span>
+                        </button>
+                        <ul class="custom-select-dropdown" id="custom-select-cidade-dropdown" role="listbox" style="display: none;">
+                            <li role="option" class="custom-select-option {% if not cidade_filtrada %}selected{% endif %}" data-value="" onclick="selecionarCidade('')">
+                                <span class="material-symbols-rounded option-check">check</span>
+                                <span>Todas as cidades</span>
+                            </li>
+                            {% for cidade in cidades_disponiveis %}
+                            <li role="option" class="custom-select-option {% if cidade_filtrada == cidade %}selected{% endif %}" data-value="{{ cidade }}" onclick="selecionarCidade('{{ cidade }}')">
+                                <span class="material-symbols-rounded option-check">check</span>
+                                <span>{{ cidade }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="filter-group filter-search-group">
+                    <div class="search-input-wrapper">
+                        <span class="material-symbols-rounded search-icon">search</span>
+                        <input 
+                            type="text" 
+                            id="busca-texto" 
+                            class="search-input" 
+                            placeholder="O que você está a fim de fazer?" 
+                            value="{{ busca_texto|default:'' }}"
+                            onkeypress="if(event.key === 'Enter') { buscarEventos(); }"
+                        >
+                    </div>
+                </div>
+                
+                {% if categoria_filtrada or cidade_filtrada or busca_texto %}
+                <div class="filter-active">
+                    {% if categoria_filtrada %}
+                    <span class="filter-badge">
+                        {% for valor, nome in categorias_disponiveis %}
+                            {% if categoria_filtrada == valor %}{{ nome }}{% endif %}
+                        {% endfor %}
+                        <button class="filter-remove" onclick="removerFiltro('categoria')" aria-label="Remover filtro de categoria">
+                            <span class="material-symbols-rounded">close</span>
+                        </button>
+                    </span>
+                    {% endif %}
+                    {% if cidade_filtrada %}
+                    <span class="filter-badge">
+                        {{ cidade_filtrada }}
+                        <button class="filter-remove" onclick="removerFiltro('cidade')" aria-label="Remover filtro de cidade">
+                            <span class="material-symbols-rounded">close</span>
+                        </button>
+                    </span>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção de Eventos -->
+    <section class="events-section">
+        <div class="events-container">
+            {% if eventos_com_info %}
+                <div class="events-grid">
+                    {% for item in eventos_com_info %}
+                        {% with evento=item.evento %}
+                        <article class="event-card">
+                            <a href="{% url 'eventos:visualizar_evento' evento.id %}" class="event-card-link">
+                            <div class="event-image">
+                                {% if evento.foto %}
+                                    <img src="{{ evento.foto.url }}" alt="{{ evento.nome_evento }}">
+                                {% elif evento.foto_url %}
+                                    <img src="{{ evento.foto_url }}" alt="{{ evento.nome_evento }}">
+                                {% else %}
+                                    <div class="event-image-placeholder">
+                                        <span class="material-symbols-rounded">event</span>
+                                    </div>
+                                {% endif %}
+                                {% if evento.categoria %}
+                                <span class="event-category-badge">{{ evento.get_categoria_display }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="event-content">
+                                <h3 class="event-title">{{ evento.nome_evento }}</h3>
+                                <div class="event-details">
+                                    <div class="event-detail-item">
+                                        <span class="material-symbols-rounded">calendar_today</span>
+                                        <span>{{ evento.data_inicio|date:"d/m/Y" }} às {{ evento.data_inicio|time:"H:i" }}</span>
+                                    </div>
+                                    {% if evento.endereco %}
+                                    <div class="event-detail-item">
+                                        <span class="material-symbols-rounded">location_on</span>
+                                        <span>
+                                            {% if evento.endereco.nome_do_local %}
+                                                {{ evento.endereco.nome_do_local }}
+                                            {% else %}
+                                                {{ evento.endereco.logradouro }}{% if evento.endereco.numero %}, {{ evento.endereco.numero }}{% endif %}
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                    {% elif evento.local_encontro %}
+                                    <div class="event-detail-item">
+                                        <span class="material-symbols-rounded">location_on</span>
+                                        <span>{{ evento.local_encontro }}</span>
+                                    </div>
+                                    {% endif %}
+                                    <div class="event-detail-item">
+                                        <span class="material-symbols-rounded">group</span>
+                                        <div class="event-avatars">
+                                            {% if item.participantes_para_exibicao %}
+                                                {% for participacao in item.participantes_para_exibicao|slice:":3" %}
+                                                    {% if participacao.participante %}
+                                                        {% get_avatar_url participacao.participante participacao.participante.nome_completo as avatar_url %}
+                                                        <img src="{{ avatar_url }}" alt="{{ participacao.participante.nome_completo }}">
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% if item.total_participantes > 3 %}
+                                                    <span class="avatar-count">+{{ item.total_participantes|add:"-3" }} pessoas</span>
+                                                {% elif item.total_participantes > 0 and item.total_participantes <= 3 %}
+                                                    <span class="avatar-count">+{{ item.total_participantes }} {% if item.total_participantes == 1 %}pessoa{% else %}pessoas{% endif %}</span>
+                                                {% endif %}
+                                            {% else %}
+                                                <span class="avatar-count">Nenhum participante ainda</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% if evento.descricao %}
+                                <p class="event-description">{{ evento.descricao|truncatewords:15 }}</p>
+                                {% endif %}
+                                <div class="event-action-wrapper">
+                                    <!-- <div class="btn-event-join-container">
+                                        <span class="btn-event-join">
+                                            <img src="{% static 'core/img/logo/marca2-azul.svg' %}" alt="Simbora" class="btn-event-icon">
+                                            Bora!
+                                        </span>
+                                    </div> -->
+                                    <button class="btn-event-share" onclick="event.stopPropagation(); event.preventDefault(); copiarLinkEvento('{% url 'eventos:visualizar_evento' evento.id %}'); return false;">
+                                        <span class="material-symbols-rounded">share</span>
+                                    </button>
+                                </div>
+                            </div>
+                            </a>
+                        </article>
+                        {% endwith %}
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-events">
+                    <span class="material-symbols-rounded">event_busy</span>
+                    <h2>Nenhum evento encontrado</h2>
+                    <p>
+                        {% if busca_texto %}
+                            Nenhum evento encontrado para "{{ busca_texto }}".
+                        {% elif categoria_filtrada and cidade_filtrada %}
+                            Não há eventos nesta categoria e cidade no momento.
+                        {% elif categoria_filtrada %}
+                            Não há eventos nesta categoria no momento.
+                        {% elif cidade_filtrada %}
+                            Não há eventos nesta cidade no momento.
+                        {% else %}
+                            Não há eventos cadastrados no momento.
+                        {% endif %}
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+</main>
+
+{% include "core/partials/footer.html" %}
+
+<script>
+function filtrarPorCategoria(categoria) {
+    const url = new URL(window.location.href);
+    if (categoria) {
+        url.searchParams.set('categoria', categoria);
+    } else {
+        url.searchParams.delete('categoria');
+    }
+    // Mantém o filtro de cidade se existir
+    window.location.href = url.toString();
+}
+
+function filtrarPorCidade(cidade) {
+    const url = new URL(window.location.href);
+    if (cidade) {
+        url.searchParams.set('cidade', cidade);
+    } else {
+        url.searchParams.delete('cidade');
+    }
+    // Mantém o filtro de categoria se existir
+    window.location.href = url.toString();
+}
+
+function selecionarCategoria(categoria) {
+    // Atualiza o select nativo
+    const selectNativo = document.getElementById('categoria-filter');
+    if (selectNativo) {
+        selectNativo.value = categoria;
+    }
+    
+    // Filtra
+    filtrarPorCategoria(categoria);
+}
+
+function selecionarCidade(cidade) {
+    // Atualiza o select nativo
+    const selectNativo = document.getElementById('cidade-filter');
+    if (selectNativo) {
+        selectNativo.value = cidade;
+    }
+    
+    // Filtra
+    filtrarPorCidade(cidade);
+}
+
+function removerFiltro(tipo) {
+    if (tipo === 'categoria') {
+        filtrarPorCategoria('');
+    } else if (tipo === 'cidade') {
+        filtrarPorCidade('');
+    } else if (tipo === 'busca') {
+        limparBusca();
+    }
+}
+
+function buscarEventos() {
+    const busca = document.getElementById('busca-texto').value.trim();
+    const url = new URL(window.location.href);
+    if (busca) {
+        url.searchParams.set('busca', busca);
+    } else {
+        url.searchParams.delete('busca');
+    }
+    window.location.href = url.toString();
+}
+
+function limparBusca() {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('busca');
+    window.location.href = url.toString();
+}
+
+// Função auxiliar para inicializar um dropdown customizado
+function initCustomDropdown(triggerId, dropdownId) {
+    const trigger = document.getElementById(triggerId);
+    const dropdown = document.getElementById(dropdownId);
+    
+    if (trigger && dropdown) {
+        const options = dropdown.querySelectorAll('.custom-select-option');
+        const arrow = trigger.querySelector('.custom-select-arrow');
+        
+        // Abre/fecha dropdown
+        trigger.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const isOpen = dropdown.style.display === 'block';
+            dropdown.style.display = isOpen ? 'none' : 'block';
+            trigger.setAttribute('aria-expanded', !isOpen);
+            if (arrow) {
+                arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+            }
+        });
+        
+        // Fecha ao clicar fora
+        document.addEventListener('click', function(e) {
+            if (!trigger.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.style.display = 'none';
+                trigger.setAttribute('aria-expanded', 'false');
+                if (arrow) {
+                    arrow.style.transform = 'rotate(0deg)';
+                }
+            }
+        });
+        
+        // Atualiza visual ao selecionar opção
+        options.forEach(option => {
+            option.addEventListener('mouseenter', function() {
+                if (!this.classList.contains('selected')) {
+                    this.style.backgroundColor = 'rgba(0, 74, 173, 0.08)';
+                }
+            });
+            
+            option.addEventListener('mouseleave', function() {
+                if (!this.classList.contains('selected')) {
+                    this.style.backgroundColor = '';
+                }
+            });
+        });
+    }
+}
+
+// Inicializa os dropdowns customizados e campo de busca
+document.addEventListener('DOMContentLoaded', function() {
+    // Dropdown de categoria
+    initCustomDropdown('custom-select-trigger', 'custom-select-dropdown');
+    
+    // Dropdown de cidade
+    initCustomDropdown('custom-select-cidade-trigger', 'custom-select-cidade-dropdown');
+    
+    // Campo de busca - mostra/oculta botão de limpar
+    const buscaInput = document.getElementById('busca-texto');
+    const searchWrapper = document.querySelector('.search-input-wrapper');
+    
+    if (buscaInput && searchWrapper) {
+        function atualizarBotaoLimpar() {
+            const buscaTexto = buscaInput.value.trim();
+            let clearButton = searchWrapper.querySelector('.search-clear');
+            
+            if (buscaTexto && !clearButton) {
+                // Cria botão de limpar se não existir
+                clearButton = document.createElement('button');
+                clearButton.type = 'button';
+                clearButton.className = 'search-clear';
+                clearButton.setAttribute('aria-label', 'Limpar busca');
+                clearButton.onclick = limparBusca;
+                clearButton.innerHTML = '<span class="material-symbols-rounded">close</span>';
+                searchWrapper.appendChild(clearButton);
+            } else if (!buscaTexto && clearButton) {
+                // Remove botão se não houver texto
+                clearButton.remove();
+            }
+        }
+        
+        buscaInput.addEventListener('input', atualizarBotaoLimpar);
+        atualizarBotaoLimpar(); // Atualiza estado inicial
+    }
+});
+
+function copiarLinkEvento(eventoUrl) {
+    const url = window.location.origin + eventoUrl;
+    
+    // Função auxiliar para mostrar notificação
+    const mostrarNotificacao = () => {
+        if (typeof window.showNotification === 'function') {
+            window.showNotification('Link copiado para a área de transferência!', 'success');
+        } else if (typeof showNotification === 'function') {
+            showNotification('Link copiado para a área de transferência!', 'success');
+        } else {
+            // Fallback: cria notificação simples
+            if (!document.getElementById('notification-animations')) {
+                const style = document.createElement('style');
+                style.id = 'notification-animations';
+                style.textContent = `
+                    @keyframes slideInRight {
+                        from { transform: translateX(400px); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes slideOutRight {
+                        from { transform: translateX(0); opacity: 1; }
+                        to { transform: translateX(400px); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: var(--verde-limao);
+                color: var(--azul-principal);
+                padding: 16px 24px;
+                border-radius: 50px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                font-family: var(--font-body);
+                font-size: 0.9375rem;
+                font-weight: 600;
+                z-index: 9999;
+                animation: slideInRight 0.3s ease-out;
+            `;
+            notification.innerHTML = `
+                <span class="material-symbols-rounded">check_circle</span>
+                <span>Link copiado para a área de transferência!</span>
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease-in';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+    };
+    
+    navigator.clipboard.writeText(url).then(() => {
+        mostrarNotificacao();
+    }).catch(() => {
+        // Fallback para navegadores mais antigos
+        const textArea = document.createElement('textarea');
+        textArea.value = url;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        mostrarNotificacao();
+    });
+    
+    return false;
+}
+</script>
 
 {% endblock content %}
+
+{% block extra_js %}
+    {{ block.super }}
+    <script>
+        // Função para inicializar o menu do perfil
+        function forceInitProfileMenu() {
+            const trigger = document.getElementById('profile-trigger');
+            const menu = document.getElementById('profile-menu');
+            
+            if (trigger && menu) {
+                // Remove todos os listeners anteriores
+                const newTrigger = trigger.cloneNode(true);
+                trigger.parentNode.replaceChild(newTrigger, trigger);
+                
+                const newTriggerEl = document.getElementById('profile-trigger');
+                const menuEl = document.getElementById('profile-menu');
+                
+                // Adiciona listener direto
+                newTriggerEl.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    menuEl.classList.toggle('active');
+                    newTriggerEl.classList.toggle('active');
+                };
+                
+                // Fechar ao clicar fora
+                setTimeout(function() {
+                    document.addEventListener('click', function(e) {
+                        if (!menuEl.contains(e.target) && !newTriggerEl.contains(e.target)) {
+                            const modal = document.getElementById('modal-bora');
+                            if (!modal || modal.style.display !== 'flex') {
+                                menuEl.classList.remove('active');
+                                newTriggerEl.classList.remove('active');
+                            }
+                        }
+                    });
+                }, 50);
+                
+                return true;
+            }
+            return false;
+        }
+        
+        // Tenta inicializar o menu do perfil
+        if (!forceInitProfileMenu()) {
+            setTimeout(forceInitProfileMenu, 200);
+            window.addEventListener('load', function() {
+                setTimeout(forceInitProfileMenu, 100);
+            });
+        }
+    </script>
+{% endblock extra_js %}

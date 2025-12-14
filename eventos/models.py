@@ -269,6 +269,22 @@ class Eventos(models.Model):
         help_text='Se o evento ainda está aceitando novos participantes'
     )
     
+    CATEGORIA_CHOICES = [
+        ('ESPORTE', 'Esporte'),
+        ('LAZER', 'Lazer'),
+        ('CULTURA', 'Cultura'),
+        ('TECNOLOGIA', 'Tecnologia'),
+        ('EDUCACAO', 'Educação'),
+    ]
+    
+    categoria = models.CharField(
+        max_length=20,
+        choices=CATEGORIA_CHOICES,
+        blank=True,
+        null=True,
+        help_text='Categoria do evento'
+    )
+    
     created_at = models.DateTimeField(
         auto_now_add=True,
         help_text='Data de criação do evento'

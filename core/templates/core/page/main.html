@@ -1,4 +1,5 @@
 {% extends "core/page/base.html" %}
+{% load perfil_tags %}
 
 {% block title %}Página Principal{% endblock title %}
 
@@ -13,10 +14,10 @@
                 <h1 class="hero-title">Seu próximo destino começa aqui. <br /> O que vamos fazer hoje?</h1>
                 <div class="hero-search">
                     <div class="search-wrapper">
-                        <input type="text" class="search-input" placeholder="Buscar eventos, locais ou companhias...">
-                        <button class="search-button">Buscar</button>
+                        <input type="text" id="hero-search-input" class="search-input" placeholder="Buscar eventos, locais ou companhias..." onkeypress="if(event.key === 'Enter') { buscarEventosHome(); }">
+                        <button class="search-button" onclick="buscarEventosHome()">Buscar</button>
                     </div>
-                    <button class="explore-button">Explorar</button>
+                 
                 </div>
             </div>
         </section>
@@ -26,177 +27,85 @@
             <div class="events-container">
                 <!-- <h2 class="section-title">Próximos eventos</h2> -->
                 <div class="events-carousel">
-                    <!-- Evento 1 -->
-                    <article class="event-card">
-                        <div class="event-image" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDd-jeX3qbJ3Obutsn2JsaieKE63CiXAm0-3bPHop3viUXjcBfJ4OJ_AlMVZ7c1v78yA1mDdtnfbehkSINcd5GHC1EHc0feeNPpb5jnu3jm2XGyZAP8N9XYxCfxPxVwpxXUp6ea2ug8jKgTj6zD_4kShf3XFeqWGQvliIuMgKy6sD_h4fCucrXIWgzT7BQ8RaafAkV2Jv9gVzBaUZtOh4X0ZVzLUm_I0Eas_78Pe1qaI9JFp50K6DPxSYYeY8k_znm2pgDiJIjEHPk');"></div>
-                        <div class="event-content">
-                            <h3 class="event-title">Festival de Rock Independente</h3>
-                            <div class="event-details">
-                                <div class="event-detail-item">
-                                    <span class="material-symbols-rounded">calendar_today</span>
-                                    <span>Sex, 26 de Dezembro - 20h</span>
-                                </div>
-                                <div class="event-detail-item">
-                                    <span class="material-symbols-rounded">location_on</span>
-                                    <span>Estúdio Central</span>
-                                </div>
-                                <div class="event-detail-item">
-                                    <span class="material-symbols-rounded">group</span>
-                                    <div class="event-avatars">
-                                        <img src="https://avatars.githubusercontent.com/u/128330949?s=40&v=4" alt="Avatar">
-                                        <img src="https://avatars.githubusercontent.com/u/187967201?v=4" alt="Avatar">
-                                        <span class="avatar-count">+5 pessoas</span>
+                    {% if eventos_com_info %}
+                        {% for item in eventos_com_info %}
+                            {% with evento=item.evento %}
+                            <article class="event-card">
+                                <a href="{% url 'eventos:visualizar_evento' evento.id %}" class="event-card-link" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; flex: 1; min-height: 0;">
+                                    <div class="event-image" style="position: relative; {% if evento.foto %}background-image: url('{{ evento.foto.url }}');{% elif evento.foto_url %}background-image: url('{{ evento.foto_url }}');{% else %}background: linear-gradient(135deg, #CCEE52 0%, #004AAD 100%); display: flex; align-items: center; justify-content: center;{% endif %}">
+                                        {% if not evento.foto and not evento.foto_url %}
+                                            <span class="material-symbols-rounded" style="font-size: 4rem; color: white; opacity: 0.5;">event</span>
+                                        {% endif %}
+                                        {% if evento.categoria %}
+                                            <span style="position: absolute; top: 12px; left: 12px; padding: 6px 12px; background: #CCEE52; color: #004AAD; border-radius: 20px; font-size: 0.75rem; font-weight: 600; z-index: 10;">{{ evento.get_categoria_display }}</span>
+                                        {% endif %}
                                     </div>
-                                </div>
-                            </div>
-                            <div class="event-action-wrapper">
-                                <button class="btn-event-join">
-                                    <span class="material-symbols-rounded">group_add</span>
-                                    Bora!
-                                </button>
-                                <div class="event-action-menu">
-                                    <a href="#" class="event-action-item">
-                                        <span class="material-symbols-rounded">info</span>
-                                        <span>Saber mais</span>
-                                    </a>
-                                    <button class="event-action-item event-action-join">
-                                        <span class="material-symbols-rounded">check_circle</span>
-                                        <span>Eu vou!</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-
-                    <!-- Evento 2 -->
-                    <article class="event-card">
-                        <div class="event-image" style="background-image: url('https://www.pe.senac.br/wp-content/uploads/2025/09/banner-post-site-volta-ao-mundo-003-1200x565-1.png');"></div>
-                        <div class="event-content">
-                            <h3 class="event-title">Festival Volta ao Mundo</h3>
-                            <div class="event-details">
-                                <div class="event-detail-item">
-                                    <span class="material-symbols-rounded">calendar_today</span>
-                                    <span>Quarta, 25 de Novembro - 12h</span>
-                                </div>
-                                <div class="event-detail-item">
-                                    <span class="material-symbols-rounded">location_on</span>
-                                    <span>Senac PE</span>
-                                </div>
-                                <div class="event-detail-item">
-                                    <span class="material-symbols-rounded">group</span>
-                                    <div class="event-avatars">
-                                        <img src="https://avatars.githubusercontent.com/u/194426218?v=4" alt="Avatar">
-                                        <img src="https://avatars.githubusercontent.com/u/6483341?v=4" alt="Avatar">
-                                        <img src="https://avatars.githubusercontent.com/u/143225752?s=40&v=4" alt="Avatar">
-                                        <span class="avatar-count">+12 pessoas</span>
+                                    <div class="event-content">
+                                        <h3 class="event-title">{{ evento.nome_evento }}</h3>
+                                        <div class="event-details">
+                                            <div class="event-detail-item">
+                                                <span class="material-symbols-rounded">calendar_today</span>
+                                                <span>{{ evento.data_inicio|date:"d/m/Y" }} às {{ evento.data_inicio|time:"H:i" }}</span>
+                                            </div>
+                                            {% if evento.endereco %}
+                                                <div class="event-detail-item">
+                                                    <span class="material-symbols-rounded">location_on</span>
+                                                    <span>
+                                                        {% if evento.endereco.nome_do_local %}
+                                                            {{ evento.endereco.nome_do_local }}
+                                                        {% else %}
+                                                            {{ evento.endereco.logradouro }}{% if evento.endereco.numero %}, {{ evento.endereco.numero }}{% endif %}
+                                                        {% endif %}
+                                                    </span>
+                                                </div>
+                                            {% elif evento.local_encontro %}
+                                                <div class="event-detail-item">
+                                                    <span class="material-symbols-rounded">location_on</span>
+                                                    <span>{{ evento.local_encontro }}</span>
+                                                </div>
+                                            {% endif %}
+                                            <div class="event-detail-item">
+                                                <span class="material-symbols-rounded">group</span>
+                                                <div class="event-avatars">
+                                                    {% if item.participantes_para_exibicao %}
+                                                        {% for participacao in item.participantes_para_exibicao|slice:":3" %}
+                                                            {% if participacao.participante %}
+                                                                {% get_avatar_url participacao.participante participacao.participante.nome_completo as avatar_url %}
+                                                                <img src="{{ avatar_url }}" alt="{{ participacao.participante.nome_completo }}">
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                        {% if item.total_participantes > 3 %}
+                                                            <span class="avatar-count">+{{ item.total_participantes|add:"-3" }} pessoas</span>
+                                                        {% elif item.total_participantes > 0 and item.total_participantes <= 3 %}
+                                                            <span class="avatar-count">+{{ item.total_participantes }} {% if item.total_participantes == 1 %}pessoa{% else %}pessoas{% endif %}</span>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <span class="avatar-count">Nenhum participante ainda</span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="event-action-wrapper">
+                                            {% if item.usuario_eh_organizador %}
+                                                <a href="{% url 'eventos:meus_eventos' %}?filtro=created" class="btn-event-manage" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 16px; background: #004AAD; color: #ffffff !important; border: none; border-radius: 50px; font-weight: 600; font-size: 0.875rem; cursor: pointer; text-decoration: none !important; box-shadow: 0 2px 8px rgba(0, 74, 173, 0.2); position: relative; z-index: 10;">
+                                                    <span class="material-symbols-rounded" style="font-size: 18px; color: #ffffff !important;">settings</span>
+                                                    Gerenciar Evento
+                                                </a>
+                                            {% else %}
+                                                <button type="button" class="btn-event-join" data-event-id="{{ evento.id }}" data-event-url="{% url 'eventos:visualizar_evento' evento.id %}" {% if evento.grupo_whatsapp %}data-whatsapp-url="{{ evento.grupo_whatsapp }}"{% endif %}>
+                                                    <span class="material-symbols-rounded">group_add</span>
+                                                    Bora!
+                                                </button>
+                                            {% endif %}
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="event-action-wrapper">
-                                <button class="btn-event-join">
-                                    <span class="material-symbols-rounded">group_add</span>
-                                    Bora!
-                                </button>
-                                <div class="event-action-menu">
-                                    <a href="#" class="event-action-item">
-                                        <span class="material-symbols-rounded">info</span>
-                                        <span>Saber mais</span>
-                                    </a>
-                                    <button class="event-action-item event-action-join">
-                                        <span class="material-symbols-rounded">check_circle</span>
-                                        <span>Eu vou!</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-                    
-
-                    <!-- Evento 3 -->
-                    <article class="event-card">
-                        <div class="event-image" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB9gkWbHM-W4UGCSYP56fZPUIHb-KXXFIp7P43Bh7O0VG-Id2SkjhXl-b5DixPuQ2_OJ7oL3a0P-tqi_hH412aXuyIcPQ0RNUXxyPmPV-DCbziloJKq7bu9JVkkNuIOjo10Loj6JZHO-IAYQ0ReycWIO8IRNv6-5q-IrLDr_tjSt2AFYQFQhXQOYGAo5sXxV63KMjI3jmdrdF-0i-f1PBCKP7i74zzZExuGAkzDmGwKis1714QuSYTa3Bpds3Zj8TjYUUyU8niWLwg');"></div>
-                        <div class="event-content">
-                            <h3 class="event-title">Feira Gastronômica da Cidade</h3>
-                            <div class="event-details">
-                                <div class="event-detail-item">
-                                    <span class="material-symbols-rounded">calendar_today</span>
-                                    <span>Dom, 28 de Julho - 12h</span>
-                                </div>
-                                <div class="event-detail-item">
-                                    <span class="material-symbols-rounded">location_on</span>
-                                    <span>Parque da Cidade</span>
-                                </div>
-                                <div class="event-detail-item">
-                                    <span class="material-symbols-rounded">group</span>
-                                    <div class="event-avatars">
-                                        <img src="https://avatars.githubusercontent.com/u/194426218?v=4" alt="Avatar">
-                                        <img src="https://avatars.githubusercontent.com/u/236921260?s=40&v=4" alt="Avatar">
-                                        <img src="https://avatars.githubusercontent.com/u/236921598?v=4" alt="Avatar">
-                                        <span class="avatar-count">+11 pessoas</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="event-action-wrapper">
-                                <button class="btn-event-join">
-                                    <span class="material-symbols-rounded">group_add</span>
-                                    Bora!
-                                </button>
-                                <div class="event-action-menu">
-                                    <a href="#" class="event-action-item">
-                                        <span class="material-symbols-rounded">info</span>
-                                        <span>Saber mais</span>
-                                    </a>
-                                    <button class="event-action-item event-action-join">
-                                        <span class="material-symbols-rounded">check_circle</span>
-                                        <span>Eu vou!</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-
-                    <!-- Evento 4 -->
-                    <article class="event-card">
-                        <div class="event-image" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuATmcEPk27YChfVACM_imKlAXRNeaqrXPfOlQCvZtDEEqTvQZdugc1ldwlo4sgvGDAGnP9k7AfHd5K0DKysWACx6xTxvS4rNmJHp1PFNVXaAJZpjTl96TGJlOhilm4kVdmoe8JFodPDOHeKVTR72M97oz3C7sebSDau7tVgo2UZ3tTJi5UcQHhtmoR1Z9UDRTfdmnkmrSFwatJxpKLPJrFs722hXQlZrsNEualQq8zicht7wNOJmjnLmEKzn6Hmoa-d4w5K_CISq68');"></div>
-                        <div class="event-content">
-                            <h3 class="event-title">Torneio de Vôlei de Praia</h3>
-                            <div class="event-details">
-                                <div class="event-detail-item">
-                                    <span class="material-symbols-rounded">calendar_today</span>
-                                    <span>Dom, 04 de Agosto - 09h</span>
-                                </div>
-                                <div class="event-detail-item">
-                                    <span class="material-symbols-rounded">location_on</span>
-                                    <span>Praia de Copacabana</span>
-                                </div>
-                                <div class="event-detail-item">
-                                    <span class="material-symbols-rounded">group</span>
-                                    <div class="event-avatars">
-                                        <img src="https://avatars.githubusercontent.com/u/128330949?s=40&v=4" alt="Avatar">
-                                        <img src="https://avatars.githubusercontent.com/u/19601448?v=4" alt="Avatar">
-                                        <img src="https://avatars.githubusercontent.com/u/175169535?v=4" alt="Avatar">
-                                        <span class="avatar-count">+8 pessoas</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="event-action-wrapper">
-                                <button class="btn-event-join">
-                                    <span class="material-symbols-rounded">group_add</span>
-                                    Bora!
-                                </button>
-                                <div class="event-action-menu">
-                                    <a href="#" class="event-action-item">
-                                        <span class="material-symbols-rounded">info</span>
-                                        <span>Saber mais</span>
-                                    </a>
-                                    <button class="event-action-item event-action-join">
-                                        <span class="material-symbols-rounded">check_circle</span>
-                                        <span>Eu vou!</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
+                                </a>
+                            </article>
+                            {% endwith %}
+                        {% endfor %}
+                    {% else %}
+                        <p style="padding: 32px; text-align: center; color: var(--cinza-escuro);">Nenhum evento próximo encontrado.</p>
+                    {% endif %}
                 </div>
             </div>
         </section>
@@ -213,12 +122,16 @@
                             <div class="stat-card">
                                 <h3 class="stat-title">Novos Membros</h3>
                                 <div class="stat-avatars">
-                                    <img src="https://avatars.githubusercontent.com/u/187967201?v=4" alt="Membro">
-                                    <img src="https://avatars.githubusercontent.com/u/6483341?v=4" alt="Membro">
-                                    <img src="https://avatars.githubusercontent.com/u/236921598?v=4" alt="Membro">
-                                    <img src="https://avatars.githubusercontent.com/u/175169535?v=4" alt="Membro">
+                                    {% if ultimos_perfis %}
+                                        {% for perfil in ultimos_perfis %}
+                                            {% get_avatar_url perfil perfil.nome_completo as avatar_url %}
+                                            <img src="{{ avatar_url }}" alt="{{ perfil.nome_completo }}">
+                                        {% endfor %}
+                                    {% else %}
+                                        <p style="color: var(--cinza-escuro); font-size: 0.875rem;">Ainda não há novos membros</p>
+                                    {% endif %}
                                 </div>
-                                <p class="stat-count">+27 esta semana</p>
+                                <p class="stat-count">+{{ perfis_semana }} {% if perfis_semana == 1 %}esta semana{% else %}esta semana{% endif %}</p>
                             </div>
                             
                             <div class="stat-card">
@@ -276,31 +189,31 @@
         <!-- Categorias -->
         <section class="categories-section">
             <div class="categories-container">
-                <a href="#" class="category-item">
+                <a href="{% url 'eventos:lista_eventos' %}?categoria=ESPORTE" class="category-item">
                     <div class="category-icon">
                         <span class="material-symbols-rounded">sports_soccer</span>
                     </div>
                     <h3 class="category-name">Esporte</h3>
                 </a>
-                <a href="#" class="category-item">
+                <a href="{% url 'eventos:lista_eventos' %}?categoria=LAZER" class="category-item">
                     <div class="category-icon">
                         <span class="material-symbols-rounded">celebration</span>
                     </div>
                     <h3 class="category-name">Lazer</h3>
                 </a>
-                <a href="#" class="category-item">
+                <a href="{% url 'eventos:lista_eventos' %}?categoria=CULTURA" class="category-item">
                     <div class="category-icon">
                         <span class="material-symbols-rounded">palette</span>
                     </div>
                     <h3 class="category-name">Cultura</h3>
                 </a>
-                <a href="#" class="category-item">
+                <a href="{% url 'eventos:lista_eventos' %}?categoria=TECNOLOGIA" class="category-item">
                     <div class="category-icon">
                         <span class="material-symbols-rounded">laptop_mac</span>
                     </div>
                     <h3 class="category-name">Tecnologia</h3>
                 </a>
-                <a href="#" class="category-item">
+                <a href="{% url 'eventos:lista_eventos' %}?categoria=EDUCACAO" class="category-item">
                     <div class="category-icon">
                         <span class="material-symbols-rounded">school</span>
                     </div>
@@ -309,6 +222,321 @@
             </div>
         </section>
     </main>
+    
+    <!-- Modal de Confirmação de Participação -->
+    <div id="modal-bora" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="material-symbols-rounded modal-icon">celebration</span>
+                {% if user.is_authenticated %}
+                    <h2>Confirmar Participação</h2>
+                {% else %}
+                    <h2>Quanto mais gente, melhor a experiência!</h2>
+                {% endif %}
+            </div>
+            <div class="modal-body">
+                {% if user.is_authenticated %}
+                    <p>Deseja confirmar sua participação neste evento? Você poderá conversar com a turma e combinar os detalhes!</p>
+                {% else %}
+                    <p>Para participar, você precisa estar logado. Faça login ou crie uma conta gratuita!</p>
+                {% endif %}
+            </div>
+            <div class="modal-actions">
+                {% if user.is_authenticated %}
+                    <button type="button" class="btn-modal-primary" id="btn-confirmar-participacao">
+                        <span class="material-symbols-rounded">check_circle</span>
+                        Confirmar Participação
+                    </button>
+                {% else %}
+                    <a href="{% url 'signin' %}" class="btn-modal-primary">
+                        <span class="material-symbols-rounded">login</span>
+                        Fazer Login / Criar Conta
+                    </a>
+                {% endif %}
+                <a href="#" class="btn-modal-secondary" id="btn-ver-detalhes">
+                    <span class="material-symbols-rounded">info</span>
+                    Ver Detalhes do Evento
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Sucesso após Confirmação -->
+    <div id="modal-confirmacao-sucesso" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="material-symbols-rounded modal-icon">celebration</span>
+                <h2>Presença confirmada! Simboraaa</h2>
+            </div>
+            <div class="modal-body">
+                <p>Você e a turma já podem conversar para combinar os detalhes do ponto de encontro, caronas e o que mais precisar!</p>
+            </div>
+            <div class="modal-actions">
+                <a href="#" id="btn-whatsapp-link" class="btn-modal-whatsapp" target="_blank" rel="noopener noreferrer" style="display: none;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                    </svg>
+                    Entrar no Grupo de WhatsApp
+                </a>
+                <button type="button" class="btn-modal-secondary" id="btn-convidar-amigos">
+                    <span class="material-symbols-rounded">share</span>
+                    Convidar Amigos
+                </button>
+                <a href="#" id="btn-continuar-na-pagina" class="btn-modal-close">Continuar na página</a>
+            </div>
+        </div>
+    </div>
+    
     {% include "core/partials/footer.html" %}
 {% endblock content %}
+
+{% block extra_js %}
+<script>
+    // Função para buscar eventos na página inicial
+    function buscarEventosHome() {
+        const buscaInput = document.getElementById('hero-search-input');
+        if (!buscaInput) return;
+        
+        const buscaTexto = buscaInput.value.trim();
+        if (buscaTexto) {
+            // Redireciona para a página de lista de eventos com o parâmetro de busca
+            window.location.href = "{% url 'eventos:lista_eventos' %}?busca=" + encodeURIComponent(buscaTexto);
+        } else {
+            // Se não houver texto, apenas redireciona para a lista de eventos
+            window.location.href = "{% url 'eventos:lista_eventos' %}";
+        }
+    }
+    
+    // Variáveis globais para o modal
+    let eventoAtualId = null;
+    let eventoAtualUrl = null;
+    let eventoWhatsAppUrl = null;
+    
+    // Abre o modal ao clicar no botão "Bora!"
+    document.addEventListener('DOMContentLoaded', function() {
+        const boraButtons = document.querySelectorAll('.btn-event-join');
+        const modal = document.getElementById('modal-bora');
+        const btnConfirmar = document.getElementById('btn-confirmar-participacao');
+        const btnVerDetalhes = document.getElementById('btn-ver-detalhes');
+        
+        boraButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Pega o ID, URL e WhatsApp do evento dos atributos data
+                eventoAtualId = this.getAttribute('data-event-id');
+                eventoAtualUrl = this.getAttribute('data-event-url');
+                eventoWhatsAppUrl = this.getAttribute('data-whatsapp-url');
+                
+                // Atualiza o link "Ver Detalhes"
+                if (btnVerDetalhes) {
+                    btnVerDetalhes.href = eventoAtualUrl;
+                }
+                
+                // Abre o modal
+                if (modal) {
+                    modal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                }
+            });
+        });
+        
+        // Previne que o link do card seja seguido quando clicar no botão
+        // Apenas para links dentro de cards de eventos (não interfere com outros elementos)
+        document.querySelectorAll('.event-card .event-card-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                // Só previne se o clique foi especificamente no botão "Bora!"
+                const clickedButton = e.target.closest('.btn-event-join');
+                if (clickedButton) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+            });
+        });
+        
+        // Fecha o modal ao clicar fora dele
+        if (modal) {
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    fecharModal();
+                }
+            });
+        }
+        
+        // Botão de confirmar participação (se usuário estiver logado)
+        {% if user.is_authenticated %}
+        if (btnConfirmar) {
+            btnConfirmar.addEventListener('click', function() {
+                if (!eventoAtualId) return;
+                
+                // Faz requisição AJAX para confirmar participação
+                fetch(`/eventos/confirmar-presenca/${eventoAtualId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'same-origin'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Fecha o modal de confirmação
+                        fecharModal();
+                        
+                        // Abre o modal de sucesso
+                        mostrarModalSucesso();
+                    } else {
+                        alert(data.error || 'Erro ao confirmar participação. Tente novamente.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    alert('Erro ao confirmar participação. Tente novamente.');
+                });
+            });
+        }
+        {% endif %}
+        
+        // Configura o modal de sucesso
+        const modalSucesso = document.getElementById('modal-confirmacao-sucesso');
+        const btnWhatsApp = document.getElementById('btn-whatsapp-link');
+        const btnContinuar = document.getElementById('btn-continuar-na-pagina');
+        const btnConvidar = document.getElementById('btn-convidar-amigos');
+        
+        // Função para mostrar o modal de sucesso
+        function mostrarModalSucesso() {
+            if (modalSucesso) {
+                // Mostra ou esconde o botão do WhatsApp baseado na URL
+                if (btnWhatsApp && eventoWhatsAppUrl && eventoWhatsAppUrl.trim() !== '') {
+                    btnWhatsApp.href = eventoWhatsAppUrl;
+                    btnWhatsApp.style.display = 'flex';
+                } else {
+                    btnWhatsApp.style.display = 'none';
+                }
+                
+                // Atualiza o link "Continuar na página"
+                if (btnContinuar && eventoAtualUrl) {
+                    btnContinuar.href = eventoAtualUrl;
+                }
+                
+                // Abre o modal
+                modalSucesso.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        
+        // Fecha o modal de sucesso ao clicar fora
+        if (modalSucesso) {
+            modalSucesso.addEventListener('click', function(e) {
+                if (e.target === modalSucesso) {
+                    fecharModalSucesso();
+                }
+            });
+        }
+        
+        // Botão convidar amigos
+        if (btnConvidar) {
+            btnConvidar.addEventListener('click', function() {
+                if (navigator.share && eventoAtualUrl) {
+                    navigator.share({
+                        title: 'Confira este evento!',
+                        url: eventoAtualUrl
+                    }).catch(err => console.log('Erro ao compartilhar:', err));
+                } else {
+                    // Fallback: copia o link
+                    if (eventoAtualUrl) {
+                        navigator.clipboard.writeText(eventoAtualUrl).then(() => {
+                            alert('Link copiado para a área de transferência!');
+                        });
+                    }
+                }
+            });
+        }
+        
+        // Função para fechar o modal de sucesso
+        function fecharModalSucesso() {
+            if (modalSucesso) {
+                modalSucesso.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        }
+    });
+    
+    // Função para fechar o modal
+    function fecharModal() {
+        const modal = document.getElementById('modal-bora');
+        if (modal) {
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+    }
+    
+    // Função auxiliar para pegar cookie CSRF
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+    // Garantir que o menu do perfil funcione
+    function forceInitProfileMenu() {
+        const trigger = document.getElementById('profile-trigger');
+        const menu = document.getElementById('profile-menu');
+        
+        if (trigger && menu) {
+            // Remove todos os listeners anteriores
+            const newTrigger = trigger.cloneNode(true);
+            trigger.parentNode.replaceChild(newTrigger, trigger);
+            
+            const newTriggerEl = document.getElementById('profile-trigger');
+            const menuEl = document.getElementById('profile-menu');
+            
+            // Adiciona listener direto
+            newTriggerEl.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                menuEl.classList.toggle('active');
+                newTriggerEl.classList.toggle('active');
+            };
+            
+            // Fechar ao clicar fora
+            setTimeout(function() {
+                document.addEventListener('click', function(e) {
+                    if (!menuEl.contains(e.target) && !newTriggerEl.contains(e.target)) {
+                        const modal = document.getElementById('modal-bora');
+                        if (!modal || modal.style.display !== 'flex') {
+                            menuEl.classList.remove('active');
+                            newTriggerEl.classList.remove('active');
+                        }
+                    }
+                });
+            }, 50);
+            
+            return true;
+        }
+        return false;
+    }
+    
+    // Tenta inicializar
+    if (!forceInitProfileMenu()) {
+        setTimeout(forceInitProfileMenu, 200);
+        window.addEventListener('load', function() {
+            setTimeout(forceInitProfileMenu, 100);
+        });
+    }
+</script>
+{% endblock extra_js %}
 

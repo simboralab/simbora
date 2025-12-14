@@ -1,4 +1,4 @@
-{% extends "core/page/base_core.html" %}
+{% extends "core/page/base.html" %}
 
 
 {% load static %}
@@ -12,7 +12,7 @@
 
 
 {% block content %}
-
+    {% include "core/partials/header.html" %}
 {% csrf_token %}
 
 <main class="events-created-main">
@@ -158,7 +158,11 @@
                 </article>
                 {% endwith %}
             {% empty %}
-                <p class="no-events">Você ainda não tem eventos. <a href="{% url 'eventos:criar_evento' %}">Crie o primeiro!</a></p>
+                {% if filtro_ativo == 'created' %}
+                    <p class="no-events">Você ainda não tem eventos. <a href="{% url 'eventos:criar_evento' %}">Crie o primeiro!</a></p>
+                {% else %}
+                    <p class="no-events">Nenhum evento encontrado.</p>
+                {% endif %}
             {% endfor %}
         </section>
     </div>
@@ -656,4 +660,52 @@
         }, 500);
     </script>
     <!-- JS para filtros via GET params se necessário -->
+    
+    <!-- Garantir que o menu do perfil funcione -->
+    <script>
+        function forceInitProfileMenu() {
+            const trigger = document.getElementById('profile-trigger');
+            const menu = document.getElementById('profile-menu');
+            
+            if (trigger && menu) {
+                // Remove todos os listeners anteriores
+                const newTrigger = trigger.cloneNode(true);
+                trigger.parentNode.replaceChild(newTrigger, trigger);
+                
+                const newTriggerEl = document.getElementById('profile-trigger');
+                const menuEl = document.getElementById('profile-menu');
+                
+                // Adiciona listener direto
+                newTriggerEl.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    menuEl.classList.toggle('active');
+                    newTriggerEl.classList.toggle('active');
+                };
+                
+                // Fechar ao clicar fora
+                setTimeout(function() {
+                    document.addEventListener('click', function(e) {
+                        if (!menuEl.contains(e.target) && !newTriggerEl.contains(e.target)) {
+                            menuEl.classList.remove('active');
+                            newTriggerEl.classList.remove('active');
+                        }
+                    });
+                }, 50);
+                
+                return true;
+            }
+            return false;
+        }
+        
+        // Tenta inicializar
+        if (!forceInitProfileMenu()) {
+            setTimeout(forceInitProfileMenu, 200);
+            window.addEventListener('load', function() {
+                setTimeout(forceInitProfileMenu, 100);
+            });
+        }
+    </script>
+    
+    {% include "core/partials/footer.html" %}
 {% endblock %}

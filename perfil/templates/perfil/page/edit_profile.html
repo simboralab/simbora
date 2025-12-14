@@ -3,10 +3,19 @@
 {% block title %}Editar Perfil{% endblock title %}
 
 {% load static %}
+{% load perfil_tags %}
+{% block header_css %}
+    <link rel="stylesheet" href="{% static 'core/css/principal.css' %}">
+{% endblock header_css %}
+
 {% block extra_head %}
        {{ block.super }}
        <link rel="stylesheet" href="{% static 'perfil/css/edit_profile.css' %}">
 {% endblock extra_head %}
+
+{% block header_include %}
+    {% include "core/partials/header.html" %}
+{% endblock header_include %}
 
 {% block content %}
     <div class="container">
@@ -20,13 +29,8 @@
 
             <div class="profile-photo">
                 <label for="id_foto" style="cursor: pointer;">
-                    {% if perfil.foto_perfil and perfil.foto_perfil.name %}
-                        <img src="{{ perfil.foto_perfil.url }}" alt="Foto do perfil">
-                    {% elif perfil.imagem_url %}
-                        <img src="{{ perfil.imagem_url }}" alt="Foto do perfil">
-                    {% else %}
-                        <img src="https://ui-avatars.com/api/?name={{ user.first_name|default:user.email }}&background=CCEE52&color=004AAD&size=128" alt="Foto do perfil">
-                    {% endif %}
+                    {% get_avatar_url perfil user.first_name|default:user.email as profile_avatar_url %}
+                    <img src="{{ profile_avatar_url }}" alt="Foto do perfil">
                 </label>
                 <input type="file" name="foto_perfil" id="id_foto" accept="image/*" class="hidden">
                 <label for="id_foto" class="btn-alter-foto">
@@ -109,6 +113,53 @@
 {% block extra_js %}
     {{ block.super }}
     <script>
+        // Função para inicializar o menu do perfil
+        function forceInitProfileMenu() {
+            const trigger = document.getElementById('profile-trigger');
+            const menu = document.getElementById('profile-menu');
+            
+            if (trigger && menu) {
+                // Remove todos os listeners anteriores
+                const newTrigger = trigger.cloneNode(true);
+                trigger.parentNode.replaceChild(newTrigger, trigger);
+                
+                const newTriggerEl = document.getElementById('profile-trigger');
+                const menuEl = document.getElementById('profile-menu');
+                
+                // Adiciona listener direto
+                newTriggerEl.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    menuEl.classList.toggle('active');
+                    newTriggerEl.classList.toggle('active');
+                };
+                
+                // Fechar ao clicar fora
+                setTimeout(function() {
+                    document.addEventListener('click', function(e) {
+                        if (!menuEl.contains(e.target) && !newTriggerEl.contains(e.target)) {
+                            const modal = document.getElementById('modal-bora');
+                            if (!modal || modal.style.display !== 'flex') {
+                                menuEl.classList.remove('active');
+                                newTriggerEl.classList.remove('active');
+                            }
+                        }
+                    });
+                }, 50);
+                
+                return true;
+            }
+            return false;
+        }
+        
+        // Tenta inicializar o menu do perfil
+        if (!forceInitProfileMenu()) {
+            setTimeout(forceInitProfileMenu, 200);
+            window.addEventListener('load', function() {
+                setTimeout(forceInitProfileMenu, 100);
+            });
+        }
+        
         document.addEventListener('DOMContentLoaded', function() {
             // Verificar se o perfil foi salvo com sucesso
             const urlParams = new URLSearchParams(window.location.search);

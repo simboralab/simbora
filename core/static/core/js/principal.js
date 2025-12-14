@@ -1,44 +1,143 @@
 
-document.addEventListener('DOMContentLoaded', function() {
-    
-
-    // MENU MOBILE TOGGLE
+// Função para inicializar o menu mobile toggle
+function initMobileMenu() {
     const menuToggle = document.querySelector('.menu-toggle');
     const navMenu = document.querySelector('.nav-menu');
     
-    if (menuToggle && navMenu) {
-        menuToggle.addEventListener('click', function() {
-            navMenu.classList.toggle('active');
-            console.log('Menu mobile clicado - implementar lógica de abertura');
-        });
+    if (!menuToggle || !navMenu) {
+        console.warn('Menu toggle não encontrado:', { menuToggle, navMenu });
+        return false;
     }
     
-
-    // MENU DROPDOWN DO PERFIL
-    const profileTrigger = document.getElementById('profile-trigger');
-    const profileMenu = document.getElementById('profile-menu');
+    console.log('Inicializando menu mobile toggle...');
     
-    if (profileTrigger && profileMenu) {
-        // Toggle dropdown ao clicar no perfil
-        profileTrigger.addEventListener('click', function(e) {
+    // Remove qualquer listener anterior
+    const newToggle = menuToggle.cloneNode(true);
+    menuToggle.parentNode.replaceChild(newToggle, menuToggle);
+    
+    const newNavMenu = document.querySelector('.nav-menu');
+    const newMenuToggle = document.querySelector('.menu-toggle');
+    
+    // Função para toggle do menu
+    function toggleMenu(e) {
+        if (e) {
             e.preventDefault();
             e.stopPropagation();
-            profileMenu.classList.toggle('active');
-            profileTrigger.classList.toggle('active');
-        });
+            e.stopImmediatePropagation();
+        }
         
-        // Fechar dropdown ao clicar fora
-        document.addEventListener('click', function(e) {
-            if (!profileMenu.contains(e.target) && !profileTrigger.contains(e.target)) {
-                profileMenu.classList.remove('active');
-                profileTrigger.classList.remove('active');
+        const isActive = newNavMenu.classList.contains('active');
+        console.log('Toggle menu - estado atual:', isActive ? 'aberto' : 'fechado');
+        
+        if (isActive) {
+            newNavMenu.classList.remove('active');
+            newMenuToggle.classList.remove('active');
+            console.log('Menu fechado');
+        } else {
+            newNavMenu.classList.add('active');
+            newMenuToggle.classList.add('active');
+            console.log('Menu aberto');
+        }
+        
+        return false;
+    }
+    
+    // Adiciona listener direto
+    newMenuToggle.onclick = toggleMenu;
+    
+    // Também adiciona via addEventListener
+    newMenuToggle.addEventListener('click', toggleMenu, false);
+    
+    // Touch event para mobile
+    newMenuToggle.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        toggleMenu(e);
+    }, false);
+    
+    // Fechar menu ao clicar fora (após um pequeno delay)
+    setTimeout(function() {
+        document.addEventListener('click', function closeMenuOnOutsideClick(e) {
+            if (newNavMenu && newNavMenu.classList.contains('active')) {
+                if (!newNavMenu.contains(e.target) && !newMenuToggle.contains(e.target)) {
+                    newNavMenu.classList.remove('active');
+                    newMenuToggle.classList.remove('active');
+                    console.log('Menu fechado por clique fora');
+                }
             }
-        });
+        }, false);
+    }, 200);
+    
+    console.log('Menu mobile toggle inicializado com sucesso');
+    return true;
+}
+
+// Inicializa quando o DOM estiver pronto
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        initMobileMenu();
+    });
+} else {
+    // DOM já está pronto
+    initMobileMenu();
+}
+
+// Tenta novamente após um delay caso não tenha funcionado
+setTimeout(function() {
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navMenu = document.querySelector('.nav-menu');
+    if (menuToggle && navMenu && !navMenu.classList.contains('active')) {
+        console.log('Tentando re-inicializar menu mobile...');
+        initMobileMenu();
+    }
+}, 500);
+    
+    // MENU DROPDOWN DO PERFIL
+    function initProfileMenu() {
+        const profileTrigger = document.getElementById('profile-trigger');
+        const profileMenu = document.getElementById('profile-menu');
         
-        // Prevenir que cliques dentro do dropdown o fechem
-        profileMenu.addEventListener('click', function(e) {
-            e.stopPropagation();
-        });
+        if (profileTrigger && profileMenu) {
+            // Toggle dropdown ao clicar no perfil
+            profileTrigger.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                profileMenu.classList.toggle('active');
+                profileTrigger.classList.toggle('active');
+            });
+            
+            // Fechar dropdown ao clicar fora (com verificação para não interferir com modal)
+            document.addEventListener('click', function closeProfileMenu(e) {
+                const modal = document.getElementById('modal-bora');
+                const isModalOpen = modal && modal.style.display === 'flex';
+                
+                // Não fechar se o modal estiver aberto
+                if (isModalOpen) {
+                    return;
+                }
+                
+                // Não fechar se o clique foi no trigger ou no menu
+                if (!profileMenu.contains(e.target) && !profileTrigger.contains(e.target)) {
+                    profileMenu.classList.remove('active');
+                    profileTrigger.classList.remove('active');
+                }
+            });
+            
+            // Prevenir que cliques dentro do dropdown o fechem
+            profileMenu.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+            
+            return true;
+        }
+        return false;
+    }
+    
+    // Tenta inicializar imediatamente
+    if (!initProfileMenu()) {
+        // Se não encontrou, tenta novamente após um pequeno delay
+        setTimeout(function() {
+            initProfileMenu();
+        }, 100);
     }
     
     // SMOOTH SCROLL PARA CARROSSEL
@@ -80,59 +179,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
 
     // EVENTOS - INTERATIVIDADE
-
-    // Botões "Bora!" dos eventos - Toggle dropdown
-    const eventJoinButtons = document.querySelectorAll('.btn-event-join');
-    eventJoinButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            // Fechar outros dropdowns abertos
-            document.querySelectorAll('.event-action-wrapper.active').forEach(wrapper => {
-                if (wrapper !== this.parentElement) {
-                    wrapper.classList.remove('active');
-                }
-            });
-            
-            // Toggle do dropdown atual
-            this.parentElement.classList.toggle('active');
-        });
-    });
-    
-    // Botão "Eu vou!" dentro do dropdown
-    const eventActionJoinButtons = document.querySelectorAll('.event-action-join');
-    eventActionJoinButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            const card = this.closest('.event-card');
-            const wrapper = this.closest('.event-action-wrapper');
-            const title = card.querySelector('.event-title').textContent;
-            
-            // Fechar dropdown
-            wrapper.classList.remove('active');
-            
-            // Mostrar mensagem de confirmação
-            showNotification(`Você confirmou presença para "${title}"! 🎉`, 'success');
-            
-            // Feedback visual no card
-            card.style.border = '2px solid #43B02A';
-            setTimeout(() => {
-                card.style.border = '';
-            }, 2000);
-        });
-    });
-    
-    // Fechar dropdown ao clicar fora
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.event-action-wrapper')) {
-            document.querySelectorAll('.event-action-wrapper.active').forEach(wrapper => {
-                wrapper.classList.remove('active');
-            });
-        }
-    });
+    // Nota: O comportamento dos botões "Bora!" agora é gerenciado pelo modal em main.html
+    // Este código foi removido para evitar conflitos
     
 
     // PONTOS DE ÔNIBUS - INTERATIVIDADE

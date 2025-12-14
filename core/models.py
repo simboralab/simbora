@@ -7,6 +7,12 @@ cep_validator = RegexValidator(
 )
 
 class Endereco(models.Model):
+    nome_do_local = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text='Nome do local (ex: Shopping Center, Parque da Cidade, etc.)'
+    )
     rua = models.CharField(max_length=255)
     numero = models.CharField(max_length=10)
     complemento = models.CharField(max_length=100, blank=True, null=True)
@@ -19,5 +25,12 @@ class Endereco(models.Model):
         help_text='Digite um CEP válido no formato 00000-000 ou 00000000.'
     )
 
+    @property
+    def logradouro(self):
+        """Alias para rua para compatibilidade com templates existentes"""
+        return self.rua
+
     def __str__(self):
+        if self.nome_do_local:
+            return f"{self.nome_do_local}, {self.cidade} - {self.estado}"
         return f"{self.rua}, {self.numero} - {self.cidade}/{self.estado}"
