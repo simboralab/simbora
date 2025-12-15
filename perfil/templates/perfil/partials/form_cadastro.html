@@ -2,7 +2,7 @@
     {% csrf_token %}
     <div class="row-inputs">
         <div class="input-container">
-            <label for="id_nome">Nome</label>
+            <label for="id_nome">Nome*</label>
             <div class="input-group">
                 <span class="material-symbols-rounded icon" aria-hidden="true">person</span>
                 {{ cadastro_form.first_name }}
@@ -17,7 +17,7 @@
         </div>
         
         <div class="input-container">
-            <label for="Sobrenome">Sobrenome</label>
+            <label for="Sobrenome">Sobrenome*</label>
             <div class="input-group">
                 <span class="material-symbols-rounded icon" aria-hidden="true">person</span>
                 {{ cadastro_form.last_name }}
@@ -33,7 +33,7 @@
     </div>
     
     <div class="input-container">
-        <label for="{{ cadastro_form.email.id_for_label }}">E-mail</label>
+        <label for="{{ cadastro_form.email.id_for_label }}">E-mail*</label>
         <div class="input-group">
             <span class="material-symbols-rounded icon" aria-hidden="true">mail</span>
             {{ cadastro_form.email }}
@@ -49,7 +49,7 @@
     
     <div class="row-inputs">
         <div class="input-container">
-            <label for="{{ form.data_nascimento.id_for_label }}">Data de Nascimento</label>
+            <label for="{{ form.data_nascimento.id_for_label }}">Data de Nascimento*</label>
             <div class="input-group">
                 <span class="material-symbols-rounded icon" aria-hidden="true">cake</span>
                 {{ cadastro_form.data_nascimento }}
@@ -64,7 +64,7 @@
         </div>
         
         <div class="input-container">
-            <label for="{{ cadastro_form.genero.id_for_label }}">Gênero</label>
+            <label for="{{ cadastro_form.genero.id_for_label }}">Gênero*</label>
             <div class="input-group">
                 <span class="material-symbols-rounded icon" aria-hidden="true">person</span>
                 {{ cadastro_form.genero }}
@@ -79,39 +79,36 @@
         </div>
     </div>
 
-    <div class="row-inputs">
-        <div class="input-container">
-            <label for="id_senha">Senha</label>
-            <div class="input-group">
-                <span class="material-symbols-rounded icon" aria-hidden="true">lock</span>
-                {{ cadastro_form.password1 }}
-                <span class="material-symbols-rounded icon-check" aria-hidden="true">check_circle</span>
-                <span class="material-symbols-rounded icon-error" aria-hidden="true">error</span>
-            </div>
-            <span id="erro-senha-cadastro" class="error-message" role="alert">
-                {% for error in cadastro_form.password1.errors %}
-                    {{ error }}
-                {% endfor %}
-            </span>
-            
+    <div class="input-container">
+        <label for="id_senha">Senha*</label>
+        <div class="input-group">
+            <span class="material-symbols-rounded icon" aria-hidden="true">lock</span>
+            {{ cadastro_form.password1 }}
+            <span class="material-symbols-rounded icon-check" aria-hidden="true">check_circle</span>
+            <span class="material-symbols-rounded toggle-password" id="toggle-senha-cadastro" style="cursor: pointer; display: inline-flex !important; opacity: 1 !important; visibility: visible !important; color: var(--azul-principal) !important;" aria-hidden="true">visibility</span>
         </div>
-        
-        <div class="input-container">
-            <label for="id_confirmar_senha">Confirmar Senha</label>
-            <div class="input-group">
-                <span class="material-symbols-rounded icon" aria-hidden="true">verified_user</span>
-                {{ cadastro_form.password2 }}
-                <span class="material-symbols-rounded icon-check" aria-hidden="true">check_circle</span>
-                <span class="material-symbols-rounded icon-error" aria-hidden="true">error</span>
-            </div>
-            <span id="erro-confirmar-senha" class="error-message" role="alert">
-                {% for error in cadastro_form.password2.errors %}
-                    {{ error }}
-                {% endfor %}
-            </span>
-        </div>
+        <span id="erro-senha-cadastro" class="error-message" role="alert">
+            {% for error in cadastro_form.password1.errors %}
+                {{ error }}
+            {% endfor %}
+        </span>
     </div>
-    
+
+    <div class="input-container">
+        <label for="id_confirmar_senha">Confirmar Senha*</label>
+        <div class="input-group">
+            <span class="material-symbols-rounded icon" aria-hidden="true">verified_user</span>
+            {{ cadastro_form.password2 }}
+            <span class="material-symbols-rounded icon-check" aria-hidden="true">check_circle</span>
+            <span class="material-symbols-rounded toggle-password" id="toggle-confirmar-senha" style="cursor: pointer; display: inline-flex !important; opacity: 1 !important; visibility: visible !important; color: var(--azul-principal) !important;" aria-hidden="true">visibility</span>
+        </div>
+        <span id="erro-confirmar-senha" class="error-message" role="alert">
+            {% for error in cadastro_form.password2.errors %}
+                {{ error }}
+            {% endfor %}
+        </span>
+    </div>
+
     <div class="checkbox-container">
         <input type="checkbox" id="id_aceitar_politicas" name="aceitar_politicas" required
                 aria-describedby="erro-aceitar-politicas" />
