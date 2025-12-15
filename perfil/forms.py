@@ -139,10 +139,12 @@ class PerfilForm(forms.ModelForm):
             'is_pcd',
             'neurodiversidade',
             'foto_perfil',
+            'imagem_url',
         ]
 
         widgets = {
             'nome_social': forms.TextInput(attrs={'placeholder': 'Informe seu nome social'}),
             'descricao': forms.Textarea(attrs={'placeholder': 'Fale mais sobre você...'}),
             'genero': forms.Select(),
+            'imagem_url': forms.URLInput(attrs={'placeholder': 'Cole a URL da sua imagem'}),
         }

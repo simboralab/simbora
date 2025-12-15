@@ -31,6 +31,9 @@ def get_avatar_url(perfil, nome_fallback=None):
     Retorna a URL do avatar do perfil ou uma imagem padrão.
     Segue o mesmo padrão usado nas outras páginas do projeto.
     
+    Prioridade: imagem_url > avatar padrão
+    Se não houver imagem_url cadastrada, sempre usa o avatar padrão.
+    
     Args:
         perfil: Objeto Perfil ou None
         nome_fallback: Nome para usar no avatar padrão se não houver perfil (opcional)
@@ -38,24 +41,13 @@ def get_avatar_url(perfil, nome_fallback=None):
     Returns:
         URL da imagem do avatar
     """
-    # Se tem perfil e foto_perfil com arquivo válido, retorna foto_perfil
-    if perfil and perfil.foto_perfil:
-        try:
-            # Verifica se o arquivo existe e não é o padrão vazio
-            foto_name = getattr(perfil.foto_perfil, 'name', None)
-            if foto_name and foto_name != 'fotos_perfil/default.jpg' and foto_name != '':
-                # Tenta acessar a URL, se falhar, continua para outras opções
-                try:
-                    return perfil.foto_perfil.url
-                except (ValueError, AttributeError):
-                    pass
-        except (ValueError, AttributeError):
-            # Se houver erro ao acessar, continua para outras opções
-            pass
-    
-    # Se tem perfil e imagem_url válida, retorna imagem_url
+    # PRIORIDADE 1: Se tem perfil e imagem_url válida, retorna imagem_url
     if perfil and perfil.imagem_url:
-        return perfil.imagem_url
+        imagem_url = str(perfil.imagem_url).strip()
+        if imagem_url:  # Verifica se não está vazio
+            return imagem_url
+    
+    # Se não tem imagem_url, sempre retorna avatar padrão
     
     # Avatar padrão usando ui-avatars.com (mesmo padrão das outras páginas)
     # Tenta obter nome do perfil, senão usa nome_fallback, senão 'Usuário'

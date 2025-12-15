@@ -79,7 +79,7 @@ class Perfil(models.Model):
 
     foto_perfil = models.ImageField(upload_to='fotos_perfil/', default="fotos_perfil/default.jpg", blank=True, null=True) 
 
-    imagem_url = models.URLField(blank=True, null=True) # PEGA IMAGEM HOSPEDADA NA NET
+    imagem_url = models.URLField(max_length=250, blank=True, null=True)
 
     descricao = models.TextField(
         max_length=500,
