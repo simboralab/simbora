@@ -169,7 +169,104 @@ function validateBirthDate(dateString) {
 // Aguardar DOM estar pronto
 document.addEventListener("DOMContentLoaded", function () {
   initValidation();
+  initPasswordToggle();
 });
+
+/**
+ * Inicializa a funcionalidade de mostrar/ocultar senha
+ */
+function initPasswordToggle() {
+  // Usar event delegation para garantir que funcione mesmo se elementos forem adicionados dinamicamente
+  document.addEventListener('click', function(e) {
+    // Verificar se o clique foi em um elemento com classe toggle-password
+    if (e.target && e.target.classList.contains('toggle-password')) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const toggleElement = e.target;
+      const inputGroup = toggleElement.closest('.input-group');
+      
+      if (!inputGroup) return;
+      
+      // Procurar o input de senha dentro do mesmo input-group
+      const passwordInput = inputGroup.querySelector('input[type="password"], input[type="text"][id*="senha"], input[type="text"][id*="password"]');
+      
+      if (!passwordInput) {
+        // Tentar encontrar pelo ID baseado no ID do toggle
+        const toggleId = toggleElement.id;
+        if (toggleId === 'toggle-senha-cadastro') {
+          const input = document.getElementById('id_senha_cadastro');
+          if (input) togglePassword(input, toggleElement);
+        } else if (toggleId === 'toggle-confirmar-senha') {
+          const input = document.getElementById('id_confirmar_senha');
+          if (input) togglePassword(input, toggleElement);
+        } else if (toggleId === 'toggle-senha-login') {
+          const input = document.getElementById('id_senha_login');
+          if (input) togglePassword(input, toggleElement);
+        }
+      } else {
+        togglePassword(passwordInput, toggleElement);
+      }
+    }
+  });
+
+  // Função auxiliar para alternar a senha
+  function togglePassword(passwordInput, toggleElement) {
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      toggleElement.textContent = 'visibility_off';
+      toggleElement.setAttribute('aria-label', 'Ocultar senha');
+    } else {
+      passwordInput.type = 'password';
+      toggleElement.textContent = 'visibility';
+      toggleElement.setAttribute('aria-label', 'Mostrar senha');
+    }
+  }
+
+  // Também inicializar diretamente para garantir que funcione
+  function setupToggle(toggleId, inputId) {
+    const toggleElement = document.getElementById(toggleId);
+    const passwordInput = document.getElementById(inputId);
+    
+    if (toggleElement && passwordInput) {
+      // Garantir que o ícone esteja sempre visível
+      toggleElement.style.display = 'inline-flex';
+      toggleElement.style.opacity = '1';
+      toggleElement.style.visibility = 'visible';
+      
+      toggleElement.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (passwordInput.type === 'password') {
+          passwordInput.type = 'text';
+          toggleElement.textContent = 'visibility_off';
+        } else {
+          passwordInput.type = 'password';
+          toggleElement.textContent = 'visibility';
+        }
+      });
+    }
+  }
+
+  // Aguardar um pouco para garantir que o DOM esteja completamente carregado
+  setTimeout(function() {
+    setupToggle('toggle-senha-cadastro', 'id_senha_cadastro');
+    setupToggle('toggle-confirmar-senha', 'id_confirmar_senha');
+    setupToggle('toggle-senha-login', 'id_senha_login');
+  }, 100);
+  
+  // Também tentar quando a página estiver completamente carregada
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(function() {
+        setupToggle('toggle-senha-cadastro', 'id_senha_cadastro');
+        setupToggle('toggle-confirmar-senha', 'id_confirmar_senha');
+        setupToggle('toggle-senha-login', 'id_senha_login');
+      }, 100);
+    });
+  }
+}
 
 function initValidation() {
   const cadastroForm = document.querySelector(".cadastro-form form");
@@ -288,7 +385,7 @@ function initValidation() {
         showError(
           "id_senha_cadastro",
           "erro-senha-cadastro",
-          "A senha deve ter pelo menos 8 caracteres, incluindo maiúsculas, números e caracteres especiais"
+          "A senha deve ter pelo menos 8 caracteres, incluindo maiúsculas, minúsculas, números  e caracteres especiais (!, #, @)"
         );
       }
     });

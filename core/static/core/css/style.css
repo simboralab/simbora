@@ -415,6 +415,13 @@ label {
   color: var(--laranja, #fa7625);
 }
 
+.input-group .toggle-password {
+  color: var(--azul-principal, #004aad) !important;
+  display: inline-flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
 /* Ícone de sucesso removido */
 
 /* Ícone de erro só aparece quando a classe error é aplicada via JavaScript */

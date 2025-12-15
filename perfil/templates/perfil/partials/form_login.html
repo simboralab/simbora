@@ -27,6 +27,8 @@
         <div class="input-group">
             <span class="material-symbols-rounded icon" aria-hidden="true">lock</span>
             {{ login_form.password }}
+            <span class="material-symbols-rounded icon-check" aria-hidden="true">check_circle</span>
+            <span class="material-symbols-rounded toggle-password" id="toggle-senha-login" style="cursor: pointer; display: inline-flex !important; opacity: 1 !important; visibility: visible !important; color: var(--azul-principal) !important;" aria-hidden="true">visibility</span>
             {%for error in login_form.password.errors %}
                 <span class="material-symbols-rounded icon-error" aria-hidden="true">error</span>
             {% endfor %}
