@@ -32,12 +32,13 @@
                     {% get_avatar_url perfil user.first_name|default:user.email as profile_avatar_url %}
                     <img src="{{ profile_avatar_url }}" alt="Foto do perfil">
                 </label>
-                <input type="file" name="foto_perfil" id="id_foto" accept="image/*" class="hidden">
+                <!-- <input type="file" name="foto_perfil" id="id_foto" accept="image/*" class="hidden">
                 <label for="id_foto" class="btn-alter-foto">
                     Alterar foto
-                </label>
+                </label> -->
             </div>
 
+     
             <h2 class="section-title">Informações Pessoais</h2>
 
             <label>
@@ -60,6 +61,12 @@
                 </select>
 
             </label>
+
+            <label>
+                URL da Imagem
+                <input type="url" name="imagem_url" id="id_imagem_url" value="{{ perfil.imagem_url|default:'' }}" placeholder="Cole a URL da sua imagem hospedada na internet">
+            </label>
+
 
             <label class="full-width">
                 Descrição (Bio)
